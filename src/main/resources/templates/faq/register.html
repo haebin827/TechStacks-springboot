@@ -1,0 +1,81 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-md-8 mx-auto">
+            <div style="font-size: 1.5rem;">
+                Add new FAQ
+            </div>
+            <hr class="mb-4">
+
+            <div class="card-body">
+                <form th:action="@{/faq/register}" th:method="post" novalidate>
+
+                    <!-- Category Selection -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="fCategoryNo" required>
+                            <option value="" disabled selected>---</option>
+                            <option th:each="category : ${catList}"
+                                    th:value="${category.fName}"
+                                    th:text="${category.fName}"></option>
+                        </select>
+                        <div class="invalid-feedback">Please select a category.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="question" class="form-label">Question</label>
+                        <textarea class="form-control" id="question" name="fQuestion" rows="2" required></textarea>
+                        <div class="invalid-feedback">Please provide a question content.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="answer" class="form-label">Answer</label>
+                        <textarea class="form-control" id="answer" name="fAnswer" rows="6" required></textarea>
+                        <div class="invalid-feedback">Please provide the answer content.</div>
+                    </div>
+
+                    <div class="my-4">
+                        <div class="float-end">
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-outline-dark">Save</button>
+                                <button type="reset" class="btn btn-outline-dark">Reset</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByTagName('form')
+
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }, false)
+    })()
+</script>
+</html>

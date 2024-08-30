@@ -1,0 +1,248 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <title>Book Read</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+
+            <div th:if="${session.adminLogin == null}">
+                <div class="card">
+                    <div class="card-body">
+                        <form>
+                            <input type="hidden" name="bNo" th:value="${dto.bNo}">
+                            <input type="hidden" name="bTitle" th:value="${dto.bTitle}">
+                            <input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">
+                            <input type="hidden" name="uId" th:value="${session.userLogin != null ? session.userLogin.getUId() : ''}">
+
+                            <div class="row">
+                                <!-- Left side: Book details -->
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <span th:text="${dto.bTitle}" style="font-size: 2rem; font-weight: bold;"></span>
+                                    </div>
+
+                                    <!-- Horizontal line below the title -->
+                                    <hr>
+
+                                    <div class="mb-3 d-flex">
+                                        <span style="font-weight: bold; width: 120px;">Author</span>
+                                        <span th:text="${dto.bAuthor}"></span>
+                                    </div>
+
+                                    <div class="mb-3 d-flex">
+                                        <span style="font-weight: bold; width: 120px;">ISBN</span>
+                                        <span th:text="${dto.bIsbn}"></span>
+                                    </div>
+
+                                    <div class="mb-3 d-flex">
+                                        <span style="font-weight: bold; width: 120px;">Year</span>
+                                        <span th:text="${dto.bYear}"></span>
+                                    </div>
+
+                                    <div class="mb-3 d-flex">
+                                        <span style="font-weight: bold; width: 120px;">Publisher</span>
+                                        <span th:text="${dto.bPublisher}"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Right side: Book image -->
+                                <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                    <div class="mb-3" style="margin-right: 20px;">
+                                        <img th:src="@{/images/image.png}" alt="Book Image" class="img-fluid img-thumbnail" style="width: 200px; height: 300px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="my-4">
+                                <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                                    <span th:if="${session.adminLogin == null}">
+                                        <button type="button" id="rent" class="btn"
+                                                th:classappend="${dto.bIsRental ? 'btn-secondary' : 'btn-warning'}"
+                                                th:disabled="${dto.bIsRental}"
+                                                th:text="${dto.bIsRental ? 'Currently Unavailable' : 'Rent this book'}">
+                                        </button>
+                                    </span>
+                                    <a th:href="|@{/book/list}?${link}|" class="text-decoration-none">
+                                        <button type="button" class="btn btn-secondary">List</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${session.adminLogin != null}">
+                <div class="card">
+                    <div class="card-header">
+                        Book Info
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <input type="hidden" name="bNo" th:value="${dto.bNo}">
+                            <input type="hidden" name="bTitle" th:value="${dto.bTitle}">
+                            <input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">
+                            <input type="hidden" name="deletionReason" id="hiddenDeletionReason">
+                            <input type="hidden" name="uId" th:value="${session.userLogin != null ? session.userLogin.getUId() : ''}">
+
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Title</span>
+                                <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" readonly>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Author</span>
+                                <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" readonly>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">ISBN</span>
+                                <input type="text" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" readonly>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Publication Year</span>
+                                <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" readonly>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Publisher</span>
+                                <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" readonly>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Category</span>
+                                <input type="text" name="bCategory" class="form-control" th:value="${dto.bCategory}" readonly>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Image</span>
+                                <!--<input type="text" name="bCover" class="form-control" th:value="${dto.bCover}" readonly>-->
+                                <!-- Display the image from the static folder -->
+                                <img th:src="@{/images/image.png}" alt="Book Image" class="img-thumbnail">
+                            </div>
+
+                            <div class="my-4">
+                                <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                                    <span th:if="${session.adminLogin}">
+                                        <button type="button" id="removeBtn" class="btn btn-danger">Remove</button>
+                                        <a th:href="|@{/book/modify(bNo=${dto.bNo})}&${link}|" class="text-decoration-none">
+                                            <button type="button" class="btn btn-primary">Modify</button>
+                                        </a>
+                                    </span>
+                                    <!--<span th:if="${session.adminLogin == null}">
+                                        <button type="button" id="rent" class="btn"
+                                                th:classappend="${dto.bIsRental ? 'btn-secondary' : 'btn-warning'}"
+                                                th:disabled="${dto.bIsRental}"
+                                                th:text="${dto.bIsRental ? 'Currently Unavailable' : 'Rent this book'}">
+                                        </button>
+                                    </span>-->
+                                    <a th:href="|@{/book/list}?${link}|" class="text-decoration-none">
+                                        <button type="button" class="btn btn-secondary">List</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div class="modal fade" id="removeModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="deletionReason" class="form-label">Reason for deleting:</label>
+                            <textarea id="deletionReason" name="deletionReason" class="form-control" rows="3" placeholder="Enter reason here..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="deletionSubmitBtn" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    if ([[${session.adminLogin == null}]]) {
+        document.querySelector("#rent").addEventListener("click", function (e) {
+
+            if ([[${session.userLogin == null}]]) {
+                alert("Login is required.");
+                window.location.href = '/user/login';
+                return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const formObj = document.querySelector("form");
+
+            formObj.action = "/book/rent";
+            formObj.method = "post";
+
+            formObj.submit();
+        }, false);
+
+        // show alert
+        var result = [[${result}]];
+        console.log(result);
+
+        if(result == "limit") {
+            alert("You cannot borrow more than 3 books at once.");
+        } else if(result == "requested") {
+            alert("The rental request for this book has already been submitted.");
+        }
+    }
+
+    document.querySelector("#removeBtn").addEventListener("click", function(e) {
+
+        console.log("Clicked remove......................");
+        // Show the modal
+        var modal = new bootstrap.Modal(document.querySelector("#removeModal"));
+        modal.show();
+
+    }, false);
+
+
+    document.querySelector("#deletionSubmitBtn").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const reason = document.querySelector("#deletionReason").value;
+
+        if(reason === "") {
+            alert("Please enter a reason for deleting.");
+        } else {
+            document.querySelector("#hiddenDeletionReason").value = reason;
+
+            const formObj = document.querySelector("form");
+
+            formObj.action = "/book/remove";
+            formObj.method = "post";
+
+            formObj.submit();
+        }
+    }, false);
+
+</script>
+</html>

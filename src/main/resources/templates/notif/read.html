@@ -1,0 +1,107 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <title>Notification Read</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-md-10 mx-auto">
+
+            <!-- User View (Not Admin) -->
+            <div th:if="${session.adminLogin == null}">
+                <div class="mb-2" style="font-size: 1.5rem;">
+                    [[${dto.nTitle}]]
+                </div>
+                <div class="text-muted mb-2">
+                    [[${#temporals.format(dto.nRegDate, 'yyyy-MM-dd')}]]
+                </div>
+                <hr class="mb-4">
+                <div>
+                    <p>
+                        [[${dto.nContent}]]
+                    </p>
+                </div>
+
+                <div class="my-4">
+                    <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                        <a th:href="|@{/notif/list}?${link}|" class="btn btn-secondary text-decoration-none">
+                            List
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin View -->
+            <div th:if="${session.adminLogin != null}">
+                <div style="font-size: 1.5rem;">
+                    Notification Info
+                </div>
+                <hr class="mb-4">
+
+                <div class="card-body">
+                    <form>
+                        <input type="hidden" name="nNo" th:value="${dto.nNo}">
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Title</span>
+                            <input type="text" name="nTitle" class="form-control" th:value="${dto.nTitle}" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Date</span>
+                            <input type="text" name="nRegDate" class="form-control" th:value="${#temporals.format(dto.nRegDate, 'yyyy-MM-dd')}" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Content</span>
+                            <input type="text" name="nContent" class="form-control" th:value="${dto.nContent}" readonly>
+                        </div>
+
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                Highlight &nbsp;
+                            </label>
+                            <input class="form-check-input" type="checkbox" name="n_isImp" th:checked="${dto != null && dto.nIsImp}" disabled>
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                                <div class="btn-group" role="group">
+                                    <button type="button" id = "removeBtn" class="btn btn-outline-dark text-decoration-none">Remove</button>
+                                    <a th:href="|@{/notif/modify(nNo=${dto.nNo})}&${link}|" class="btn btn-outline-dark text-decoration-none">
+                                        Edit
+                                    </a>
+                                    <a th:href="|@{/notif/list}?${link}|" class="btn btn-secondary text-decoration-none">
+                                        List
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+
+    document.querySelector("#removeBtn").addEventListener("click", function(e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const formObj = document.querySelector("form")
+        formObj.action = "/notif/remove"
+        formObj.method = "post"
+
+        formObj.submit()
+    }, false)
+
+</script>
+</html>

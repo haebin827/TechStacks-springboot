@@ -1,0 +1,213 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/userSubMenu.html}">
+
+<div layout:fragment="userSubMenu">
+
+    <div class="row mt-3">
+        <div class="col-md-8 mx-auto">
+            <div style="font-size: 1.5rem;">
+                Your Profile
+            </div>
+            <hr class="mb-4">
+            <div class="card-body">
+                <form>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Name</span>
+                        <input type="text" name="uName" class="form-control" th:value="${dto.uName}" readonly>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Phone Number</span>
+                        <input type="text" name="uPhone" class="form-control" th:value="${dto.uPhone}" readonly>
+                    </div>
+
+                    <div class="input-group mb-5">
+                        <span class="input-group-text">Student ID</span>
+                        <input type="text" name="uId" class="form-control" th:value="${dto.uId}" readonly>
+                    </div>
+
+                    <div class="my-4">
+                        <div class="btn-group float-start" role="group">
+                            <a class="btn btn-outline-dark text-decoration-none" th:href="@{/myPage/account/edit}">Edit</a>
+                            <button type="button" id="changePwBtn" class="btn btn-outline-dark">Change Password</button>
+                            <button type="button" id="deleteBtn" class="btn btn-outline-dark">Delete Account</button>
+                        </div>
+
+                        <div class="float-end">
+                            <a class="btn btn-secondary" th:href="@{/myPage/home}">Go back</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change PW Modal -->
+            <div class="modal fade" id="changePwModal" tabindex="-1" aria-labelledby="changePwModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="changePwModalLabel">Change Password</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="changePwForm" novalidate>
+                                <div class="mb-3">
+                                    <label for="currPw" class="form-label">Current password:</label>
+                                    <input type="password" id="currPw" name="currPw" class="form-control" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPw" class="form-label">New password:</label>
+                                    <input type="password" id="newPw" name="newPw" class="form-control" required />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="savePwBtn" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Confirmation⛔</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="confirmPw" class="form-label">Confirm password:</label>
+                                <input type="password" id="confirmPw" name="confirmPw" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <b style="color: red; font-weight: bold;">
+                                    Once your account is deleted, it cannot be undone.
+                                </b>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="deleteSubmitBtn" class="btn btn-danger">Delete this account</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    document.querySelector("#changePwBtn").addEventListener("click", function() {
+        // Show the modal
+        var modal = new bootstrap.Modal(document.querySelector("#changePwModal"));
+        modal.show();
+    });
+
+    document.querySelector("#savePwBtn").addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const currPw = document.querySelector("#currPw").value;
+        const newPw = document.querySelector("#newPw").value;
+        const correctPw = [[${dto.uPw}]];
+
+        // Regular expressions for different character types
+        const hasUpperCase = /[A-Z]/;
+        const hasLowerCase = /[a-z]/;
+        const hasDigit = /\d/;
+        const hasSpecialChar = /[~!@#$%^&*=\+]/;
+
+        if (!currPw || !newPw) {
+            alert("Please enter the password.");
+        } else if (currPw !== correctPw) {
+            alert("Current password does not match.");
+        } else if (currPw == newPw) {
+            alert("The passwords are the same.");
+        } else {
+            // Check if the password is at least 8 characters long
+            if (newPw.length < 8) {
+                alert("Password must be at least 8 characters long.");
+            }
+            // Check if the password includes at least three of the following: uppercase letters, lowercase letters, digits, and special characters
+            else {
+                let criteriaCount = 0;
+
+                if (hasUpperCase.test(newPw)) criteriaCount++;
+                if (hasLowerCase.test(newPw)) criteriaCount++;
+                if (hasDigit.test(newPw)) criteriaCount++;
+                if (hasSpecialChar.test(newPw)) criteriaCount++;
+
+                if (criteriaCount < 3) {
+                    alert("Password must include at least three of the following: uppercase letters, lowercase letters, digits, and special characters.");
+                } else {
+                    // Password meets all criteria, proceed with form submission
+                    const form = document.createElement('form');
+                    form.method = 'post';
+                    form.action = '/myPage/changePw';
+
+                    // Add hidden input field for new password
+                    const hiddenNewPw = document.createElement('input');
+                    hiddenNewPw.type = 'hidden';
+                    hiddenNewPw.name = 'newPw';
+                    hiddenNewPw.value = newPw;
+                    form.appendChild(hiddenNewPw);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        }
+    });
+
+    document.querySelector("#deleteBtn").addEventListener("click", function() {
+        const rentCnt = [[${rentCnt}]]; // Fetching the rent count value from Thymeleaf
+
+        if (rentCnt > 0) {
+            alert("You still have books currently borrowed.");
+            return;
+        }
+
+        // Show the modal
+        const modal = new bootstrap.Modal(document.querySelector("#deleteModal"));
+        modal.show();
+    });
+
+    document.querySelector("#deleteSubmitBtn").addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const pw = document.querySelector("#confirmPw").value;
+        const correctPw = [[${dto.uPw}]]; // Fetching the correct password value from Thymeleaf
+
+        if (!pw) {
+            alert("Please recheck your password.");
+        } else if (pw !== correctPw) {
+            alert("Password does not match.");
+        } else {
+            if (confirm("Are you sure you want to delete your account?")) {
+                // Assuming there's a form to submit for account deletion
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/myPage/remove';
+
+                // Add hidden input field for confirm password
+                const hiddenConfirmPw = document.createElement('input');
+                hiddenConfirmPw.type = 'hidden';
+                hiddenConfirmPw.name = 'confirmPw';
+                hiddenConfirmPw.value = pw;
+                form.appendChild(hiddenConfirmPw);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    });
+
+</script>
+</html>

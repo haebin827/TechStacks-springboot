@@ -1,0 +1,239 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+
+    <div class="row mt-3">
+        <div class="col-md-11 mx-auto">
+            <div class="d-flex align-items-center">
+                <div style="font-size: 1.5rem;">
+                    Book list
+                </div>
+                <!-- Category 버튼을 Book list 제목 바로 오른쪽에 배치 -->
+                <div class="dropdown ms-3">
+                    <button class="btn btn-outline-success dropdown-toggle btn-sm" type="button" id="dropdownCategory" aria-expanded="false">
+                        Category
+                    </button>
+                    <div class="dropdown-menu p-3" aria-labelledby="dropdownCategory">
+                        <div class="d-flex">
+                            <div style="max-height: 500px; overflow-y: auto; white-space: nowrap; max-width: 100%;">
+                                <!-- 각 mainmenu 레이블 생성 -->
+                                <th:block th:each="parentCat : ${catDTO}">
+                                    <th:block th:if="${#strings.length(parentCat.cDcode) == 2}">
+                                        <!-- 메인 메뉴도 클릭 가능하도록 변경 -->
+                                        <a class="fw-bold text-success mb-2 d-block text-decoration-none" href="#">[[${parentCat.cName}]]</a>
+                                        <!-- 서브메뉴 생성 -->
+                                        <th:block th:each="childCat : ${catDTO}">
+                                            <th:block th:if="${#strings.length(childCat.cDcode) == 4 && childCat.cDcode.startsWith(parentCat.cDcode)}">
+                                                <a class="dropdown-item ps-3" href="#">[[${childCat.cName}]]</a>
+                                            </th:block>
+                                        </th:block>
+                                        <br>
+                                    </th:block>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <hr class="mb-4">
+
+                <!-- 검색창 -->
+                <form>
+                    <input type="hidden" name="bNo" value="${dto.bNo}">
+                    <div class="col">
+                        <input type="hidden" name="size" th:value="${pgReqDTO.size}">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <select class="form-select" name="type">
+                                    <option value="">---</option>
+                                    <option value="t" th:selected="${pgReqDTO.type =='t'}">Title</option>
+                                    <option value="a" th:selected="${pgReqDTO.type =='a'}">Author</option>
+                                    <option value="i" th:selected="${pgReqDTO.type =='i'}">ISBN</option>
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" name="keyword" th:value="${pgReqDTO.keyword}">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
+                                <button class="btn btn-outline-secondary clearBtn" type="button">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        <div class="col-md-11 mx-auto">
+            <div class="d-flex align-items-center">
+            <div class="row mt-3">
+                <div class="col">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <div class="form-check form-switch float-end">
+                                <input class="form-check-input" type="checkbox" name='check'
+                                       th:checked="${pgReqDTO.check}" id="rentAvail">
+                                <label class="form-check-label" for="rentAvail">
+                                    Show only books available for rent
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Author</th>
+                                <th scope="col">ISBN</th>
+                                <th scope="col">Released Year</th>
+                                <th scope="col">Publisher</th>
+                                <th scope="col">Category</th>
+                            </tr>
+                            </thead>
+                            <tbody th:with="link = ${pgReqDTO.getLink()}">
+                            <tr th:each="dto, count : ${respDTO.dtoList}">
+                                <th scope="row">[[${(respDTO.page - 1) * pgReqDTO.size + count.index + 1}]]</th>
+                                <th>
+                                    <a th:href="|@{/book/read(bNo=${dto.bNo})}&${link}|" class="text-decoration-none" style="color: black;">[[${dto.bTitle}]]</a>
+                                </th>
+                                <td>[[${dto.bAuthor}]]</td>
+                                <td>[[${dto.bIsbn}]]</td>
+                                <td>[[${dto.bYear}]]</td>
+                                <td>[[${dto.bPublisher}]]</td>
+                                <td>[[${dto.bCategory}]]</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div>
+                            <div class="float-start">
+                                <a th:if="${session.adminLogin != null}" th:href="|@{/book/register}|" class="text-decoration-none">
+                                    <button type="button" class="btn btn-primary">Register</button>
+                                </a>
+                            </div>
+                            <div class="float-end">
+
+                                <ul class="pagination flex-wrap">
+
+                                    <li class="page-item" th:if="${respDTO.prev}">
+                                        <a class="page-link" th:data-num="${respDTO.start - 1}">Previous</a>
+                                    </li>
+
+                                    <th:block th:each="i: ${#numbers.sequence(respDTO.start, respDTO.end)}">
+
+                                        <li th:class="${respDTO.page == i}?'page-item active':'page-item'">
+                                            <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                        </li>
+                                    </th:block>
+
+                                    <li class="page-item" th:if="${respDTO.next}">
+                                        <a class="page-link" th:data-num="${respDTO.end + 1}">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                        <div class="modal fade" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        Info
+                                    </div>
+                                    <div class="modal-body">
+                                        <p id="modalResult"></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <script layout:fragment="script" th:inline="javascript">
+
+            document.querySelector(".pagination").addEventListener("click", function (e) {
+                e.preventDefault()
+                e.stopPropagation()
+
+                const target = e.target
+
+                if(target.tagName !== 'A') {
+                    return
+                }
+
+                const num = target.getAttribute("data-num")
+
+                const formObj = document.querySelector("form")
+
+                formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+                formObj.action = "/book/list"
+                formObj.method = "get"
+
+                formObj.submit();
+
+            },false)
+
+            document.querySelector(".clearBtn").addEventListener("click", function (e){
+                e.preventDefault()
+                e.stopPropagation()
+
+                self.location ='/book/list'
+
+            },false)
+
+            //show modal
+            var bTitle = [[${bTitle}]];
+            var result = [[${result}]];
+            if(result) {
+                if (result == "Added") {
+                    document.querySelector("#modalResult").innerHTML = "Book titled <b>[" + bTitle + "]</b> successfully added.";
+                } else if (result == "Removed") {
+                    document.querySelector("#modalResult").innerHTML = "Book titled <b>[" + bTitle + "]</b> successfully removed.";
+                } else if (result == "Modified") {
+                    document.querySelector("#modalResult").innerHTML = "Book titled <b>[" + bTitle + "]</b> successfully modified.";
+                } else if (result == "Rented") {
+                    document.querySelector("#modalResult").innerHTML = "The rental request for the book titled <b>[" + bTitle + "]</b> has been completed.";
+                }
+                var modal = new bootstrap.Modal(document.querySelector(".modal"));
+                modal.show();
+            }
+
+            // Submit form when checkbox is changed
+            document.querySelector("#rentAvail").addEventListener("change", function (e) {
+                const formObj = document.querySelector("form");
+
+                if (this.checked) {
+                    formObj.innerHTML += `<input type='hidden' name='check' value='on'>`;
+                } else {
+                }
+                formObj.submit();
+                //document.querySelector("form").submit();
+            });
+        </script>
+
+        <style>
+            tbody tr:hover {
+                cursor:hand;
+                background-color:rgba(242, 242, 242, 1);
+            }
+
+            /* 드롭다운 메뉴 hover 상태에서 열리도록 설정 */
+            .dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0; /* adjust as needed */
+            }
+
+        </style>
+    </div>
+</div>
+</html>

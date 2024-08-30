@@ -1,0 +1,86 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/userSubMenu.html}">
+
+<head>
+    <title>Book Modify</title>
+</head>
+
+<div layout:fragment="userSubMenu">
+    <div class="row mt-3">
+        <div class="col-md-8 mx-auto">
+            <div style="font-size: 1.5rem;">
+                Edit Profile
+            </div>
+            <hr class="mb-4">
+                <div class="card-body">
+                    <form th:action="@{/myPage/account/edit}" th:method="post" novalidate>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Name</span>
+                            <input type="text" name="uName" class="form-control" th:value="${dto.uName}" required>
+                            <div class="invalid-feedback">Name is required</div>
+                        </div>
+
+                        <div class="input-group mb-5">
+                            <span class="input-group-text">Phone Number</span>
+                            <input type="text" id="uPhone" name="uPhone" class="form-control" th:value="${dto.uPhone}" required>
+                            <div class="invalid-feedback">Phone number is required</div>
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end">
+                                <button type="submit" class="btn btn-outline-dark">Save</button>
+                                <a th:href="@{/myPage/account/view}" class="text-decoration-none">
+                                    <button type="button" class="btn btn-secondary">Cancel</button>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByTagName('form')
+
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    const phoneInput = document.getElementById('uPhone');
+
+                    if (form.checkValidity() === false) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                        return;
+                    }
+                    form.classList.add('was-validated')
+
+                    if (phoneInput.value.length != 10) {
+                        alert("Please recheck the phone number.");
+                        event.preventDefault();
+                        return;
+                    }
+
+                }, false)
+            })
+        }, false)
+    })()
+
+    // phone verification
+    var result = [[${result}]];
+    if(result) {
+        alert("Phone number already exists.");
+    }
+</script>
+</html>

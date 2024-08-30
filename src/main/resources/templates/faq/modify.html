@@ -1,0 +1,83 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-md-8 mx-auto">
+            <div style="font-size: 1.5rem;">
+                Edit FAQ
+            </div>
+            <hr class="mb-4">
+
+            <div class="card-body">
+                <form th:action="@{/faq/modify}" th:method="post" novalidate>
+                    <input type="hidden" name="fId" th:value="${dto.fId}">
+
+                    <!-- Category Selection -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="fCategory" required>
+                            <option th:each="category : ${catList}"
+                                    th:value="${category.fName}"
+                                    th:text="${category.fName}"
+                                    th:selected="${category.fName} == ${dto.fCategory}"></option>
+                        </select>
+                        <div class="invalid-feedback">Please select a category.</div>
+                    </div>
+
+                    <!-- Question input -->
+                    <div class="mb-3">
+                        <label for="question" class="form-label">Question</label>
+                        <input type="text" name="fQuestion" id="question" class="form-control" required
+                               th:value="${dto.fQuestion}">
+                        <div class="invalid-feedback">Question content is required.</div>
+                    </div>
+
+                    <!-- Answer input -->
+                    <div class="mb-3">
+                        <label for="answer" class="form-label">Answer</label>
+                        <textarea name="fAnswer" id="answer" class="form-control" rows="4" required
+                                  th:text="${dto.fAnswer}"></textarea>
+                        <div class="invalid-feedback">Answer content is required.</div>
+                    </div>
+
+                    <!-- Button group -->
+                    <div class="my-4">
+                        <div class="float-end btn-group" role="group">
+                            <button type="submit" class="btn btn-outline-dark">Apply</button>
+                            <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByTagName('form')
+
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                }, false)
+            })
+        }, false)
+    })()
+
+</script>
+</html>

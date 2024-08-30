@@ -1,0 +1,174 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <h3 th:if="${session.userLogin != null}">Hi, <span th:text="${session.uName}"></span></h3>
+    <h3 th:if="${session.adminLogin != null}">[Admin Mode]</h3>
+
+    <div class="container-fluid">
+        <!-- 로그인 버튼을 숨기기 위한 조건 -->
+        <div th:if="${session.adminLogin == null and session.userLogin == null}">
+            <form action="/user/login" method="get" style="display: inline;">
+                <button type="submit" class="btn btn-secondary">LOGIN</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- 로그아웃 버튼을 숨기기 위한 조건 -->
+        <div th:if="${session.adminLogin != null or session.userLogin != null}">
+            <form action="/user/logout" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-primary">LOGOUT</button>
+            </form>
+        </div>
+
+        <!-- 모달 창 시작 -->
+        <div class="modal fade" tabindex="-1" id="warningModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content alert alert-warning">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Warning⚠️</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalResult"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 모달 창 끝 -->
+
+        <!-- Account deleted Modal -->
+        <div class="modal fade" id="accountDeleteModal" tabindex="-1" aria-labelledby="accountDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="accountDeleteModalLabel">Account has been deleted</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="accountDeleteModalResult"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Up Modal -->
+        <div class="modal fade" id="levelUpModal" tabindex="-1" aria-labelledby="levelUpModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="levelUpModalLabel">Congratulations🎉</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="levelUpModalResult"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yes!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    // Function to format date as YYYY-MM-DD
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Show modal
+    document.addEventListener('DOMContentLoaded', function () {
+        var dateLeft = [[${dateLeft}]];
+        var uRegDate = [[${uRegDate}]]; // Assuming uRegDate is in ISO 8601 format
+
+        console.log("dateLeft:", dateLeft);
+        console.log("Registered Date:", uRegDate);
+
+        if (dateLeft) {
+            var formattedDate = formatDate(uRegDate);
+            var message = "";
+
+            for (var i = 7; i >= 1; i--) {
+                if (dateLeft == i.toString()) {
+                    message = "<span style='font-size: 1.15rem;'><b><span style='color:red;'>" + dateLeft + "</span></b> " +
+                        (dateLeft == "1" ? "day" : "days") +
+                        " remain until your account is automatically deleted.<br></span>" +
+                        "<span style='color:#ff6666;'><i><b>Inactive accounts are only valid for 6 months from the date of registration.</b></i></span><br><br>" +
+                        "<b>Registered date:</b> " + formattedDate;
+
+                    break; // 적합한 메시지를 찾으면 반복을 중지
+                } else if (dateLeft == "0") {
+                    message = "<span style='font-size: 1.15rem;'><b>Your account has been deleted as of today. Please contact the administrator for details.</b></span><br><br>" +
+                        "<span style='color:#ff6666;'><i><b>Inactive accounts are only valid for 6 months from the date of registration.</b></i></span><br>" +
+                        "<b>Registered date:</b> " + formattedDate;
+                }
+            }
+
+            if (message) {
+                document.querySelector("#modalResult").innerHTML = message;
+                var modal = new bootstrap.Modal(document.querySelector("#warningModal"));
+                modal.show();
+            }
+
+            // 자동 로그아웃 처리
+            if (dateLeft == "0") {
+                var warningModal = document.querySelector("#warningModal");
+
+                warningModal.addEventListener('hidden.bs.modal', function () {
+                    // Create and submit form dynamically
+                    var form = document.createElement('form');
+                    form.method = 'post';
+                    form.action = '/user/logout';
+
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            }
+        }
+    });
+
+    //유저페이지 계정삭제 확인 모달
+    var result = [[${result}]];
+    console.log(result);
+    if(result) {
+        if (result == "Deleted") {
+            document.querySelector("#accountDeleteModalResult").innerHTML =
+                `Thank you for using our service.<br>
+                     Your account has been terminated as of <b>[[${delDate}]]</b>.`;
+            var modal = new bootstrap.Modal(document.querySelector("#accountDeleteModal"));
+            modal.show();
+        } else if (result == "Level up") {
+            document.querySelector("#levelUpModalResult").innerHTML =
+                `Hooray!🥳<br>
+                     Congratulations! You've reached <b>[[${level}]]</b> level.<br><br>
+                    Shall we go explore more books?`;
+            var modal = new bootstrap.Modal(document.querySelector("#levelUpModal"));
+            modal.show();
+        }
+    }
+</script>
+
+<!--<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>-->
+
+</html>

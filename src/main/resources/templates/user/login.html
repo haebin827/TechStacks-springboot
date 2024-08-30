@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Welcome to the CS Library</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper">
+        <!-- Top navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                        <li class="nav-item active"><a class="nav-link" th:href="@{/home}">Home</a></li>
+                        <li class="nav-item"><a id="login" class="nav-link" th:href="@{/user/login}">Login</a></li>
+                        <li class="nav-item"><a id="register" class="nav-link" th:href="@{/user/register}">Register</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <form th:action="@{/user/login}" method="post" style="width:30%;margin:80px auto;">
+            <input type="hidden" name="rememberMe" />
+            <!-- Email input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="text" id="id" name="uId" class="form-control" placeholder="Student ID" th:value="${uId != null ? uId : ''}"/>
+            </div>
+
+            <!-- Password input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="password" id="password" name="uPw" class="form-control" placeholder="Password"/>
+            </div>
+
+            <!-- 2 column grid layout for inline styling -->
+            <div class="row mb-4">
+                <div class="col d-flex justify-content-center">
+                    <!-- Checkbox -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="rememberBox" id="rememberBox" th:checked="${uId != null}" />
+                        <label class="form-check-label" for="rememberBox"> Remember me </label>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <!-- Simple link -->
+                    <a>Forgot password?</a>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4" style="width: 100%">Sign in</button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+                <p>Not a member? <a th:href="@{/user/register}">Register</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    // Form Control
+    document.querySelector(".btn-primary").addEventListener("click", function (e) {
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        const formObj = document.querySelector("form");
+        formObj.action = "/user/login";
+        formObj.method = "post";
+        formObj.submit();
+    }, false);
+
+    document.getElementById('rememberBox').addEventListener('change', function() {
+        document.getElementById('rememberMe').value = this.checked ? 'true' : 'false';
+    });
+
+</script>
+</body>
+</html>

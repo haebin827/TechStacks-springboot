@@ -1,0 +1,72 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-md-8 mx-auto">
+            <div class="col">
+                <div style="font-size: 1.5rem;">
+                    FAQ Info
+                </div>
+                <hr class="mb-4">
+
+                <div class="card-body">
+                    <form>
+                        <!-- Category label and value -->
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <input type="text" name="fCategory" id="category" class="form-control"
+                                   th:value="${dto.fCategory}" readonly>
+                        </div>
+
+                        <!-- Question label and value -->
+                        <div class="mb-3">
+                            <label for="question" class="form-label">Question</label>
+                            <input type="text" name="fQuestion" id="question" class="form-control"
+                                   th:value="${dto.fQuestion}" readonly>
+                        </div>
+
+                        <!-- Answer label and value -->
+                        <div class="mb-3">
+                            <label for="answer" class="form-label">A:</label>
+                            <textarea name="fAnswer" id="answer" class="form-control" rows="4" readonly
+                                      th:text="${dto.fAnswer}"></textarea>
+                        </div>
+
+                        <!-- Button group -->
+                        <div class="my-4">
+                            <div class="float-end btn-group" role="group">
+                                <button id="removeBtn" type="button" class="btn btn-outline-dark">Remove</button>
+                                <button id="editBtn" type="button" class="btn btn-outline-dark">Edit</button>
+                                <button type="button" class="btn btn-secondary">List</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    const formObj = document.querySelector("form");
+
+    document.querySelector("#removeBtn").addEventListener("click", function(e) {
+        formObj.action = /*[[@{/faq/remove(fId=${dto.fId})}]]*/ '';
+        formObj.method = "post";
+        formObj.submit();
+    }, false);
+
+    document.querySelector("#editBtn").addEventListener("click", function(e) {
+        self.location = /*[[@{/faq/modify(fId=${dto.fId})}]]*/ '';
+    }, false);
+
+    document.querySelector(".btn-secondary").addEventListener("click", function(e) {
+        self.location = /*[[@{/faq/list(${pgReqDTO.link})}]]*/ '';
+    }, false);
+
+</script>
+</html>

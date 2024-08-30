@@ -1,0 +1,122 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <title>Book Modify</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Book Modify
+                </div>
+                <div class="card-body">
+
+                    <form th:action="@{/book/modify}" th:method="post" novalidate>
+                        <input type="hidden" name="bNo" th:value="${dto.bNo}">
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Title</span>
+                            <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" required>
+                            <div class="invalid-feedback">Title is required</div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Author</span>
+                            <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" required>
+                            <div class="invalid-feedback">Author is required</div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">ISBN</span>
+                            <input type="text" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" required>
+                            <div class="invalid-feedback">ISBN is required</div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Publication Year</span>
+                            <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" required>
+                            <div class="invalid-feedback">Publication Year is required</div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Publisher</span>
+                            <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" required>
+                            <div class="invalid-feedback">Publisher is required</div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Category</span>
+                            <input type="text" name="bCategory" class="form-control" th:value="${dto.bCategory}" required>
+                            <div class="invalid-feedback">Category is required</div>
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                                <button type="submit" class="btn btn-success">Save</button>
+                                <a th:href="|@{/book/list}?${link}|" class="text-decoration-none">
+                                    <button type="button" class="btn btn-secondary">List</button>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    /*
+    const errors = [[${errors}]];
+    console.log(errors);
+
+    let errorMsg = '';
+
+    if(errors) {
+        for(let i = 0; i<errors.length; i++) {
+            errorMsg += `${errors[i].field} is ${errors[i].code} \n`
+        }
+        alert(errorMsg)
+    }
+     */
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByTagName('form')
+
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }, false)
+    })()
+
+    document.querySelector(".btn-secondary").addEventListener("click", function(e) {
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        var link = [[${pgReqDTO.getLink()}]]
+        self.location = "/book/list?" + link
+
+    }, false)
+</script>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/userSubMenu.html}">
+
+<head>
+    <title>User Profile</title>
+</head>
+
+<div layout:fragment="userSubMenu">
+
+        <!-- 전체 페이지를 감싸는 컨테이너 -->
+        <div class="container" style="max-width: 1100px; margin-top: 20px;"> <!-- max-width를 조정하여 전체 폭을 줄일 수 있습니다 -->
+            <div class="row mt-3 mb-5">
+            <div class="mb-3">
+                <h2>Hello, <span th:text="${session.uName}"></span>!</h2>
+            </div>
+            <div class="mb-3">
+                <div>
+                    <b>Level:</b> <span th:text="${userDTO.uLevel}"></span>
+                </div>
+                <div>
+                    <b>Current point:</b> <span th:text="${userDTO.uPoint}"></span>
+                </div>
+            </div>
+            <div>
+                <b>Late Return</b>
+                <!-- 물음표 아이콘 및 툴팁 -->
+                <i class="bi bi-question-octagon-fill" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Your account will be automatically deleted if you are late returning books more than three times."></i>
+                <b>:</b> <span th:text="${userDTO.uNoOfLateReturn}"> times</span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Currently Borrowed Books:
+                            <span style="color: green; font-weight: bold;" th:text="${rentCnt}"></span>
+                        </h5>
+                        <p class="card-text">Maximum is <i>3</i> books</p>
+                        <a th:href="@{/myPage/booklist}" class="btn btn-success">See details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Currently in rental request:
+                            <span style="color: green; font-weight: bold;" th:text="${reqCnt}"></span>
+                        </h5>
+                        <p class="card-text">Requests are processed in <i>sequence</i>.</p>
+                        <a th:href="@{/myPage/reqlist}" class="btn btn-success">See details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Rental History:
+                            <span style="color: green; font-weight: bold;" th:text="${rentHstryCnt}"></span>
+                        </h5>
+                        <p class="card-text"><br></p>
+                        <a th:href="@{/myPage/history}" class="btn btn-success">See details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Modal -->
+        <div class="modal fade" id="confirmChangedPwModal" tabindex="-1" aria-labelledby="confirmChangedPwModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmChangedPwModalLabel">Info</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalResult"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- 컨테이너 종료 -->
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    // Tooltip 초기화 코드
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Show modal if result is present
+    const result = [[${result}]];
+    if (result) {
+        document.querySelector("#modalResult").innerHTML = "Your password has been successfully changed!";
+        const modal = new bootstrap.Modal(document.querySelector("#confirmChangedPwModal"));
+        modal.show();
+    }
+
+</script>
+</html>

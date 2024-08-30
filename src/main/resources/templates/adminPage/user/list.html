@@ -1,0 +1,177 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/adminSubMenu.html}">
+
+<div layout:fragment="adminSubMenu">
+
+    <form>
+        <div class="row mt-3">
+            <div class="col-md-11 mx-auto">
+                <div class="col">
+                    <div style="font-size: 1.5rem;">
+                        Member list
+                    </div>
+                    <hr class="mb-4">
+                <input type="hidden" name="uNo" th:value="${dto != null ? dto.uNo : ''}">
+                <div class="col">
+                    <input type="hidden" name="size" th:value="${pgReqDTO.size}">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <select class="form-select" name="type">
+                                <option value="">---</option>
+                                <option value="i" th:selected="${pgReqDTO.type == 'i'}">ID</option>
+                                <option value="n" th:selected="${pgReqDTO.type == 'n'}">Name</option>
+                                <option value="p" th:selected="${pgReqDTO.type == 'p'}">Phone</option>
+                            </select>
+                        </div>
+                        <input type="text" class="form-control" name="keyword" th:value="${pgReqDTO.keyword}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
+                            <button class="btn btn-outline-secondary clearBtn" type="button">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <div class="row content">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="form-check form-switch float-end">
+                                    <input class="form-check-input" type="checkbox" name="check"
+                                           th:checked="${pgReqDTO.check}" id="blklistCheck">
+                                    <label class="form-check-label" for="blklistCheck">
+                                        Show blacklist
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 10%;">No</th>
+                                        <th scope="col" style="width: 15%;">ID</th>
+                                        <th scope="col" style="width: 15%;">Name</th>
+                                        <th scope="col" style="width: 15%;">Phone</th>
+                                        <th scope="col" style="width: 15%;">Level</th>
+                                        <th scope="col" style="width: 15%;">Late Return</th>
+                                        <th scope="col" style="width: 15%;">Join Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody th:with="link = ${pgReqDTO.getLink()}">
+                                    <tr th:each="dto, count : ${respDTO.dtoList}">
+                                        <th scope="row">[[${(respDTO.page - 1) * pgReqDTO.size + count.index + 1}]]</th>
+                                        <th>
+                                            <a th:style="'color: ' + (${dto.uIsBlacklist} ? 'red' : 'black')"
+                                               th:href="|@{/adminPage/user/read(uNo=${dto.uNo})}&${link}|" class="text-decoration-none">
+                                                [[${dto.uId}]]</a>
+                                        </th>
+                                        <td><span th:text="${dto.uName}"></span></td>
+                                        <td><span th:text="${dto.uPhone}"></span></td>
+                                        <td>
+                                            <span th:text="${dto.uLevel}"></span>
+                                            (Pt: <i th:text="${dto.uPoint}"></i>)
+                                        </td>
+                                        <td><span th:text="${dto.uNoOfLateReturn}"></span></td>
+                                        <td>[[${#temporals.format(dto.uRegDate, 'yyyy-MM-dd')}]]</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <div>
+                                    <div class="float-start" th:style="'margin-right: 20px;'">
+                                        <a class="btn btn-secondary" th:href="@{/adminPage/home}">Go back</a>
+                                    </div>
+
+                                    <div class="float-end">
+                                        <ul class="pagination flex-wrap">
+                                            <li class="page-item" th:if="${respDTO.prev}">
+                                                <a class="page-link" th:data-num="${respDTO.start - 1}">Previous</a>
+                                            </li>
+
+                                            <th:block th:each="i: ${#numbers.sequence(respDTO.start, respDTO.end)}">
+                                                <li th:class="${respDTO.page == i}?'page-item active':'page-item'">
+                                                    <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                                </li>
+                                            </th:block>
+
+                                            <li class="page-item" th:if="${respDTO.next}">
+                                                <a class="page-link" th:data-num="${respDTO.end + 1}">Next</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                Info
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p id="modalResult"></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if (target.tagName !== 'A') {
+            return
+        }
+
+        const num = target.getAttribute("data-num")
+
+        const formObj = document.querySelector("form")
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+        formObj.action = "/adminPage/user/list"
+        formObj.method = "get"
+
+        formObj.submit();
+
+    }, false)
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/adminPage/user/list'
+
+    }, false)
+
+    // Submit form when checkbox is changed
+    document.querySelector("#blklistCheck").addEventListener("change", function (e) {
+        document.querySelector("form").submit();
+    });
+
+    // Show modal
+    var uId = [[${uId}]];
+    var result = [[${result}]];
+    if (result) {
+        document.querySelector("#modalResult").innerHTML = "User ID <b>[" + uId + "]</b> successfully removed.";
+        var modal = new bootstrap.Modal(document.querySelector(".modal"));
+        modal.show();
+    }
+</script>
+</html>

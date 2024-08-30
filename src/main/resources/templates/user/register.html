@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Welcome to the CS Library</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper">
+        <!-- Top navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                        <li class="nav-item active"><a class="nav-link" th:href="@{/home}">Home</a></li>
+                        <li class="nav-item"><a id="login" class="nav-link" th:href="@{/user/login}">Login</a></li>
+                        <li class="nav-item"><a id="register" class="nav-link" th:href="@{/user/register}">Register</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-md-8 mx-auto">
+                <div style="font-size: 1.5rem;">
+                    Register
+                </div>
+                <hr class="mb-4">
+                    <div class="card-body">
+
+                        <form th:action="@{/user/register}" method="post" style="width:60%;margin:50px auto;" novalidate>
+                            <input type="hidden" name="uName" id="uName"/>
+
+                            <div class="row">
+                                <div class="col mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First name"
+                                               th:value="${firstName != null} ? ${firstName} : ''" required/>
+                                        <div class="invalid-feedback">First name is required.</div>
+                                    </div>
+                                </div>
+                                <div class="col mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last name"
+                                               th:value="${lastName != null} ? ${lastName} : ''" required/>
+                                        <div class="invalid-feedback">Last name is required.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col mb-4">
+                                    <input type="number" class="form-control" name="uPhone" id="Phone" placeholder="Phone number"
+                                           th:value="${userDTO != null} ? ${userDTO.uPhone} : ''" required/>
+                                    <div class="invalid-feedback">Phone number is required.</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col mb-4">
+                                    <input type="text" class="form-control" name="uId" id="id" placeholder="Student ID"
+                                           th:value="${userDTO != null} ? ${userDTO.uId} : ''" required/>
+                                    <div class="invalid-feedback">Student ID is required.</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col mb-4">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" name="uPw" id="password" placeholder="Enter your Password"
+                                               th:value="${userDTO != null} ? ${userDTO.uPw} : ''" required/>
+                                        <div class="invalid-feedback">Password is required.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col mb-4">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" name="confirm" id="confirm" placeholder="Confirm your Password" required/>
+                                        <div class="invalid-feedback">Please check the password.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group float-end" style="margin-bottom: 60px;">
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    var error = [[${ERROR}]]
+    if(error == "idError") {
+        alert("Student ID already exists or cannot be used.");
+    } else if(error == "phoneError") {
+        alert("Phone number already exists.");
+    }
+
+    (function () {
+        'use strict'
+
+        window.addEventListener('load', function () {
+            var forms = document.getElementsByTagName('form');
+
+            Array.prototype.forEach.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const phone = document.getElementById('Phone').value; // 전화번호 입력값
+                    const pW = document.querySelector("#password").value;
+                    const confirmPw = document.querySelector("#confirm").value;
+
+
+                    // Set uName value before form submission
+                    document.getElementById('uName').value = firstName + " " + lastName;
+
+                    // Check if the password includes at least three of the following: uppercase letters, lowercase letters, digits, and special characters
+                    let criteriaCount = 0;
+
+                    // Regular expressions for different character types
+                    const hasUpperCase = /[A-Z]/;
+                    const hasLowerCase = /[a-z]/;
+                    const hasDigit = /\d/;
+                    const hasSpecialChar = /[~!@#$%^&*=\+]/;
+
+                    if (hasUpperCase.test(pW)) criteriaCount++;
+                    if (hasLowerCase.test(pW)) criteriaCount++;
+                    if (hasDigit.test(pW)) criteriaCount++;
+                    if (hasSpecialChar.test(pW)) criteriaCount++;
+
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else {
+
+                        // 전화번호 길이 확인
+                        if (phone.length != 10) {
+                            alert("Please recheck the phone number.");
+                            event.preventDefault();  // 폼 제출을 막음
+                            return;
+                        }
+
+                        if (pW !== confirmPw) {
+                            alert("Passwords do not match.");
+                            event.preventDefault();  // Prevent form submission
+                            return;
+                        } else if (pW.length < 8) {
+                            alert("Password must be at least 8 characters long.");
+                            event.preventDefault();  // Prevent form submission
+                            return;
+                        } else if (criteriaCount < 3) {
+                            alert("Password must include at least three of the following: uppercase letters, lowercase letters, digits, and special characters.");
+                            event.preventDefault();  // Prevent form submission
+                            return;
+                        }
+                    }
+                    form.classList.add('was-validated');
+
+                }, false);
+            });
+        }, false);
+    })();
+
+</script>
+</body>
+</html>

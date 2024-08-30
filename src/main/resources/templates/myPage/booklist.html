@@ -1,0 +1,95 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/userSubMenu.html}">
+
+<div layout:fragment="userSubMenu">
+
+    <div class="row mt-3">
+        <div class="col">
+            <div style="font-size: 1.5rem;">
+                Currently Borrowed Books
+            </div>
+            <hr class="mb-4">
+
+            <div class="card-body">
+
+                <div class="mb-4">
+                    <span th:style="'color: red;'"><b><i>Extensions are limited to one time for an additional period of 15 days.</i></b></span>
+                </div>
+
+                <table class="table mb-4">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="width: 30%;">Title</th>
+                        <th scope="col" style="width: 20%;">Author</th>
+                        <th scope="col" style="width: 10%;">Rent Date</th>
+                        <th scope="col" style="width: 15%;">Return Deadline</th>
+                        <th scope="col" style="width: 15%;"></th>
+                        <th scope="col" style="width: 15%;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="dto : ${dto}">
+                        <th th:text="${dto[1]}"></th>
+                        <td th:text="${dto[2]}"></td>
+                        <td th:text="${dto[3]}"></td>
+                        <td>
+                            <!-- Display return deadline and (Extended) if dto[6] is true -->
+                            <div>
+                                <span th:text="${dto[4]}"></span>
+                                <div th:if="${dto[5]}">
+                                    <b style="color: #990000;">(Extended)</b>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Return or Cancel Return Button -->
+                            <form th:action="|/myPage/${dto[8] != null ? 'cancelReturn' : 'return'}|" method="post">
+                                <input type="hidden" name="bNo" th:value="${dto[0]}" />
+                                <button type="submit" class="btn" th:classappend="${dto[8] != null ? 'btn-danger' : 'btn-primary'}"
+                                        th:attr="disabled=${dto[9]} ? 'disabled' : null">
+                                    <span th:text="${dto[8] != null ? 'Cancel Return' : 'Return'}"></span>
+                                </button>
+                                <!-- Display request date if return request exists -->
+                                <div th:if="${dto[8] != null}">
+                                    <span>(Requested on <b th:text="${dto[8]}"></b>)</span>
+                                </div>
+                            </form>
+                        </td>
+                        <td>
+                            <!-- Extension or Cancel Extension Button -->
+                            <form th:action="|/myPage/${dto[9] != null ? 'cancelExtend' : 'extend'}|" method="post">
+                                <input type="hidden" name="bNo" th:value="${dto[0]}" />
+                                <button type="submit" class="btn"
+                                        th:classappend="${dto[9] != null ? 'btn-danger' : 'btn-warning'}"
+                                        th:attr="disabled=${dto[6] || dto[5]} ? 'disabled' : null">
+                                    <span th:text="${dto[9] != null ? 'Cancel Extension' : 'Extension'}"></span>
+                                </button>
+                                <!-- Display request date if extension request exists -->
+                                <div th:if="${dto[9] != null}">
+                                    <span>(Requested on <b th:text="${dto[9]}"></b>)</span>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- No Record Founds Message -->
+                <div th:if="${#lists.isEmpty(dto)}">
+                    <p class="text-center fw-semibold fst-italic">No Records Found</p>
+                </div>
+
+                <div class="float-start" th:style="'margin-bottom: 120px;'">
+                    <a class="btn btn-secondary" th:href="@{/myPage/home}">Go back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+</script>
+
+</html>

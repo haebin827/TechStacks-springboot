@@ -1,0 +1,171 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/adminSubMenu.html}">
+
+<div layout:fragment="adminSubMenu">
+
+    <!-- 전체 페이지를 감싸는 컨테이너 -->
+    <div class="container" style="max-width: 1100px; margin-top: 20px;"> <!-- max-width를 조정하여 전체 폭을 줄일 수 있습니다 -->
+
+
+        <div class="row mt-3 mb-3">
+            <h3>Admin Page</h3>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Return Waitlist:
+                            <span style="color: green; font-weight: bold;" th:text="${rtnReqCnt}"></span>
+                        </h5>
+                        <a th:href="@{/adminPage/rtnReq}" class="btn btn-success">Manage</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Extension Waitlist:
+                            <span style="color: green; font-weight: bold;" th:text="${extReqCnt}"></span>
+                        </h5>
+                        <a th:href="@{/adminPage/extReq}" class="btn btn-success">Manage</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Rental Waitlist:
+                            <span style="color: green; font-weight: bold;" th:text="${renReqCnt}"></span>
+                        </h5>
+                        <a th:href="@{/adminPage/renReq}" class="btn btn-success">Manage</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Full List:
+                            <span style="color: green; font-weight: bold;" th:text="${hisCnt}"></span>
+                        </h5>
+                        <a th:href="@{/adminPage/history}" class="btn btn-outline-success">See details</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirmation⛔</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="confirmPw" class="form-label">Confirm password:</label>
+                            <input type="password" id="confirmPw" name="confirmPw" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <b style="color: red; font-weight: bold;">
+                                Once your account is deleted, it cannot be undone.
+                            </b>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="deleteSubmitBtn" class="btn btn-danger">Delete this account</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div class="modal fade" id="confirmChangedPwModal" tabindex="-1" aria-labelledby="confirmChangedPwModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmChangedPwModalLabel">Info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResult"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    document.querySelector("#deleteBtn").addEventListener("click", function() {
+        const rentCnt = [[${rentCnt}]]; // Fetching the rent count value from Thymeleaf
+
+        if (rentCnt > 0) {
+            alert("You still have books currently borrowed.");
+            return;
+        }
+
+        // Show the modal
+        const modal = new bootstrap.Modal(document.querySelector("#deleteModal"));
+        modal.show();
+    });
+
+    document.querySelector("#deleteSubmitBtn").addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const pw = document.querySelector("#confirmPw").value;
+        const correctPw = [[${userDTO.uPw}]]; // Fetching the correct password value from Thymeleaf
+
+        if (!pw) {
+            alert("Please recheck your password.");
+        } else if (pw !== correctPw) {
+            alert("Password does not match.");
+        } else {
+            if (confirm("Are you sure you want to delete your account?")) {
+                // Assuming there's a form to submit for account deletion
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/myPage/remove';
+
+                // Add hidden input field for confirm password
+                const hiddenConfirmPw = document.createElement('input');
+                hiddenConfirmPw.type = 'hidden';
+                hiddenConfirmPw.name = 'confirmPw';
+                hiddenConfirmPw.value = pw;
+                form.appendChild(hiddenConfirmPw);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    });
+
+    // Show modal if result is present
+    const result = [[${result}]];
+    if (result) {
+        document.querySelector("#modalResult").innerHTML = "Your password has been successfully changed!";
+        const modal = new bootstrap.Modal(document.querySelector("#confirmChangedPwModal"));
+        modal.show();
+    }
+
+</script>
+
+</html>

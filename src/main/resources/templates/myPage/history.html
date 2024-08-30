@@ -1,0 +1,219 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/userSubMenu.html}">
+
+<div layout:fragment="userSubMenu">
+    <div class="row mt-3">
+
+        <div class="col">
+            <div style="font-size: 1.5rem;">
+                History List
+            </div>
+            <hr class="mb-4">
+
+            <form>
+                <div class="col">
+                    <input type="hidden" name="size" th:value="${pgReqDTO.size}">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <select class="form-select" name="type">
+                                <option value="">---</option>
+                                <option value="t" th:selected="${pgReqDTO.type =='t'}">Title</option>
+                                <option value="a" th:selected="${pgReqDTO.type =='a'}">Author</option>
+                                <option value="i" th:selected="${pgReqDTO.type =='i'}">ISBN</option>
+                            </select>
+                        </div>
+                        <input type="text" class="form-control" name="keyword" th:value="${pgReqDTO.keyword}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
+                            <button class="btn btn-outline-secondary clearBtn" type="button">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+                    <div class="form-check form-switch float-end mb-4">
+                        <input class="form-check-input" type="checkbox" name='check'
+                               th:checked="${pgReqDTO.check}" id="avail">
+                        <label class="form-check-label" for="avail">
+                            Show only books currently available
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="width: 5%;">No</th>
+                        <th scope="col" style="width: 30%;">Title</th>
+                        <th scope="col" style="width: 20%;">Author</th>
+                        <th scope="col" style="width: 10%;">Rental Date</th>
+                        <th scope="col" style="width: 10%;">Return Deadline</th>
+                        <th scope="col" style="width: 10%;">Return Date</th>
+                        <th scope="col" style="width: 10%;">Extension Status</th>
+                        <th scope="col" style="width: 10%;">Return Status</th>
+                    </tr>
+                    </thead>
+                    <tbody th:with="link = ${pgReqDTO.getLink()}">
+                    <tr th:each="dto, count : ${respDTO.dtoList}">
+                        <th scope="row">[[${(respDTO.page - 1) * pgReqDTO.size + count.index + 1}]]</th>
+                        <td>[[${dto.bTitle}]]</td>
+                        <td>[[${dto.bAuthor}]]</td>
+                        <td>[[${#temporals.format(dto.rRentalDate, 'yyyy-MM-dd')}]]</td>
+                        <td>[[${#temporals.format(dto.rWhenToReturn, 'yyyy-MM-dd')}]]</td>
+                        <td>[[${#temporals.format(dto.rReturnDate, 'yyyy-MM-dd')}]]</td>
+                        <td>
+                            <span th:if="${dto.rIsExtended == true}" style="color: green;">O</span>
+                        </td>
+                        <td>
+                            <span th:if="${dto.rLateReturn == true}" style="color: red;"><b>LATE</b></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- No Record Found Message -->
+                <div th:if="${#lists.isEmpty(respDTO.dtoList)}">
+                    <p class="text-center fw-semibold fst-italic">No Records Found</p>
+                </div>
+
+                <div>
+                    <div class="float-start" th:style="'margin-bottom: 120px;'">
+                        <a class="btn btn-secondary" th:href="@{/myPage/home}">Go back</a>
+                    </div>
+
+                    <div class="float-end">
+                        <ul class="pagination flex-wrap">
+                            <li class="page-item" th:if="${respDTO.prev}">
+                                <a class="page-link" th:data-num="${respDTO.start - 1}">Previous</a>
+                            </li>
+
+                            <th:block th:each="i: ${#numbers.sequence(respDTO.start, respDTO.end)}">
+                                <li th:classappend="${respDTO.page == i} ? 'active' : ''" class="page-item">
+                                    <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+
+                            <li class="page-item" th:if="${respDTO.next}">
+                                <a class="page-link" th:data-num="${respDTO.end + 1}">Next</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target;
+
+        if (target.tagName !== 'A') {
+            return;
+        }
+
+        const num = target.getAttribute("data-num");
+
+        const formObj = document.querySelector("form");
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`;
+        formObj.action = "/myPage/history";
+        formObj.method = "get";
+
+        formObj.submit();
+
+    }, false);
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location ='/myPage/history'
+
+    },false)
+
+    // Submit form when checkbox is changed
+    document.querySelector("#avail").addEventListener("change", function (e) {
+        const formObj = document.querySelector("form");
+
+        if (this.checked) {
+            formObj.innerHTML += `<input type='hidden' name='check' value='on'>`;
+        } else {
+        }
+        formObj.submit();
+    });
+
+</script>
+</html>
+
+
+<!--
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header">
+                    History List
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Rental Date</th>
+                        <th scope="col">Rental Deadline</th>
+                        <th scope="col">Return Date</th>
+                        <th scope="col">Extension Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="dto, count : ${dto}">
+                        <th th:text="${dto[1]}"></th>
+                        <td th:text="${dto[2]}"></td>
+                        <td th:text="${dto[3]}"></td>
+                        <td th:text="${dto[4]}"></td>
+                        <td th:text="${dto[5]}"></td>
+                        <td>
+                            <span th:if="${dto[6] == true}" style="color: green;">O</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+<div th:if="${#lists.isEmpty(dto)}">
+    <p class="text-center fw-semibold fst-italic">No History Found</p>
+</div>
+
+<div class="float-end" th:style="'margin-right: 20px;'">
+    <a class="btn btn-secondary" th:href="@{/myPage/home}">Go back</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+</script>
+</html>
+
+-->

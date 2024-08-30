@@ -1,0 +1,196 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/adminSubMenu.html}">
+
+<div layout:fragment="adminSubMenu">
+
+    <div class="row mt-3">
+
+        <div class="col-md-11 mx-auto">
+            <div class="col">
+                <div style="font-size: 1.5rem;">
+                    Return Request List
+                </div>
+                <hr class="mb-4">
+
+                <form>
+                    <div class="col">
+                        <input type="hidden" name="size" th:value="${pgReqDTO.size}">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <select class="form-select" name="type">
+                                    <option value="">---</option>
+                                    <option value="i" th:selected="${pgReqDTO.type =='i'}">ID</option>
+                                    <option value="t" th:selected="${pgReqDTO.type =='t'}">Title</option>
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" name="keyword" th:value="${pgReqDTO.keyword}">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
+                                <button class="btn btn-outline-secondary clearBtn" type="button">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="col">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Deadline</th>
+                                <th scope="col">Requested Date</th>
+                                <th scope="col">Book Condition</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody th:with="link = ${pgReqDTO.getLink()}">
+                            <tr th:each="dto, count : ${respDTO.dtoList}">
+                                <th scope="row">[[${(respDTO.page - 1) * pgReqDTO.size + count.index + 1}]]</th>
+                                <th>
+                                    <a th:style="'color: ' + (${dto.uId} ? 'red' : 'black')"
+                                       th:href="|@{/adminPage/user/read(uNo=${dto.uNo})}|" class="text-decoration-none">
+                                        [[${dto.uId}]]</a>
+                                </th>
+                                <td>
+                                    <a th:style="'color: black '" th:href="|@{/book/read(bNo=${dto.bNo})}|" class="text-decoration-none"> [[${dto.bTitle}]]</a>
+                                </td>
+                                <td class="deadline">
+                                    <span>[[${#temporals.format(dto.rWhenToReturn, 'yyyy-MM-dd')}]]</span>
+                                </td>
+                                <td class="requested-date">
+                                    <span>[[${#temporals.format(dto.rReqDate, 'yyyy-MM-dd')}]]</span>
+                                </td>
+                                <td>
+                                    <!-- Reduced width for select element -->
+                                    <div class="input-group-prepend">
+                                        <select class="form-select" name="status" style="max-width: 200px;" onchange="updateHiddenInput(this)">
+                                            <option value="" th:selected="${dto.bCondition} == ''">---Book condition---</option>
+                                            <option value="EXCELLENT" th:selected="${dto.bCondition} == 'EXCELLENT'">Excellent</option>
+                                            <option value="GOOD" th:selected="${dto.bCondition} == 'GOOD'">Good</option>
+                                            <option value="FAIR" th:selected="${dto.bCondition} == 'FAIR'">Fair</option>
+                                            <option value="POOR" th:selected="${dto.bCondition} == 'POOR'">Poor</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <!-- Conditionally show the ACCEPT button or an empty space -->
+                                    <form th:action="@{/adminPage/rtnReq}"
+                                          method="post"
+                                          style="display: inline;">
+                                        <!-- Hidden input to send relevant data -->
+                                        <input type="hidden" name="uId" th:value="${dto.uId}"/>
+                                        <input type="hidden" name="uLevel" th:value="${dto.uLevel}"/>
+                                        <input type="hidden" name="bTitle" th:value="${dto.bTitle}"/>
+                                        <input type="hidden" name="bNo" th:value="${dto.bNo}"/>
+                                        <input type="hidden" name="bCondition" th:value="${dto.bCondition}" class="hidden-status"/>
+                                        <input type="hidden" name="rReqDate" th:value="${dto.rReqDate}"/>
+                                        <input type="hidden" name="rWhenToReturn" th:value="${dto.rWhenToReturn}"/>
+                                        <button type="submit" class="btn btn-success">Accept</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- No Records Found Message -->
+                        <div th:if="${#lists.isEmpty(respDTO.dtoList)}">
+                            <p class="text-center fw-semibold fst-italic">No Records Found</p>
+                        </div>
+
+                        <div>
+                            <div class="float-start" th:style="'margin-right: 20px;'">
+                                <a class="btn btn-secondary" th:href="@{/adminPage/home}">Go back</a>
+                            </div>
+
+                            <div class="float-end">
+                                <ul class="pagination flex-wrap">
+                                    <li class="page-item" th:if="${respDTO.prev}">
+                                        <a class="page-link" th:data-num="${respDTO.start - 1}">Previous</a>
+                                    </li>
+
+                                    <th:block th:each="i: ${#numbers.sequence(respDTO.start, respDTO.end)}">
+                                        <li th:classappend="${respDTO.page == i} ? 'active' : ''" class="page-item">
+                                            <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                        </li>
+                                    </th:block>
+
+                                    <li class="page-item" th:if="${respDTO.next}">
+                                        <a class="page-link" th:data-num="${respDTO.end + 1}">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script layout:fragment="script" th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to compare dates
+        function isDatePassed(date1, date2) {
+            return new Date(date1) > new Date(date2);
+        }
+
+        // Iterate over table rows
+        document.querySelectorAll('tbody tr').forEach(function(row) {
+            const deadlineText = row.querySelector('.deadline span').textContent.trim();
+            const requestedDateText = row.querySelector('.requested-date span').textContent.trim();
+
+            if (isDatePassed(requestedDateText, deadlineText)) {
+                row.querySelector('.requested-date span').innerHTML += ' <span style="color: red; font-weight: bold;"><br>(passed)</span>';
+            }
+        });
+    });
+
+    function updateHiddenInput(selectElement) {
+        // Update the hidden input with the selected value
+        const hiddenInput = selectElement.closest('tr').querySelector('.hidden-status');
+        hiddenInput.value = selectElement.value;
+    }
+
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target;
+
+        if (target.tagName !== 'A') {
+            return;
+        }
+
+        const num = target.getAttribute("data-num");
+
+        const formObj = document.querySelector("form");
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`;
+        formObj.action = "/adminPage/home";
+        formObj.method = "get";
+
+        formObj.submit();
+
+    }, false);
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location ='/adminPage/rtnReq'
+
+    },false)
+
+</script>
+</html>
