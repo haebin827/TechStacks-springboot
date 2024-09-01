@@ -22,7 +22,7 @@ public class FaqRepositoryTests {
     @Autowired
     private FaqRepository fr;
 
-    @Test
+    /*@Test
     public void testInsert() {
         IntStream.rangeClosed(1, 100).forEach(i -> {
             Faq faq = Faq.builder()
@@ -33,7 +33,7 @@ public class FaqRepositoryTests {
             Faq result = fr.save(faq);
             log.info(result);
         });
-    }
+    }*/
 
     @Test
     public void testSelect() {

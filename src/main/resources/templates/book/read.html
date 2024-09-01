@@ -155,6 +155,21 @@
             </div>
         </div>
 
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="my-4">
+                    <button class="btn btn-outline-info addReviewBtn">ADD Review</button>
+                </div>
+                <ul class="list-group reviewList">
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <ul class="pagination reviewPaging">
+                </ul>
+            </div>
+
         <!-- Delete Modal -->
         <div class="modal fade" id="removeModal" tabindex="-1">
             <div class="modal-dialog">
@@ -177,11 +192,181 @@
             </div>
         </div>
 
+            <!-- Register Modal -->
+            <div class="modal fade registerModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Register Review</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Review Text</span>
+                                <input type="text" class="form-control reviewText" >
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Reviewer</span>
+                                <input type="text" class="form-control reviewer" >
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary registerBtn">Register</button>
+                            <button type="button" class="btn btn-outline-dark closeRegisterBtn" >Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     </div>
 </div>
+
+<script th:src="@{https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js}"></script>
+<script th:src="@{/js/review.js}"></script>
+
 </div>
 
+
 <script layout:fragment="script" th:inline="javascript">
+
+    const bNo = [[${dto.bNo}]]
+    console.log("bNo: " + bNo)
+
+    /*get1(bNo).then(data => {
+        console.log(data)
+    }).catch(e => {
+        console.error(e)
+    })*/
+
+    const reviewList = document.querySelector('.reviewList')
+    const reviewPaging = document.querySelector('.reviewPaging')
+
+    function printList(dtoList, currentPage, pageSize) {
+        let str = '';
+
+        if(dtoList && dtoList.length > 0) {
+            for(let i = 0; i < dtoList.length; i++) {
+                const dto = dtoList[i];
+                const index = (currentPage - 1) * pageSize + i + 1; // Calculate the correct index
+                str += `<li class="list-group-item d-flex reviewItem">
+                    <span class="col-2">${index}</span>
+                    <span class="col-6" data-rNo="${dto.rno}">${dto.rreviewText}</span>
+                    <span class="col-2">${dto.rid}</span>
+                    <span class="col-2">${dto.rregDate}</span>
+                    </li>`;
+            }
+        }
+        reviewList.innerHTML = str;
+    }
+
+    function printPages(data) {
+        const reviewPaging = document.querySelector('.reviewPaging');
+        // 리뷰가 존재하지 않는 경우 pagination 숨기기
+        if (!data.dtoList || data.dtoList.length === 0) {
+            reviewPaging.innerHTML = '';
+            return;
+        }
+
+        let pageStr = '';
+
+        if(data.prev) {
+            pageStr += `<li class="page-item"><a class="page-link" data-page="${data.start-1}">PREV</a></li>`
+        }
+        for(let i = data.start; i <= data.end; i++) {
+            pageStr += `<li class="page-item ${i == data.page?"active":""}">
+                    <a class="page-link" data-page="${i}">${i}</a></li>`
+        }
+        if(data.next) {
+            pageStr += `<li class="page-item"><a class="page-link" data-page="${data.end+1}">NEXT</a></li>`
+        }
+        reviewPaging.innerHTML = pageStr;
+    }
+
+    function printReviews(page, size, goLast) {
+        getList({bNo, page, size, goLast}).then(
+            data => {
+                console.log(data); // 전체 데이터 구조 확인
+                console.log(data.dtoList); // dtoList 확인
+
+                printList(data.dtoList, page, size); // Pass the page and size to printList
+                printPages(data);
+                console.log(data);
+            }
+        ).catch(e => {
+            console.error(e);
+        });
+    }
+
+    // Initial call to print reviews on page load
+    printReviews(1, 10, true);
+
+    //댓글 등록 모달
+    const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
+    //registerModel
+    const registerBtn = document.querySelector(".registerBtn")
+    const reviewText = document.querySelector(".reviewText")
+    const reviewer = document.querySelector(".reviewer")
+    const closeRegisterBtn = document.querySelector(".closeRegisterBtn")
+
+    document.querySelector(".addReviewBtn").addEventListener("click", function (e){
+        registerModal.show()
+    },false)
+
+    closeRegisterBtn.addEventListener("click", function (e){
+        registerModal.hide()
+    },false)
+
+    registerBtn.addEventListener("click", function(e){
+        const reviewObj = {
+            bno:bNo,
+            rreviewText:reviewText.value,
+            rid:reviewer.value}
+
+        console.log("bNo: " + reviewObj.bNo)
+        console.log("reviewText: " + reviewObj.rReviewText)
+        console.log("reviewer: " + reviewObj.rId)
+
+        if(!bNo) {
+            alert("Book number (bNo) is required.");
+            return;
+        }
+
+        if(!reviewText.value) {
+            alert("Review text is required.");
+            return;
+        }
+
+        addReview(reviewObj).then(result => {
+            alert(result.rNo)
+            registerModal.hide()
+            reviewText.value = ''
+            reviewer.value =''
+            printReviews(1,10, true) //댓글 목록 갱신
+        }).catch(e => {
+            alert("Exception...")
+        })
+    }, false)
+
+    let page = 1
+    let size = 10
+
+    reviewPaging.addEventListener("click", function (e){
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if(!target || target.tagName != 'A'){
+            return
+        }
+
+        const pageNum = target.getAttribute("data-page")
+        page = pageNum
+        printReviews(page, size)
+
+    },false)
+
 
     if ([[${session.adminLogin == null}]]) {
         document.querySelector("#rent").addEventListener("click", function (e) {

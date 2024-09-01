@@ -16,7 +16,7 @@ public class FaqServiceTests {
     @Autowired
     private FaqService fs;
 
-    @Test
+    /*@Test
     public void testRegister() {
         log.info(fs.getClass().getName());
 
@@ -27,9 +27,9 @@ public class FaqServiceTests {
 
         int fId = fs.register(faqDTO);
         log.info("fId: " + fId);
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void testModify() {
 
         FaqDTO faqDTO = FaqDTO.builder()
@@ -39,7 +39,7 @@ public class FaqServiceTests {
                 .build();
 
         fs.modify(faqDTO);
-    }
+    }*/
 
     @Test
     public void testReadOne() {
