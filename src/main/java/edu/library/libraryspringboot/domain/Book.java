@@ -53,12 +53,13 @@ public class Book {
         bCover = null;
     }
 
-    public void change(String bTitle, String bAuthor, String bIsbn, Integer bYear, String bPublisher) {
+    public void change(String bTitle, String bAuthor, String bIsbn, Integer bYear, String bPublisher, String bCategory) {
         this.bTitle = bTitle;
         this.bAuthor = bAuthor;
         this.bIsbn = bIsbn;
         this.bYear = bYear;
         this.bPublisher = bPublisher;
+        this.bCategory = bCategory;
     }
 
 }

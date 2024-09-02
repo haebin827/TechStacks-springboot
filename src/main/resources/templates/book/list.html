@@ -66,7 +66,6 @@
             </div>
 
         <div class="col-md-11 mx-auto">
-            <div class="d-flex align-items-center">
             <div class="row mt-3">
                 <div class="col">
                     <div class="card mb-4">
@@ -85,13 +84,13 @@
                         <table class="table" style="width: 100%;">
                             <thead>
                             <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Title</th>
-                                <th scope="col">Author</th>
-                                <th scope="col">ISBN</th>
-                                <th scope="col">Released Year</th>
-                                <th scope="col">Publisher</th>
-                                <th scope="col">Category</th>
+                                <th scope="col" style="width: 5%;">No</th>
+                                <th scope="col" style="width: 40%;">Title</th>
+                                <th scope="col" style="width: 25%;">Author</th>
+                                <!--<th scope="col">ISBN</th>-->
+                                <th scope="col" style="width: 15%;">Released Year</th>
+                                <th scope="col" style="width: 20%;">Publisher</th>
+                                <!--<th scope="col">Category</th>-->
                             </tr>
                             </thead>
                             <tbody th:with="link = ${pgReqDTO.getLink()}">
@@ -101,10 +100,10 @@
                                     <a th:href="|@{/book/read(bNo=${dto.bNo})}&${link}|" class="text-decoration-none" style="color: black;">[[${dto.bTitle}]]</a>
                                 </th>
                                 <td>[[${dto.bAuthor}]]</td>
-                                <td>[[${dto.bIsbn}]]</td>
+                                <!--<td>[[${dto.bIsbn}]]</td>-->
                                 <td>[[${dto.bYear}]]</td>
                                 <td>[[${dto.bPublisher}]]</td>
-                                <td>[[${dto.bCategory}]]</td>
+                                <!--<td>[[${dto.bCategory}]]</td>-->
                             </tr>
                             </tbody>
                         </table>
@@ -157,7 +156,6 @@
                 </div>
             </div>
         </div>
-        </div>
 
         <script layout:fragment="script" th:inline="javascript">
 
@@ -191,13 +189,14 @@
 
             },false)
 
-            //show modal
+            /*show modal
             var bTitle = [[${bTitle}]];
             var result = [[${result}]];
             if(result) {
                 if (result == "Added") {
                     document.querySelector("#modalResult").innerHTML = "Book titled <b>[" + bTitle + "]</b> successfully added.";
                 } else if (result == "Removed") {
+                    console.log("Hi")
                     document.querySelector("#modalResult").innerHTML = "Book titled <b>[" + bTitle + "]</b> successfully removed.";
                 } else if (result == "Modified") {
                     document.querySelector("#modalResult").innerHTML = "Book titled <b>[" + bTitle + "]</b> successfully modified.";
@@ -218,7 +217,37 @@
                 }
                 formObj.submit();
                 //document.querySelector("form").submit();
+            });*/
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var bTitle = /*[[${bTitle}]]*/ '';
+                var result = /*[[${result}]]*/ '';
+
+                if (result) {
+                    var modalMessage = '';
+                    switch (result) {
+                        case 'Added':
+                            modalMessage = `Book titled <b>[${bTitle}]</b> successfully added.`;
+                            break;
+                        case 'Removed':
+                            modalMessage = `Book titled <b>[${bTitle}]</b> successfully removed.`;
+                            break;
+                        case 'Modified':
+                            modalMessage = `Book titled <b>[${bTitle}]</b> successfully modified.`;
+                            break;
+                        case 'Rented':
+                            modalMessage = `The rental request for the book titled <b>[${bTitle}]</b> has been completed.`;
+                            break;
+                        default:
+                            modalMessage = `Unexpected result: ${result}`;
+                    }
+
+                    document.querySelector("#modalResult").innerHTML = modalMessage;
+                    var modal = new bootstrap.Modal(document.querySelector(".modal"));
+                    modal.show();
+                }
             });
+
         </script>
 
         <style>

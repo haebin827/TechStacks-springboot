@@ -3,68 +3,75 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}">
 
-<head>
-    <title>Book Modify</title>
-</head>
-
 <div layout:fragment="content">
     <div class="row mt-3">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Book Modify
-                </div>
-                <div class="card-body">
+        <div class="col-md-8 mx-auto mt-3">
+            <div style="font-size: 1.5rem;">
+                Edit Book
+            </div>
+            <hr class="mb-4">
+            <div class="card-body">
 
-                    <form th:action="@{/book/modify}" th:method="post" novalidate>
-                        <input type="hidden" name="bNo" th:value="${dto.bNo}">
+                <form th:action="@{/book/modify}" th:method="post" novalidate>
+                    <input type="hidden" name="bNo" th:value="${dto.bNo}">
+                    <!-- Hidden field to store the final selected subcategory's dcode -->
+                    <input type="hidden" id="bCategory" name="bCategory" value="">
 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Title</span>
-                            <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" required>
-                            <div class="invalid-feedback">Title is required</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Title</span>
+                        <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" required>
+                        <div class="invalid-feedback">Title is required</div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Author</span>
+                        <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" required>
+                        <div class="invalid-feedback">Author is required</div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">ISBN</span>
+                        <input type="text" id="isbnInput" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" required>
+                        <div class="invalid-feedback">ISBN is required</div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Publication Year</span>
+                        <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" required>
+                        <div class="invalid-feedback">Publication Year is required</div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Publisher</span>
+                        <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" required>
+                        <div class="invalid-feedback">Publisher is required</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="margin-right: 10px;">Category</label>
+                        <div class="d-flex">
+                            <select id="mainCategory" class="form-select me-2" required>
+                                <option value="">---Main category---</option>
+                                <option th:each="cat : ${catDTO}" th:value="${cat.cDcode}"
+                                        th:text="${cat.cName}" th:if="${#strings.length(cat.cDcode) == 2}"></option>
+                            </select>
+                            <select id="subCategory" class="form-select" required>
+                                <option value="">---Sub category---</option>
+                            </select>
+                            <div class="invalid-feedback">Main category and Subcategory are required</div>
                         </div>
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Author</span>
-                            <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" required>
-                            <div class="invalid-feedback">Author is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">ISBN</span>
-                            <input type="text" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" required>
-                            <div class="invalid-feedback">ISBN is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Publication Year</span>
-                            <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" required>
-                            <div class="invalid-feedback">Publication Year is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Publisher</span>
-                            <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" required>
-                            <div class="invalid-feedback">Publisher is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Category</span>
-                            <input type="text" name="bCategory" class="form-control" th:value="${dto.bCategory}" required>
-                            <div class="invalid-feedback">Category is required</div>
-                        </div>
-
-                        <div class="my-4">
-                            <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
-                                <button type="submit" class="btn btn-success">Save</button>
-                                <a th:href="|@{/book/list}?${link}|" class="text-decoration-none">
-                                    <button type="button" class="btn btn-secondary">List</button>
-                                </a>
+                    <div class="my-4">
+                        <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-outline-dark">Save</button>
+                                <a th:href="|@{/book/list}?${link}|" class="btn btn-secondary text-decoration-none">List</a>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>
@@ -72,51 +79,77 @@
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
-
-    /*
-    const errors = [[${errors}]];
-    console.log(errors);
-
-    let errorMsg = '';
-
-    if(errors) {
-        for(let i = 0; i<errors.length; i++) {
-            errorMsg += `${errors[i].field} is ${errors[i].code} \n`
-        }
-        alert(errorMsg)
-    }
-     */
-
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function () {
-        'use strict'
+        'use strict';
+
+        // 서버에서 catDTO를 JSON 형식으로 변환하여 자바스크립트에서 사용
+        var catDTO = /*[[${catDTO}]]*/ [];
+        var initialCategory = /*[[${dto.bCategory}]]*/ '';
 
         window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByTagName('form')
+            var forms = document.getElementsByTagName('form');
+            var isbnInput = document.getElementById('isbnInput');
 
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function (form) {
+            // Category selection
+            var mainCategorySelect = document.getElementById('mainCategory');
+            var subCategorySelect = document.getElementById('subCategory');
+            var bCategoryInput = document.getElementById('bCategory');
+
+            // Set the main category to match the first two characters of the initial category
+            mainCategorySelect.value = initialCategory.substring(0, 2);
+            populateSubCategories(initialCategory.substring(0, 2));
+
+            // Set the subcategory to the full initial category
+            subCategorySelect.value = initialCategory;
+
+            mainCategorySelect.addEventListener('change', function () {
+                var selectedMainCategory = mainCategorySelect.value;
+                subCategorySelect.innerHTML = '<option value="">---Sub category---</option>'; // Reset subcategories
+
+                /* Populate subcategories based on selected main category */
+                populateSubCategories(selectedMainCategory);
+            });
+
+            subCategorySelect.addEventListener('change', function () {
+                // Update hidden input with the selected subcategory value
+                bCategoryInput.value = subCategorySelect.value;
+            });
+
+            function populateSubCategories(selectedMainCategory) {
+                catDTO.forEach(function (cat) {
+                    if (cat.cdcode.length === 4 && cat.cdcode.startsWith(selectedMainCategory)) {
+                        var option = document.createElement('option');
+                        option.value = cat.cdcode;
+                        option.text = cat.cname;
+                        subCategorySelect.appendChild(option);
+                    }
+                });
+            }
+
+            // Form validation and submission
+            Array.prototype.forEach.call(forms, function (form) {
                 form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault()
-                        event.stopPropagation()
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else if (isbnInput.value.length !== 10) {
+                        alert('ISBN must be exactly 10 digits long.');
+                        event.preventDefault();
+                        event.stopPropagation();
                     }
 
-                    form.classList.add('was-validated')
-                }, false)
-            })
-        }, false)
-    })()
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
 
     document.querySelector(".btn-secondary").addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
-        e.preventDefault()
-        e.stopPropagation()
-
-        var link = [[${pgReqDTO.getLink()}]]
-        self.location = "/book/list?" + link
-
-    }, false)
+        var link = [[${pgReqDTO.getLink()}]];
+        self.location = "/book/list?" + link;
+    }, false);
 </script>
 </html>

@@ -26,6 +26,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bs;
+    private final WishlistService ws;
     private final DelBookService ds;
     private final CatService cs;
     private final RenService rr;
@@ -92,13 +93,26 @@ public class BookController {
     }
 
     @GetMapping({"/read", "/modify"})
-    public void readGET(int bNo, PageRequestDTO pgReqDTO, Model model) {
+    public void readGET(int bNo, PageRequestDTO pgReqDTO, Model model, HttpServletRequest req) {
         BookDTO bookDTO = bs.readOne(bNo);
         log.info("bookDTO: " + bookDTO);
         log.info("GetLink: " + pgReqDTO.getLink());
 
         //rr.getRentCount()
 
+        //wishlist에 값이 존재하면 채워진 하트로 표현되게 함
+        HttpSession session = req.getSession();
+        if(session.getAttribute("userLogin") != null) {
+            int cnt = ws.getWListCnt((String) session.getAttribute("uId"), bNo);
+            log.info("CNT: " + cnt);
+            if (cnt > 0) {
+                model.addAttribute("wishlist", true);
+            }
+        }
+
+        List<CategoryDTO> catDTO = cs.catList();
+
+        model.addAttribute("catDTO", catDTO);
         model.addAttribute("dto", bookDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
@@ -181,6 +195,40 @@ public class BookController {
 
         redirectAttributes.addFlashAttribute("result", "Rented");
         redirectAttributes.addFlashAttribute("bTitle", bTitle);
-;        return "redirect:/book/list";
+        return "redirect:/book/list";
+    }
+
+    @PostMapping("/wishlist")
+    public String wishlistPOST(PageRequestDTO pgReqDTO,
+                           BookDTO bookDTO,
+                           HttpServletRequest req,
+                               Model model) {
+
+        log.info("BOOK DTO WISH: " + bookDTO.toString());
+        HttpSession session = req.getSession();
+
+        // Add new record to wishlist
+        WishlistDTO wListDTO = WishlistDTO.builder()
+                .uId((String) session.getAttribute("uId"))
+                .bNo(bookDTO.getBNo())
+                .build();
+        ws.register(wListDTO);
+
+        log.info("PAGE REQUEST: " + pgReqDTO.getLink());
+        model.addAttribute("pgReqDTO", pgReqDTO);
+        return "redirect:/book/read?bNo=" + bookDTO.getBNo() + "&" + pgReqDTO.getLink();
+    }
+
+    @PostMapping("/cancelWishlist")
+    public String cancelWishlistPOST(RedirectAttributes redirectAttributes,
+                               BookDTO bookDTO,
+                               HttpServletRequest req,
+                               PageRequestDTO pgReqDTO, Model model) {
+
+        HttpSession session = req.getSession();
+        ws.remove((String) session.getAttribute("uId"), bookDTO.getBNo());
+
+        model.addAttribute("pgReqDTO", pgReqDTO);
+        return "redirect:/book/read?bNo=" + bookDTO.getBNo() + "&" + pgReqDTO.getLink();
     }
 }

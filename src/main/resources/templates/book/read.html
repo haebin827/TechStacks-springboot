@@ -3,55 +3,38 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}">
 
-<head>
-    <title>Book Read</title>
-</head>
-
 <div layout:fragment="content">
     <div class="row mt-3">
         <div class="col">
-
             <div th:if="${session.adminLogin == null}">
                 <div class="card">
                     <div class="card-body">
-                        <form>
-                            <input type="hidden" name="bNo" th:value="${dto.bNo}">
-                            <input type="hidden" name="bTitle" th:value="${dto.bTitle}">
-                            <input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">
-                            <input type="hidden" name="uId" th:value="${session.userLogin != null ? session.userLogin.getUId() : ''}">
+                            <!--<input type="hidden" name="uId" th:value="${session.userLogin != null ? session.userLogin.getUId() : ''}">-->
 
                             <div class="row">
-                                <!-- Left side: Book details -->
                                 <div class="col-md-8">
                                     <div class="mb-3">
                                         <span th:text="${dto.bTitle}" style="font-size: 2rem; font-weight: bold;"></span>
                                     </div>
-
-                                    <!-- Horizontal line below the title -->
                                     <hr>
-
                                     <div class="mb-3 d-flex">
                                         <span style="font-weight: bold; width: 120px;">Author</span>
                                         <span th:text="${dto.bAuthor}"></span>
                                     </div>
-
                                     <div class="mb-3 d-flex">
                                         <span style="font-weight: bold; width: 120px;">ISBN</span>
                                         <span th:text="${dto.bIsbn}"></span>
                                     </div>
-
                                     <div class="mb-3 d-flex">
                                         <span style="font-weight: bold; width: 120px;">Year</span>
                                         <span th:text="${dto.bYear}"></span>
                                     </div>
-
                                     <div class="mb-3 d-flex">
                                         <span style="font-weight: bold; width: 120px;">Publisher</span>
                                         <span th:text="${dto.bPublisher}"></span>
                                     </div>
                                 </div>
 
-                                <!-- Right side: Book image -->
                                 <div class="col-md-4 d-flex align-items-center justify-content-end">
                                     <div class="mb-3" style="margin-right: 20px;">
                                         <img th:src="@{/images/image.png}" alt="Book Image" class="img-fluid img-thumbnail" style="width: 200px; height: 300px;">
@@ -61,28 +44,46 @@
 
                             <div class="my-4">
                                 <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
-                                    <span th:if="${session.adminLogin == null}">
+                                <span th:if="${session.adminLogin == null}">
+                                    <!-- Heart Icon Button with conditional class based on wishlist -->
+                                    <form th:action="|/book/${wishlist != null ? 'cancelWishlist' : 'wishlist'}|" method="post" id="wishlistForm" style="display: inline-block;">
+                                        <input type="hidden" name="bNo" th:value="${dto.bNo}">
+                                        <input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">
+                                        <button type="button" id="wishBtn" class="btn"
+                                                th:classappend="${wishlist} ? 'bi-heart-fill' : 'bi-heart'"
+                                                style="border-color: #FF92F1; color: #FF92F1;">
+                                        </button>
+                                    </form>
+
+                                    <form th:action="|/book/rent|" method="post" id="rentForm" style="display: inline-block;" class="me-2">
+                                        <input type="hidden" name="bNo" th:value="${dto.bNo}">
+                                        <input type="hidden" name="bTitle" th:value="${dto.bTitle}">
+                                        <!--<input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">-->
+                                        <!-- Rent this book Button -->
                                         <button type="button" id="rent" class="btn"
-                                                th:classappend="${dto.bIsRental ? 'btn-secondary' : 'btn-warning'}"
+                                                th:classappend="${dto.bIsRental ? 'btn-secondary' : 'btn-outline-success'}"
                                                 th:disabled="${dto.bIsRental}"
                                                 th:text="${dto.bIsRental ? 'Currently Unavailable' : 'Rent this book'}">
                                         </button>
-                                    </span>
+                                    </form>
+                                </span>
                                     <a th:href="|@{/book/list}?${link}|" class="text-decoration-none">
                                         <button type="button" class="btn btn-secondary">List</button>
                                     </a>
                                 </div>
+
                             </div>
-                        </form>
                     </div>
                 </div>
             </div>
 
             <div th:if="${session.adminLogin != null}">
                 <div class="card">
-                    <div class="card-header">
-                        Book Info
-                    </div>
+                    <div class="col-md-8 mx-auto mt-3">
+                        <div style="font-size: 1.5rem;">
+                            Book Info
+                        </div>
+                        <hr class="mb-4">
                     <div class="card-body">
                         <form>
                             <input type="hidden" name="bNo" th:value="${dto.bNo}">
@@ -129,24 +130,15 @@
                                 <img th:src="@{/images/image.png}" alt="Book Image" class="img-thumbnail">
                             </div>
 
-                            <div class="my-4">
+                            <div class="my-4" style="margin-bottom: 2rem;">
                                 <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
                                     <span th:if="${session.adminLogin}">
-                                        <button type="button" id="removeBtn" class="btn btn-danger">Remove</button>
-                                        <a th:href="|@{/book/modify(bNo=${dto.bNo})}&${link}|" class="text-decoration-none">
-                                            <button type="button" class="btn btn-primary">Modify</button>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" id="removeBtn" class="btn btn-outline-danger">Remove</button>
+                                            <a th:href="|@{/book/modify(bNo=${dto.bNo})}&${link}|" class="btn btn-outline-dark text-decoration-none">Modify</a>
+                                        </div>
                                     </span>
-                                    <!--<span th:if="${session.adminLogin == null}">
-                                        <button type="button" id="rent" class="btn"
-                                                th:classappend="${dto.bIsRental ? 'btn-secondary' : 'btn-warning'}"
-                                                th:disabled="${dto.bIsRental}"
-                                                th:text="${dto.bIsRental ? 'Currently Unavailable' : 'Rent this book'}">
-                                        </button>
-                                    </span>-->
-                                    <a th:href="|@{/book/list}?${link}|" class="text-decoration-none">
-                                        <button type="button" class="btn btn-secondary">List</button>
-                                    </a>
+                                    <a th:href="|@{/book/list}?${link}|" class="btn btn-secondary text-decoration-none">List</a>
                                 </div>
                             </div>
                         </form>
@@ -169,6 +161,7 @@
                 <ul class="pagination reviewPaging">
                 </ul>
             </div>
+        </div>
 
         <!-- Delete Modal -->
         <div class="modal fade" id="removeModal" tabindex="-1">
@@ -185,7 +178,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="deletionSubmitBtn" class="btn btn-primary">Submit</button>
+                        <button type="button" id="deletionSubmitBtn" class="btn btn-outline-dark">Submit</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -369,6 +362,23 @@
 
 
     if ([[${session.adminLogin == null}]]) {
+
+        document.querySelector("#wishBtn").addEventListener("click", function (e) {
+
+            if ([[${session.userLogin == null}]]) {
+                alert("Login is required.");
+                window.location.href = '/user/login';
+                return false;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const formObj = document.querySelector("#wishlistForm");
+
+            formObj.submit();
+        }, false);
+
         document.querySelector("#rent").addEventListener("click", function (e) {
 
             if ([[${session.userLogin == null}]]) {
@@ -380,10 +390,7 @@
             e.preventDefault();
             e.stopPropagation();
 
-            const formObj = document.querySelector("form");
-
-            formObj.action = "/book/rent";
-            formObj.method = "post";
+            const formObj = document.querySelector("#rentForm");
 
             formObj.submit();
         }, false);
@@ -428,6 +435,7 @@
             formObj.submit();
         }
     }, false);
+
 
 </script>
 </html>

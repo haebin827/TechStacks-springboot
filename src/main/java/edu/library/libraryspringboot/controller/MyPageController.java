@@ -24,6 +24,7 @@ public class MyPageController {
     private final RenService rs;
     private final DelUserService ds;
     private final UserService us;
+    private final WishlistService ws;
     private final RenReqService rrs;
     private final RtnReqService rts;
     private final ExtReqService es;
@@ -266,5 +267,27 @@ public class MyPageController {
         log.info(respDTO);
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
+    }
+
+    @GetMapping("/wishlist")
+    public void wishlistGET(HttpServletRequest req,
+                            PageRequestDTO pgReqDTO,
+                            Model model) {
+
+        HttpSession session = req.getSession();
+        PageResponseDTO<VWishlistDTO> respDTO = ws.listAll(pgReqDTO, (String)session.getAttribute("uId"));
+
+        model.addAttribute("respDTO", respDTO);
+        model.addAttribute("pgReqDTO", pgReqDTO);
+    }
+
+    @PostMapping("/cancelWishlist")
+    public String cancelWishlistPOST(HttpServletRequest req,
+                            @RequestParam("bNo") int bNo) {
+
+        HttpSession session = req.getSession();
+        ws.remove((String)session.getAttribute("uId"), bNo);
+
+        return "redirect:/myPage/wishlist";
     }
 }

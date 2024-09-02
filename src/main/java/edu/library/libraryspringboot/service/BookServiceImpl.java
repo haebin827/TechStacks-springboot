@@ -49,7 +49,7 @@ public class BookServiceImpl implements BookService {
 
         Optional<Book> result = br.findById(bookDTO.getBNo());
         Book book = result.orElseThrow();
-        book.change(bookDTO.getBTitle(), bookDTO.getBAuthor(), bookDTO.getBIsbn(), bookDTO.getBYear(), bookDTO.getBPublisher());
+        book.change(bookDTO.getBTitle(), bookDTO.getBAuthor(), bookDTO.getBIsbn(), bookDTO.getBYear(), bookDTO.getBPublisher(), bookDTO.getBCategory());
         br.save(book);
     }
 
