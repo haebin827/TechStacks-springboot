@@ -20,9 +20,9 @@
                         <label for="category" class="form-label">Category</label>
                         <select class="form-select" id="category" name="fCategory" required>
                             <option th:each="category : ${catList}"
-                                    th:value="${category.fName}"
+                                    th:value="${category.fNo}"
                                     th:text="${category.fName}"
-                                    th:selected="${category.fName} == ${dto.fCategory}"></option>
+                                    th:selected="${category.fNo} == ${dto.fCategory}"></option>
                         </select>
                         <div class="invalid-feedback">Please select a category.</div>
                     </div>

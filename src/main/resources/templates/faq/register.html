@@ -20,7 +20,7 @@
                         <select class="form-select" id="category" name="fCategoryNo" required>
                             <option value="" disabled selected>---</option>
                             <option th:each="category : ${catList}"
-                                    th:value="${category.fName}"
+                                    th:value="${category.fNo}"
                                     th:text="${category.fName}"></option>
                         </select>
                         <div class="invalid-feedback">Please select a category.</div>

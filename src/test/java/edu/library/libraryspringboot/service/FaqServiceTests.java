@@ -55,9 +55,9 @@ public class FaqServiceTests {
     public void testList() {
 
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
-                .type("q")
-                .keyword("new")
+                .group(6)
                 .page(1)
+                .word("1")
                 .size(10)
                 .build();
 

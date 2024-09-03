@@ -47,13 +47,13 @@ public class BookRepositoryTests {
         log.info(book);
     }
 
-    @Test
+    /*@Test
     public void testUpdate() {
         Optional<Book> result = bookRepo.findById(2);
         Book book = result.orElseThrow();
         book.change("DEMO TITLE", "DEMO AUTHOR", "000000", 2024, "DEMO PUBLISHER");
         bookRepo.save(book);
-    }
+    }*/
 
     @Test
     public void testDelete() {

@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface FaqSearch {
 
-    Page<Faq> searchAll(Pageable pageable);
+    Page<Faq> searchAll(Pageable pageable, String word, int group);
 }

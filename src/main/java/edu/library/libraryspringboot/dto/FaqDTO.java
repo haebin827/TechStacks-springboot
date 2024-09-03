@@ -19,5 +19,5 @@ public class FaqDTO {
     private String fQuestion;   // varchar(255) NN
     private String fAnswer;     // varchar(1000) NN
 
-    private String fCategory;
+    private Integer fCategory;
 }

@@ -23,10 +23,14 @@ public class PageRequestDTO {
     @Builder.Default
     private int size = 10;
 
-    @Builder.Default
-    private String type = "default"; // 검색의 종류: t, a, i, ta, ti, ai
+    private String type; // 검색의 종류: t, a, i, ta, ti, ai
 
     private String keyword;
+
+    @Builder.Default
+    private String word = "";
+
+    private Integer group; // menu group
 
     private String link;
 
@@ -58,12 +62,24 @@ public class PageRequestDTO {
                 builder.append("&type=" + type);
             }
 
-            if (keyword != null && type.length() > 0) {
+            if (keyword != null && type != null && type.length() > 0) {
                 try {
                     builder.append("&keyword=" + URLEncoder.encode(keyword, "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+            }
+
+            if (word != null && !word.isEmpty()) {
+                try {
+                    builder.append("&word=" + URLEncoder.encode(word, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (group != null) {
+                builder.append("&group=" + group);
             }
 
             if (check != null) {

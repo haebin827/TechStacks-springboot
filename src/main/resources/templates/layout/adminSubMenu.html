@@ -19,6 +19,17 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/adminPage/user/list}">Member list</a>
                     </li>
+
+                    <!-- Edit Categories with Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Categories
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" th:href="@{/book/catModify}">Book</a></li>
+                            <li><a class="dropdown-item" th:href="@{/adminPage/faq/list}">FAQ</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

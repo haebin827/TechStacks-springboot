@@ -22,9 +22,9 @@ public class Faq {
     private String fAnswer;
 
     @Column(nullable = false)
-    private String fCategory;
+    private Integer fCategory;
 
-    public void change(String fQuestion, String fAnswer, String fCategory) {
+    public void change(String fQuestion, String fAnswer, int fCategory) {
         this.fQuestion = fQuestion;
         this.fAnswer = fAnswer;
         this.fCategory = fCategory;

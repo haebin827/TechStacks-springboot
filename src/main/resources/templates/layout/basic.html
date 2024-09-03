@@ -12,6 +12,17 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Show the dropdown menu on hover */
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Keep the dropdown menu from disappearing when interacting with it */
+        .nav-item.dropdown .dropdown-menu {
+            margin-top: 0; /* Optional: Adjust if there's spacing issues */
+        }
+    </style>
 </head>
 <body>
 <div class="d-flex" id="wrapper">
@@ -41,7 +52,7 @@
                         <li class="nav-item"><a id="login" class="nav-link" th:if="${session.adminLogin == null && session.userLogin == null}" th:href="@{/user/login}">Login</a></li>
                         <li class="nav-item"><a id="register" class="nav-link" th:if="${session.adminLogin == null && session.userLogin == null}" th:href="@{/user/register}">Register</a></li>
                         <li class="nav-item"><a id="logout" class="nav-link" th:if="${session.adminLogin != null || session.userLogin != null}" style="cursor: pointer;">Logout</a></li>
-                            <li class="nav-item dropdown">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${session.userLogin != null}">My Account</a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" th:href="@{/myPage/home}">My Page</a>
@@ -97,8 +108,6 @@
     </div>
 </footer>
 
-
-
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
@@ -108,4 +117,3 @@
 
 </body>
 </html>
-

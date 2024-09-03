@@ -65,11 +65,11 @@ public class FaqServiceImpl implements FaqService {
     @Override
     public PageResponseDTO<FaqDTO> list(PageRequestDTO pageRequestDTO) {
 
-        String[] types = pageRequestDTO.getTypes();
-        String keyword = pageRequestDTO.getKeyword();
+        String word = pageRequestDTO.getWord();
+        int group = pageRequestDTO.getGroup();
         Pageable pageable = pageRequestDTO.getPageable("fId");
 
-        Page<Faq> result = fr.searchAll(pageable);
+        Page<Faq> result = fr.searchAll(pageable, word, group);
 
         List<FaqDTO> dtoList = result.getContent().stream()
                 .map(faq -> mm.map(faq, FaqDTO.class))

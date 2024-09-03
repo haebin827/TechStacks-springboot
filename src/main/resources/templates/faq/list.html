@@ -13,110 +13,107 @@
                 </div>
                 <hr class="mb-4">
 
-                <!-- 버튼 그룹 및 검색 기능 -->
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-outline-dark me-3" style="font-size: 1.1rem;">All</button> <!-- 'me-3'로 간격 추가 -->
-                        <div class="btn-group" role="group" aria-label="FAQ Categories">
-
-                            <!-- Loop through catList to generate buttons dynamically -->
-                            <th:block th:each="category : ${catList}">
-                                <button type="button" class="btn btn-outline-dark" style="font-size: 1.1rem;" th:text="${category.fName}"></button>
-                            </th:block>
-                        </div>
-                    </div>
-
-                    <!-- 검색 기능을 float-end로 설정 -->
-                    <div class="input-group" style="width: 300px;">
-                        <input type="text" class="form-control form-control-sm" id="keyword" name="keyword" placeholder="Let's search...">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary btn-sm searchBtn" type="submit">Search</button>
-                            <button class="btn btn-outline-secondary btn-sm clearBtn" type="button">Clear</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <form>
-                        <div th:if="${session.adminLogin == null}">
-                            <ul class="list-group col mb-3">
-                                <li th:each="dto : ${respDTO.dtoList}" class="list-group-item">
-                                    <a th:href="'#collapse' + ${dto.fId}" data-bs-toggle="collapse" class="text-decoration-none">
-                                        <strong class="text-dark font-weight-bold">Q: </strong>
-                                        <span class="text-dark" th:text="${dto.fQuestion}"></span>
-                                    </a>
-                                    <div th:id="'collapse' + ${dto.fId}" class="collapse mt-2">
-                                        <div class="card card-body">
-                                            <span class="fs-6" th:text="${dto.fAnswer}"></span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div th:unless="${session.adminLogin == null}">
-                            <ul class="list-group col mb-3">
-                                <li th:each="dto : ${respDTO.dtoList}" class="list-group-item">
-                                    <a th:href="@{/faq/read(fId=${dto.fId}, page=${pgReqDTO.page}, size=${pgReqDTO.size})}"
-                                       class="text-decoration-none" style="color: black;"
-                                       th:data-fId="${dto.fId}">
-                                        <strong class="text-dark font-weight-bold">Q: </strong>
-                                        <span class="fs-6" th:text="${dto.fQuestion}"></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </form>
-
-                    <div>
-                        <div class="float-start" th:if="${session.adminLogin != null}">
-                            <a th:href="|@{/faq/register}|" class="text-decoration-none">
-                                <button type="button" class="btn btn-outline-dark">Register</button>
-                            </a>
-                        </div>
-                        <div class="float-end">
-                            <ul class="pagination flex-wrap">
-
-                                <li class="page-item" th:if="${respDTO.prev}">
-                                    <a class="page-link" th:data-num="${respDTO.start - 1}">Previous</a>
-                                </li>
-
-                                <th:block th:each="i: ${#numbers.sequence(respDTO.start, respDTO.end)}">
-                                    <li th:class="${respDTO.page == i}?'page-item active':'page-item'">
-                                        <a class="page-link" th:data-num="${i}">[[${i}]]</a>
-                                    </li>
+                <form>
+                    <!--<input type="hidden" name="group" th:value="${pgReqDTO.group}">-->
+                    <!-- 버튼 그룹 및 검색 기능 -->
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center">
+                            <button type="submit" class="btn btn-outline-dark me-3" name="group" value="-1" style="font-size: 1.1rem;">All</button>
+                            <div class="btn-group" role="group" aria-label="FAQ Categories">
+                                <!-- Loop through catList to generate buttons dynamically -->
+                                <th:block th:each="category : ${catList}">
+                                    <button type="button" id="menuBtn" class="btn btn-outline-dark" style="font-size: 1.1rem;"
+                                            th:text="${category.fName}" th:name="group" th:value="${category.fNo}"></button>
                                 </th:block>
-
-                                <li class="page-item" th:if="${respDTO.next}">
-                                    <a class="page-link" th:data-num="${respDTO.end + 1}">Next</a>
-                                </li>
-                            </ul>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel">Info</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p id="modalResult"></p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
+                        <!-- 검색 기능을 float-end로 설정 -->
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control form-control-sm" id="word" th:value="${pgReqDTO.word}" placeholder="Let's search...">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary btn-sm searchBtn" id="searchBtn" type="button">Search</button>
+                                <button class="btn btn-outline-secondary btn-sm clearBtn" type="button">Clear</button>
                             </div>
                         </div>
                     </div>
+                </form>
 
+                <div class="card-body">
+                    <div th:if="${session.adminLogin == null}">
+                        <ul class="list-group col mb-3">
+                            <li th:each="dto : ${respDTO.dtoList}" class="list-group-item">
+                                <a th:href="'#collapse' + ${dto.fId}" data-bs-toggle="collapse" class="text-decoration-none">
+                                    <strong class="text-dark font-weight-bold">Q: </strong>
+                                    <span class="text-dark" th:text="${dto.fQuestion}"></span>
+                                </a>
+                                <div th:id="'collapse' + ${dto.fId}" class="collapse mt-2">
+                                    <div class="card card-body">
+                                        <span class="fs-6" th:text="${dto.fAnswer}"></span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div th:unless="${session.adminLogin == null}">
+                        <ul class="list-group col mb-3">
+                            <li th:each="dto : ${respDTO.dtoList}" class="list-group-item">
+                                <a th:href="@{/faq/read(fId=${dto.fId}, page=${pgReqDTO.page}, size=${pgReqDTO.size})}"
+                                   class="text-decoration-none" style="color: black;" th:data-fId="${dto.fId}">
+                                    <strong class="text-dark font-weight-bold">Q: </strong>
+                                    <span class="fs-6" th:text="${dto.fQuestion}"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
+                <div>
+                    <div class="float-start" th:if="${session.adminLogin != null}">
+                        <a th:href="|@{/faq/register}|" class="text-decoration-none">
+                            <button type="button" class="btn btn-outline-dark">Register</button>
+                        </a>
+                    </div>
+                    <div class="float-end">
+                        <ul class="pagination flex-wrap">
+                            <li class="page-item" th:if="${respDTO.prev}">
+                                <a class="page-link" th:data-num="${respDTO.start - 1}">Previous</a>
+                            </li>
+
+                            <th:block th:each="i: ${#numbers.sequence(respDTO.start, respDTO.end)}">
+                                <li th:class="${respDTO.page == i} ? 'page-item active' : 'page-item'">
+                                    <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                </li>
+                            </th:block>
+
+                            <li class="page-item" th:if="${respDTO.next}">
+                                <a class="page-link" th:data-num="${respDTO.end + 1}">Next</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Info</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="modalResult"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+
 <script layout:fragment="script" th:inline="javascript">
 
     document.querySelector(".pagination").addEventListener("click", function (e) {
@@ -133,26 +130,95 @@
 
         const formObj = document.querySelector("form");
 
+        // Retrieve the group value from Thymeleaf and initialize it
+        const group = /*[[${pgReqDTO.group}]]*/ -1; // Default to '-1' if not provided
+        const wordValue = document.querySelector("#word").value;
+
+        // Append the hidden inputs for page and group
         formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`;
+        formObj.innerHTML += `<input type='hidden' name='group' value='${group}'>`;
+        formObj.innerHTML += `<input type='hidden' name='word' value='${wordValue}'>`;
+
         formObj.action = "/faq/list";
         formObj.method = "get";
 
         formObj.submit();
     }, false);
 
+    // Menu 버튼 클릭 이벤트
+    document.querySelectorAll("#menuBtn").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const group = this.getAttribute("value"); // 현재 버튼의 그룹 값을 가져옴
+            const formObj = document.querySelector("form");
+
+            formObj.innerHTML += `<input type='hidden' name='group' value='${group}'>`;
+
+            formObj.action = "/faq/list";
+            formObj.method = "get";
+
+            formObj.submit();
+        });
+    });
+
+    document.querySelector("#searchBtn").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const formObj = document.querySelector("form");
+        const wordValue = document.querySelector("#word").value; // Get the value of the word input
+
+        // Retrieve the group value from Thymeleaf and initialize it
+        const group = /*[[${pgReqDTO.group}]]*/ -1; // Default to '-1' if not provided
+
+        // Append the hidden inputs for group and word
+        formObj.innerHTML += `<input type='hidden' name='group' value='${group}'>`;
+        formObj.innerHTML += `<input type='hidden' name='word' value='${wordValue}'>`; // Ensure the word is included
+
+        formObj.action = "/faq/list";
+        formObj.method = "get";
+
+        formObj.submit();
+    }, false);
+
+
     // Show modal
     var result = [[${result}]];
     if (result) {
-        if (result == "Registered") {
+        if (result === "Registered") {
             document.querySelector("#modalResult").innerHTML = "New FAQ has successfully added.";
-        } else if (result == "Removed") {
+        } else if (result === "Removed") {
             document.querySelector("#modalResult").innerHTML = "FAQ has successfully removed.";
-        } else if (result == "Modified") {
+        } else if (result === "Modified") {
             document.querySelector("#modalResult").innerHTML = "FAQ has successfully modified.";
         }
         var modal = new bootstrap.Modal(document.querySelector(".modal"));
         modal.show();
     }
+
+    var link = /*[[${pgReqDTO.getLink()}]]*/ '';
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // 기본 링크에서 `word` 파라미터를 제거하고 페이지를 1로 설정
+        let updatedLink = link.replace(/page=\d+/, "page=1");
+
+        // `word` 파라미터 제거
+        updatedLink = updatedLink.replace(/&?word=[^&]*/g, '');
+
+        // 만약 `&`가 link의 시작에 위치한다면 제거
+        if (updatedLink.startsWith('&')) {
+            updatedLink = updatedLink.substring(1);
+        }
+
+        // self.location을 업데이트된 링크로 설정
+        self.location = `/faq/list?${updatedLink}`;
+    }, false);
+
 
 </script>
 </html>

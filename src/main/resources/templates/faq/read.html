@@ -14,11 +14,13 @@
 
                 <div class="card-body">
                     <form>
+                        <input type="hidden" name="fCategory" th:value="${dto.fCategory}">
+
                         <!-- Category label and value -->
                         <div class="mb-3">
                             <label for="category" class="form-label">Category</label>
-                            <input type="text" name="fCategory" id="category" class="form-control"
-                                   th:value="${dto.fCategory}" readonly>
+                            <input type="text" id="category" class="form-control"
+                                   th:value="${categoryName}" readonly>
                         </div>
 
                         <!-- Question label and value -->
@@ -30,7 +32,7 @@
 
                         <!-- Answer label and value -->
                         <div class="mb-3">
-                            <label for="answer" class="form-label">A:</label>
+                            <label for="answer" class="form-label">Answer</label>
                             <textarea name="fAnswer" id="answer" class="form-control" rows="4" readonly
                                       th:text="${dto.fAnswer}"></textarea>
                         </div>

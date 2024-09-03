@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -30,6 +27,7 @@ public class AdminPageController {
     private final BookService bs;
     private final RtnReqService rts;
     private final ExtReqService es;
+    private final FaqService fs;
     private final BlklistService bls;
 
     @GetMapping("/home")
@@ -247,5 +245,23 @@ public class AdminPageController {
         log.info(pgReqDTO);
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
+    }
+
+
+    @GetMapping("/faq/list")
+    public void faqListGET(PageRequestDTO pgReqDTO, Model model) {
+
+        List<FaqCategoryDTO> catList = fs.catList();
+
+        model.addAttribute("catList", catList);
+
+    }
+
+    @PostMapping("/faq/remove")
+    public String faqRemovePOST(PageRequestDTO pgReqDTO, Model model, @RequestParam("fName") String fName) {
+
+
+
+        return "redirect:/adminPage/faq/list";
     }
 }

@@ -1,0 +1,68 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/adminSubMenu.html}">
+
+<div layout:fragment="adminSubMenu">
+
+    <div class="row mt-3">
+        <div class="col-md-11 mx-auto">
+            <div class="col">
+                <div style="font-size: 1.5rem;">
+                    FAQ Categories
+                </div>
+                <hr class="mb-4">
+            </div>
+
+            <div>
+                <ul class="list-group" id="categoryList">
+                    <li th:each="category : ${catList}"
+                        class="list-group-item d-flex justify-content-between align-items-center"
+                        th:text="${category.fName}"
+                        th:data-id="${category.fNo}"
+                        onclick="toggleSelection(this)">
+                    </li>
+                </ul>
+                <!-- Action Buttons -->
+                <div class="mt-3 d-none" id="actionButtons">
+                    <button type="button" class="btn btn-outline-danger me-2">Remove</button>
+                    <button type="button" class="btn btn-outline-primary me-2">Rename</button>
+                    <button type="button" class="btn btn-outline-secondary">Move</button>
+                </div>
+                <!-- Add New Category Button -->
+                <div class="mt-3">
+                    <button type="button" class="btn btn-outline-success" onclick="addCategory()">
+                        <i class="bi bi-plus-lg"></i> Add Category
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+    let selectedElement = null;
+
+    function toggleSelection(element) {
+        if (selectedElement) {
+            selectedElement.style.backgroundColor = '';
+            selectedElement.classList.remove('text-white');
+        }
+
+        if (selectedElement === element) {
+            selectedElement = null;
+            document.getElementById('actionButtons').classList.add('d-none');
+        } else {
+            element.style.backgroundColor = '#007bff';
+            element.classList.add('text-white');
+            selectedElement = element;
+            document.getElementById('actionButtons').classList.remove('d-none');
+        }
+    }
+
+    function addCategory() {
+        alert('Add Category button clicked!');
+        // Implement category addition logic here
+    }
+</script>
+</html>

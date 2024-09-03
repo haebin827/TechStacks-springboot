@@ -49,7 +49,7 @@
                                     <form th:action="|/book/${wishlist != null ? 'cancelWishlist' : 'wishlist'}|" method="post" id="wishlistForm" style="display: inline-block;">
                                         <input type="hidden" name="bNo" th:value="${dto.bNo}">
                                         <input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">
-                                        <button type="button" id="wishBtn" class="btn"
+                                        <button type="button" id="wishBtn" class="btn active" aria-pressed="true"
                                                 th:classappend="${wishlist} ? 'bi-heart-fill' : 'bi-heart'"
                                                 style="border-color: #FF92F1; color: #FF92F1;">
                                         </button>

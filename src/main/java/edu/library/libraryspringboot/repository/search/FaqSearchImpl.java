@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -19,11 +20,23 @@ public class FaqSearchImpl extends QuerydslRepositorySupport implements FaqSearc
     }
 
     @Override
-    public Page<Faq> searchAll(Pageable pageable) {
+    public Page<Faq> searchAll(Pageable pageable, String word, int group) {
         QFaq faq = QFaq.faq;
         JPQLQuery<Faq> query = from(faq);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (StringUtils.hasText(word) && !word.isEmpty()) {
+            booleanBuilder.or(faq.fQuestion.contains(word));
+            query.where(booleanBuilder);
+        }
+
+        // 그룹 필터링 조건 추가 (group이 0보다 크면 해당 조건 추가)
+        if (group > 0) {
+            booleanBuilder.and(faq.fCategory.eq(group));
+        }
+
+        query.where(booleanBuilder);
 
         //paging
         this.getQuerydsl().applyPagination(pageable, query);
@@ -32,3 +45,4 @@ public class FaqSearchImpl extends QuerydslRepositorySupport implements FaqSearc
         return new PageImpl<>(list, pageable, count);
     }
 }
+

@@ -32,14 +32,39 @@ public class FaqController {
 
         log.info("Faq List GET................");
 
+        if (pgReqDTO.getGroup() == null) {
+            pgReqDTO.setGroup(-1);
+        }
+
         PageResponseDTO<FaqDTO> respDTO = fs.list(pgReqDTO);
         List<FaqCategoryDTO> catList = fs.catList();
         log.info(respDTO);
+
+        log.info("WORD: " + pgReqDTO.getWord());
 
         model.addAttribute("catList", catList);
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
+
+    /*@PostMapping("/list")
+    public String listPOST(PageRequestDTO pgReqDTO, Model model) {
+
+        log.info("Faq List POST................");
+
+        PageResponseDTO<FaqDTO> respDTO = fs.list(pgReqDTO);
+        List<FaqCategoryDTO> catList = fs.catList();
+        log.info(respDTO);
+
+        log.info("group:" + pgReqDTO.getGroup());
+        log.info("word:" + pgReqDTO.getWord());
+        log.info("link:" + pgReqDTO.getLink());
+        model.addAttribute("catList", catList);
+        model.addAttribute("respDTO", respDTO);
+        model.addAttribute("pgReqDTO", pgReqDTO);
+
+        return "redirect:/faq/list?" + pgReqDTO.getLink();  // Redirect to GET with parameters
+    }*/
 
     @GetMapping("/register")
     public void registerGET(Model model) {
@@ -52,7 +77,7 @@ public class FaqController {
 
     @PostMapping("/register")
     public String registerPOST(@Valid FaqDTO faqDTO,
-                               @RequestParam("fCategoryNo") String fCategory,
+                               @RequestParam("fCategoryNo") int fCategory,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
 
@@ -82,6 +107,14 @@ public class FaqController {
 
         List<FaqCategoryDTO> catList = fs.catList();
 
+        // 해당 카테고리 이름 찾기
+        String categoryName = catList.stream()
+                .filter(cat -> cat.getFNo() == faqDTO.getFCategory())
+                .map(FaqCategoryDTO::getFName)
+                .findFirst()
+                .orElse("Unknown Category"); // 카테고리를 찾지 못한 경우 "Unknown Category" 사용
+
+        model.addAttribute("categoryName", categoryName);  // 찾은 카테고리 이름을 model에 추가
         model.addAttribute("catList", catList);
         model.addAttribute("dto", faqDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
@@ -90,7 +123,7 @@ public class FaqController {
     @PostMapping("/modify")
     public String modify(PageRequestDTO pgReqDTO,
                          @Valid FaqDTO faqDTO,
-                         @RequestParam("fCategory") String fCategory,
+                         @RequestParam("fCategory") Integer fCategory,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
 
