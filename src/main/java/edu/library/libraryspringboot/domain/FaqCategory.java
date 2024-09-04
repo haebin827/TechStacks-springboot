@@ -17,4 +17,8 @@ public class FaqCategory {
 
     @Column(nullable = false, length = 1000)
     private String fName;
+
+    public void change(String fName) {
+        this.fName = fName;
+    }
 }

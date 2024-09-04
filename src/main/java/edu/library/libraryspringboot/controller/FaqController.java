@@ -67,34 +67,52 @@ public class FaqController {
     }*/
 
     @GetMapping("/register")
-    public void registerGET(Model model) {
+    public String registerGET(
+            @RequestParam(value = "adminMode", required = false) String adminMode,
+            Model model) {
+
         log.info("Faq Register GET...............");
 
+        // Add the FAQ categories to the model
         List<FaqCategoryDTO> catList = fs.catList();
         model.addAttribute("catList", catList);
 
+        // Check if adminMode exists, and if so, add it to the model
+        if ("true".equals(adminMode)) {
+            log.info("AdminMode: " + adminMode);
+            model.addAttribute("adminMode", true);
+        }
+        return "faq/register"; // Make sure to return the correct view name
     }
 
+
     @PostMapping("/register")
-    public String registerPOST(@Valid FaqDTO faqDTO,
-                               @RequestParam("fCategoryNo") int fCategory,
-                               BindingResult bindingResult,
-                               RedirectAttributes redirectAttributes) {
+    public String registerPOST(
+            @Valid FaqDTO faqDTO,
+            @RequestParam("fCategoryNo") int fCategory,
+            @RequestParam(value = "adminMode", required = false) String adminMode,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
 
         log.info("FAQ register POST...............");
-        if(bindingResult.hasErrors()) {
+
+        if (bindingResult.hasErrors()) {
             log.info("has errors...............");
             log.info(faqDTO);
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/faq/register";
         }
 
-        log.info("faqDTO: " + faqDTO);
-
         faqDTO.setFCategory(fCategory);
         fs.register(faqDTO);
-        redirectAttributes.addFlashAttribute("result", "Registered");
 
+        // If adminMode is present
+        if (adminMode != null && adminMode.equals("true")) {
+            redirectAttributes.addFlashAttribute("result", "Registered");
+            return "redirect:/adminPage/faq/list";
+        }
+
+        redirectAttributes.addFlashAttribute("result", "Registered");
         return "redirect:/faq/list";
     }
 

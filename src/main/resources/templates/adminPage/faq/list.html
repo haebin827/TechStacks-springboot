@@ -23,18 +23,132 @@
                         onclick="toggleSelection(this)">
                     </li>
                 </ul>
-                <!-- Action Buttons -->
+                <!-- Action Buttons (Horizontal Layout) -->
                 <div class="mt-3 d-none" id="actionButtons">
-                    <button type="button" class="btn btn-outline-danger me-2">Remove</button>
-                    <button type="button" class="btn btn-outline-primary me-2">Rename</button>
-                    <button type="button" class="btn btn-outline-secondary">Move</button>
+                    <form id="removeForm" th:action="@{/adminPage/faq/remove}" method="post" class="d-inline" onsubmit="return confirmRemoval()">
+                        <input type="hidden" name="fNo" id="hiddenFNo">
+                        <button type="submit" class="btn btn-outline-danger">Remove</button>
+                    </form>
+                    <button type="button" class="btn btn-outline-primary ms-2" onclick="showRenameModal()">Rename</button>
+                    <button type="button" class="btn btn-outline-secondary ms-2" onclick="showMoveModal()">Move</button>
                 </div>
-                <!-- Add New Category Button -->
+                <!-- Add New Category and Add New FAQ Buttons -->
                 <div class="mt-3">
-                    <button type="button" class="btn btn-outline-success" onclick="addCategory()">
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                         <i class="bi bi-plus-lg"></i> Add Category
                     </button>
+                    <form th:action="@{/faq/register}" method="get" class="d-inline">
+                        <input type="hidden" name="adminMode" value="true">
+                        <button type="submit" class="btn btn-outline-info ms-2">
+                            <i class="bi bi-plus-lg"></i> Add New FAQ
+                        </button>
+                    </form>
                 </div>
+
+                <!-- Add Category Modal -->
+                <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="addCategoryForm" th:action="@{/adminPage/faq/register}" method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="categoryName" class="form-label">Category Name</label>
+                                        <input type="text" class="form-control" id="categoryName" name="newCatName" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-dark" onclick="validateCategory()">Add</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rename Category Modal -->
+                <div class="modal fade" id="renameCategoryModal" tabindex="-1" aria-labelledby="renameCategoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="renameCategoryForm" th:action="@{/adminPage/faq/modify}" method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="renameCategoryModalLabel">Rename Category</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="renameCategoryName" class="form-label">New Category Name</label>
+                                        <input type="hidden" name="fNo" id="renameFNo">
+                                        <input type="text" class="form-control" id="renameCategoryName" name="newCatName" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-dark" onclick="validateRenameCategory()">Rename</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Move Category Modal -->
+                <div class="modal fade" id="moveCategoryModal" tabindex="-1" aria-labelledby="moveCategoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="moveCategoryForm" th:action="@{/adminPage/faq/move}" method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="moveCategoryModalLabel">Move Category</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="currentCategoryName" class="form-label">Current Category</label>
+                                        <input type="text" class="form-control" id="currentCategoryName" name="currentCatName" readonly>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        ➡️
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="moveCategoryName" class="form-label">Select New Category</label>
+                                        <ul class="list-group" id="moveCategoryName">
+                                            <li th:each="category : ${catList}" class="list-group-item">
+                                                <input type="radio" class="form-check-input" name="newCatNo" th:id="'cat_' + ${category.fNo}" th:value="${category.fNo}">
+                                                <label class="form-check-label" th:for="'cat_' + ${category.fNo}" th:text="${category.fName}"></label>
+                                            </li>
+                                        </ul>
+                                        <input type="hidden" name="fNo" id="moveFNo">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-dark" onclick="validateMoveCategory()">Move</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New FAQ Post-->
+                <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Info</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="modalResult"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -57,12 +171,112 @@
             element.classList.add('text-white');
             selectedElement = element;
             document.getElementById('actionButtons').classList.remove('d-none');
+            document.getElementById('hiddenFNo').value = element.getAttribute('data-id');
         }
     }
 
-    function addCategory() {
-        alert('Add Category button clicked!');
-        // Implement category addition logic here
+    function confirmRemoval() {
+        return confirm("Are you sure you want to delete it? This will delete all FAQs associated with this category.");
+    }
+
+    function validateCategory() {
+        const categoryName = document.getElementById('categoryName').value.trim();
+        const existingCategories = Array.from(document.querySelectorAll('#categoryList li')).map(li => li.textContent.trim());
+
+        if (categoryName === '') {
+            alert('Please enter the category name.');
+            return;
+        }
+
+        if (existingCategories.includes(categoryName)) {
+            alert('This category already exists.');
+            return;
+        }
+
+        // If validation passes, submit the form
+        document.getElementById('addCategoryForm').submit();
+    }
+
+    function showRenameModal() {
+        if (selectedElement) {
+            const currentName = selectedElement.textContent.trim();
+            document.getElementById('renameCategoryName').value = currentName;
+            document.getElementById('renameFNo').value = selectedElement.getAttribute('data-id');
+            const renameModal = new bootstrap.Modal(document.getElementById('renameCategoryModal'));
+            renameModal.show();
+        }
+    }
+
+    function validateRenameCategory() {
+        const newCategoryName = document.getElementById('renameCategoryName').value.trim();
+        const existingCategories = Array.from(document.querySelectorAll('#categoryList li')).map(li => li.textContent.trim());
+
+        if (newCategoryName === '') {
+            alert('Please enter the new category name.');
+            return;
+        }
+
+        if (existingCategories.includes(newCategoryName)) {
+            alert('This category name already exists.');
+            return;
+        }
+
+        // If validation passes, submit the form
+        document.getElementById('renameCategoryForm').submit();
+    }
+
+    function showMoveModal() {
+        if (selectedElement) {
+            const currentName = selectedElement.textContent.trim();
+            const currentFNo = selectedElement.getAttribute('data-id');
+            document.getElementById('currentCategoryName').value = currentName;
+            document.getElementById('moveFNo').value = currentFNo;
+
+            const moveModal = new bootstrap.Modal(document.getElementById('moveCategoryModal'));
+            moveModal.show();
+        }
+    }
+
+    function validateMoveCategory() {
+        const newCategory = document.querySelector('input[name="newCatNo"]:checked');
+
+        if (!newCategory) {
+            alert('Please select a new category.');
+            return;
+        }
+
+        // Display confirmation dialog
+        if (confirm("Are you sure you want to move all?")) {
+            // If user clicks "OK", submit the form
+            document.getElementById('moveCategoryForm').submit();
+        } else {
+            // If user clicks "Cancel", return to the modal
+            return;
+        }
+    }
+
+    // Reset modal input when the modal is closed
+    document.getElementById('addCategoryModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('categoryName').value = '';
+    });
+
+    document.getElementById('renameCategoryModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('renameCategoryName').value = '';
+    });
+
+    document.getElementById('moveCategoryModal').addEventListener('hidden.bs.modal', function () {
+        const selectedRadio = document.querySelector('input[name="newCatNo"]:checked');
+        if (selectedRadio) {
+            selectedRadio.checked = false;
+        }
+    });
+
+    // Show modal
+    var result = [[${result}]];
+    if (result) {
+        document.querySelector("#modalResult").innerHTML = "New FAQ has successfully added.";
+        var modal = new bootstrap.Modal(document.querySelector("#infoModal"));
+        modal.show();
     }
 </script>
 </html>

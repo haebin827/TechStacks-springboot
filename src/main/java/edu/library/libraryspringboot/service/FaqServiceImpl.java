@@ -40,6 +40,13 @@ public class FaqServiceImpl implements FaqService {
     }
 
     @Override
+    public void catRegister(FaqCategoryDTO faqCatDTO) {
+
+        FaqCategory faqCat = mm.map(faqCatDTO, FaqCategory.class);
+        cr.save(faqCat);
+    }
+
+    @Override
     public FaqDTO readOne(int fId) {
 
         Optional<Faq> result = fr.findById(fId);
@@ -58,8 +65,18 @@ public class FaqServiceImpl implements FaqService {
     }
 
     @Override
+    public void setCatName(String fName, int fNo) {
+        cr.updateCatName(fName, fNo);
+    }
+
+    @Override
     public void remove(int fId) {
         fr.deleteById(fId);
+    }
+
+    @Override
+    public void catRemove(int fNo) {
+        cr.deleteById(fNo);
     }
 
     @Override
@@ -89,5 +106,15 @@ public class FaqServiceImpl implements FaqService {
                 .collect(Collectors.toList());
 
         return list;
+    }
+
+    @Override
+    public void removeFaqList(int fCategory) {
+        fr.deleteFaqList(fCategory);
+    }
+
+    @Override
+    public void moveCat(int fCat, int fPrevCat) {
+        fr.changeCat(fCat, fPrevCat);
     }
 }

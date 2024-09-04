@@ -14,6 +14,9 @@
             <div class="card-body">
                 <form th:action="@{/faq/register}" th:method="post" novalidate>
 
+                    <!-- Conditionally render hidden input for adminMode if it exists -->
+                    <input type="hidden" name="adminMode" th:value="${adminMode}">
+
                     <!-- Category Selection -->
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
@@ -43,11 +46,12 @@
                             <div class="btn-group" role="group">
                                 <button type="submit" class="btn btn-outline-dark">Save</button>
                                 <button type="reset" class="btn btn-outline-dark">Reset</button>
-                                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
+                                <button type="button" class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
                             </div>
                         </div>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
@@ -56,6 +60,23 @@
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
+
+    const adminMode = /*[[${adminMode != null}]]*/ false;
+    console.log('ADMIN MODE:', adminMode);
+
+    function handleCancel() {
+        // Check if adminMode is present
+        const adminMode = /*[[${adminMode != null}]]*/ false;
+        console.log('ADMIN MODE:', adminMode);
+        if (adminMode) {
+            // Redirect to adminPage/faq/list if adminMode exists
+            window.location.href = '/adminPage/faq/list';
+        } else {
+            // Otherwise, go back in history
+            window.history.back();
+        }
+    }
+
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function () {
         'use strict'

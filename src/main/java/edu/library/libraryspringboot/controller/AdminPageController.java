@@ -258,10 +258,37 @@ public class AdminPageController {
     }
 
     @PostMapping("/faq/remove")
-    public String faqRemovePOST(PageRequestDTO pgReqDTO, Model model, @RequestParam("fName") String fName) {
+    public String faqRemovePOST(FaqCategoryDTO faqCatDTO) {
 
+        fs.removeFaqList(faqCatDTO.getFNo());
+        fs.catRemove(faqCatDTO.getFNo());
 
+        return "redirect:/adminPage/faq/list";
+    }
 
+    @PostMapping("/faq/register")
+    public String faqRegisterPOST(@RequestParam("newCatName") String newCatName) {
+
+        FaqCategoryDTO faqCatDTO = FaqCategoryDTO.builder()
+                .fName(newCatName)
+                .build();
+
+        fs.catRegister(faqCatDTO);
+
+        return "redirect:/adminPage/faq/list";
+    }
+
+    @PostMapping("/faq/modify")
+    public String faqModifyPOST(FaqCategoryDTO faqCatDTO, @RequestParam("newCatName") String newCatName) {
+        fs.setCatName(newCatName, faqCatDTO.getFNo());
+
+        return "redirect:/adminPage/faq/list";
+    }
+
+    @PostMapping("/faq/move")
+    public String faqMovePOST(FaqCategoryDTO faqCatDTO, @RequestParam("newCatNo") int newCatNo) {
+
+        fs.moveCat(newCatNo, faqCatDTO.getFNo());
         return "redirect:/adminPage/faq/list";
     }
 }
