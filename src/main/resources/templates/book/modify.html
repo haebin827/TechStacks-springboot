@@ -5,67 +5,94 @@
 
 <div layout:fragment="content">
     <div class="row mt-3">
-        <div class="col-md-8 mx-auto mt-3">
+        <div class="col-md-11 mx-auto mb-3">
             <div style="font-size: 1.5rem;">
                 Edit Book
             </div>
             <hr class="mb-4">
             <div class="card-body">
 
-                <form th:action="@{/book/modify}" th:method="post" novalidate>
+                <form th:action="@{/book/modify}" th:method="post" novalidate id="editBookForm">
                     <input type="hidden" name="bNo" th:value="${dto.bNo}">
                     <!-- Hidden field to store the final selected subcategory's dcode -->
                     <input type="hidden" id="bCategory" name="bCategory" value="">
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Title</span>
-                        <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" required>
-                        <div class="invalid-feedback">Title is required</div>
-                    </div>
+                    <!-- 왼쪽에 책 정보 -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Title</span>
+                                <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" required>
+                                <div class="invalid-feedback">Title is required</div>
+                            </div>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Author</span>
-                        <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" required>
-                        <div class="invalid-feedback">Author is required</div>
-                    </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Author</span>
+                                <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" required>
+                                <div class="invalid-feedback">Author is required</div>
+                            </div>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">ISBN</span>
-                        <input type="text" id="isbnInput" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" required>
-                        <div class="invalid-feedback">ISBN is required</div>
-                    </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">ISBN</span>
+                                <input type="text" id="isbnInput" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" required>
+                                <div class="invalid-feedback">ISBN is required</div>
+                            </div>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Publication Year</span>
-                        <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" required>
-                        <div class="invalid-feedback">Publication Year is required</div>
-                    </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Publication Year</span>
+                                <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" required>
+                                <div class="invalid-feedback">Publication Year is required</div>
+                            </div>
 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Publisher</span>
-                        <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" required>
-                        <div class="invalid-feedback">Publisher is required</div>
-                    </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Publisher</span>
+                                <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" required>
+                                <div class="invalid-feedback">Publisher is required</div>
+                            </div>
 
-                    <div class="mb-3">
-                        <label class="form-label" style="margin-right: 10px;">Category</label>
-                        <div class="d-flex">
-                            <select id="mainCategory" class="form-select me-2" required>
-                                <option value="">---Main category---</option>
-                                <option th:each="cat : ${catDTO}" th:value="${cat.cDcode}"
-                                        th:text="${cat.cName}" th:if="${#strings.length(cat.cDcode) == 2}"></option>
-                            </select>
-                            <select id="subCategory" class="form-select" required>
-                                <option value="">---Sub category---</option>
-                            </select>
-                            <div class="invalid-feedback">Main category and Subcategory are required</div>
+                            <!-- Book Condition -->
+                            <div class="mb-3">
+                                <label for="bCondition" class="form-label">Condition</label>
+                                <select class="form-select" name="bCondition" id="bCondition" required>
+                                    <option value="">---Book condition---</option>
+                                    <option value="Excellent" th:selected="${dto.bCondition} == 'Excellent'">Excellent</option>
+                                    <option value="Good" th:selected="${dto.bCondition} == 'Good'">Good</option>
+                                    <option value="Fair" th:selected="${dto.bCondition} == 'Fair'">Fair</option>
+                                    <option value="Poor" th:selected="${dto.bCondition} == 'Poor'">Poor</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a book condition</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" style="margin-right: 10px;">Category</label>
+                                <div class="d-flex">
+                                    <select id="mainCategory" class="form-select me-2" required>
+                                        <option value="">---Main category---</option>
+                                        <option th:each="cat : ${catDTO}" th:value="${cat.cDcode}"
+                                                th:text="${cat.cName}" th:if="${#strings.length(cat.cDcode) == 2}"></option>
+                                    </select>
+                                    <select id="subCategory" class="form-select" required>
+                                        <option value="">---Sub category---</option>
+                                    </select>
+                                    <div class="invalid-feedback">Main category and Subcategory are required</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 오른쪽에 이미지 -->
+                        <div class="col-md-4 d-flex flex-column align-items-center">
+                            <img th:src="@{${dto.bCover != null ? dto.bCover : '/images/default.png'}}" alt="No Book Image" class="img-thumbnail mb-3" style="width: 200px; height: 300px; object-fit: cover;">
+                            <div class="mb-3">
+                                <label for="bCover" class="btn btn-outline-secondary">Choose another image</label>
+                                <input type="file" id="bCover" name="bCover" class="form-control" style="display: none;">
+                            </div>
                         </div>
                     </div>
 
                     <div class="my-4">
                         <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
                             <div class="btn-group" role="group">
-                                <button type="submit" class="btn btn-outline-dark">Save</button>
+                                <button type="submit" class="btn btn-outline-dark" id="saveBtn">Save</button>
                                 <a th:href="|@{/book/list}?${link}|" class="btn btn-secondary text-decoration-none">List</a>
                             </div>
                         </div>
@@ -75,7 +102,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 
 <script layout:fragment="script" th:inline="javascript">

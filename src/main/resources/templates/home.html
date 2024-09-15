@@ -7,79 +7,88 @@
     <h3 th:if="${session.userLogin != null}">Hi, <span th:text="${session.uName}"></span></h3>
     <h3 th:if="${session.adminLogin != null}">[Admin Mode]</h3>
 
-    <div class="container-fluid">
-        <!-- 로그인 버튼을 숨기기 위한 조건 -->
-        <div th:if="${session.adminLogin == null and session.userLogin == null}">
-            <form action="/user/login" method="get" style="display: inline;">
-                <button type="submit" class="btn btn-secondary">LOGIN</button>
-            </form>
+    <!-- 모달 창 시작 -->
+    <div class="modal fade" tabindex="-1" id="warningModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content alert alert-warning">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning⚠️</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResult"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 모달 창 끝 -->
+
+    <!-- Account deleted Modal -->
+    <div class="modal fade" id="accountDeleteModal" tabindex="-1" aria-labelledby="accountDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accountDeleteModalLabel">Account has been deleted</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="accountDeleteModalResult"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="container-fluid">
-        <!-- 로그아웃 버튼을 숨기기 위한 조건 -->
-        <div th:if="${session.adminLogin != null or session.userLogin != null}">
-            <form action="/user/logout" method="post" style="display: inline;">
-                <button type="submit" class="btn btn-primary">LOGOUT</button>
-            </form>
-        </div>
-
-        <!-- 모달 창 시작 -->
-        <div class="modal fade" tabindex="-1" id="warningModal">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content alert alert-warning">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Warning⚠️</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="modalResult"></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
+    <!-- Level Up Modal -->
+    <div class="modal fade" id="levelUpModal" tabindex="-1" aria-labelledby="levelUpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="levelUpModalLabel">Congratulations🎉</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="levelUpModalResult"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yes!</button>
                 </div>
             </div>
         </div>
-        <!-- 모달 창 끝 -->
-
-        <!-- Account deleted Modal -->
-        <div class="modal fade" id="accountDeleteModal" tabindex="-1" aria-labelledby="accountDeleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="accountDeleteModalLabel">Account has been deleted</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="accountDeleteModalResult"></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Level Up Modal -->
-        <div class="modal fade" id="levelUpModal" tabindex="-1" aria-labelledby="levelUpModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="levelUpModalLabel">Congratulations🎉</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="levelUpModalResult"></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yes!</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Admin Password Change Modal -->
+    <div class="modal fade" id="adminPasswordChangeModal" tabindex="-1" aria-labelledby="adminPasswordChangeModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminPasswordChangeModalLabel">Initial Login Password Reset <b>(Mandatory)</b></h5>
+                </div>
+                <div class="modal-body">
+                    <form id="passwordChangeForm" method="post" action="/home">
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" id="submitPasswordChange">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
@@ -144,31 +153,82 @@
         }
     });
 
-    //유저페이지 계정삭제 확인 모달
     var result = [[${result}]];
-    console.log(result);
+
     if(result) {
+        // Account deletion confirmation modal
         if (result == "Deleted") {
             document.querySelector("#accountDeleteModalResult").innerHTML =
                 `Thank you for using our service.<br>
-                     Your account has been terminated as of <b>[[${delDate}]]</b>.`;
+                 Your account has been terminated as of <b>[[${delDate}]]</b>.`;
             var modal = new bootstrap.Modal(document.querySelector("#accountDeleteModal"));
             modal.show();
-        } else if (result == "Level up") {
+        }
+        // Level up modal
+        else if (result == "Level up") {
             document.querySelector("#levelUpModalResult").innerHTML =
                 `Hooray!🥳<br>
-                     Congratulations! You've reached <b>[[${level}]]</b> level.<br><br>
-                    Shall we go explore more books?`;
+                 Congratulations! You've reached <b>[[${level}]]</b> level.<br><br>
+                Shall we go explore more books?`;
             var modal = new bootstrap.Modal(document.querySelector("#levelUpModal"));
             modal.show();
         }
+        // Admin first time login - Password Change Modal
+        else if (result == "Admin first time login") {
+            var modal = new bootstrap.Modal(document.querySelector("#adminPasswordChangeModal"), {
+                backdrop: 'static',
+                keyboard: false // Prevent closing the modal
+            });
+            modal.show();
+        }
     }
+
+    // Password Validation
+    const hasUpperCase = /[A-Z]/;
+    const hasLowerCase = /[a-z]/;
+    const hasDigit = /\d/;
+    const hasSpecialChar = /[~!@#$%^&*=\+]/;
+
+    document.getElementById('submitPasswordChange').addEventListener('click', function () {
+        const newPw = document.getElementById('newPassword').value;
+        const confirmPw = document.getElementById('confirmPassword').value;
+
+        if (!newPw || !confirmPw) {
+            alert("Please enter the password.");
+        } else if (newPw.length < 8) {
+            alert("Password must be at least 8 characters long.");
+        } else if (newPw != confirmPw) {
+            alert("Passwords are not same.");
+        } else {
+            let criteriaCount = 0;
+            if (hasUpperCase.test(newPw)) criteriaCount++;
+            if (hasLowerCase.test(newPw)) criteriaCount++;
+            if (hasDigit.test(newPw)) criteriaCount++;
+            if (hasSpecialChar.test(newPw)) criteriaCount++;
+
+            if (criteriaCount < 3) {
+                alert("Password must include at least three of the following: uppercase letters, lowercase letters, digits, and special characters.");
+            } else {
+                // Password meets all criteria, proceed with form submission
+                const modalElement = document.querySelector("#adminPasswordChangeModal");
+                const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
+                bootstrapModal.hide();  // Hide the modal
+
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/home';
+
+                // Add hidden input field for new password
+                const hiddenNewPw = document.createElement('input');
+                hiddenNewPw.type = 'hidden';
+                hiddenNewPw.name = 'newPw';
+                hiddenNewPw.value = newPw;
+                form.appendChild(hiddenNewPw);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    });
 </script>
-
-<!--<th:block layout:fragment="script">
-    <script th:inline="javascript">
-
-    </script>
-</th:block>-->
-
 </html>

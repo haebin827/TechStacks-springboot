@@ -110,8 +110,8 @@ public class BookRepositoryTests {
         result.getContent().forEach(book -> log.info(book));
     }*/
 
-    @Test
+    /*@Test
     public void testDeleteBooksByMainCat() {
         bookRepo.deleteBooksByMainCat("04");
-    }
+    }*/
 }

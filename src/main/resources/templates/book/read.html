@@ -37,7 +37,10 @@
 
                                 <div class="col-md-4 d-flex align-items-center justify-content-end">
                                     <div class="mb-3" style="margin-right: 20px;">
-                                        <img th:src="@{/images/image.png}" alt="Book Image" class="img-fluid img-thumbnail" style="width: 200px; height: 300px;">
+                                        <!-- Check if the book cover exists -->
+                                        <img th:if="${dto.bCover != null}" th:src="@{${dto.bCover}}" alt="Book Image" class="img-thumbnail mb-3" style="width: 200px; height: 300px; object-fit: cover;">
+                                        <!-- If no cover exists, display a default image -->
+                                        <img th:if="${dto.bCover == null}" th:src="@{/images/default.png}" alt="No Book Image" class="img-thumbnail mb-3" style="width: 200px; height: 300px; object-fit: cover;">
                                     </div>
                                 </div>
                             </div>
@@ -77,89 +80,127 @@
                 </div>
             </div>
 
+            <!-- Admin section -->
             <div th:if="${session.adminLogin != null}">
-                    <div class="col-md-8 mx-auto mt-3">
+                <div class="row mt-3">
+                    <div class="col-md-11 mx-auto">
                         <div style="font-size: 1.5rem;">
                             Book Info
                         </div>
-                        <hr class="mb-4">
-                    <div class="card-body">
-                        <form>
-                            <input type="hidden" name="bNo" th:value="${dto.bNo}">
-                            <input type="hidden" name="bTitle" th:value="${dto.bTitle}">
-                            <input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">
-                            <input type="hidden" name="deletionReason" id="hiddenDeletionReason">
-                            <input type="hidden" name="uId" th:value="${session.userLogin != null ? session.userLogin.getUId() : ''}">
+                        <hr>
+                        <div class="row">
+                            <!-- Left section for book details -->
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <form>
+                                        <input type="hidden" name="bNo" th:value="${dto.bNo}">
+                                        <input type="hidden" name="bTitle" th:value="${dto.bTitle}">
+                                        <input type="hidden" name="link" th:value="${pgReqDTO.getLink()}">
+                                        <input type="hidden" name="deletionReason" id="hiddenDeletionReason">
+                                        <input type="hidden" name="uId" th:value="${session.userLogin != null ? session.userLogin.getUId() : ''}">
 
+                                        <!-- Title -->
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">Title</span>
+                                            <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" readonly>
+                                        </div>
 
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Title</span>
-                                <input type="text" name="bTitle" class="form-control" th:value="${dto.bTitle}" readonly>
+                                        <!-- Author -->
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">Author</span>
+                                            <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" readonly>
+                                        </div>
+
+                                        <!-- ISBN -->
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">ISBN</span>
+                                            <input type="text" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" readonly>
+                                        </div>
+
+                                        <!-- Publication Year -->
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">Publication Year</span>
+                                            <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" readonly>
+                                        </div>
+
+                                        <!-- Publisher -->
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">Publisher</span>
+                                            <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" readonly>
+                                        </div>
+
+                                        <!-- Condition -->
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">Condition</span>
+                                            <input type="text" name="bCondition" class="form-control" th:value="${dto.bCondition}" readonly>
+                                        </div>
+
+                                        <!-- Category -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Category</label>
+                                            <div class="row">
+                                                <!-- Main Category -->
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" readonly
+                                                           th:each="mainCat : ${catDTO}"
+                                                           th:if="${#strings.equals(mainCat.cDcode, dto.bCategory.substring(0, 2))}"
+                                                           th:value="${mainCat.cName}">
+                                                </div>
+                                                <!-- Sub Category -->
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" readonly
+                                                           th:each="subCat : ${catDTO}"
+                                                           th:if="${#strings.equals(subCat.cDcode, dto.bCategory)}"
+                                                           th:value="${subCat.cName}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
 
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Author</span>
-                                <input type="text" name="bAuthor" class="form-control" th:value="${dto.bAuthor}" readonly>
+                            <!-- Right section for image -->
+                            <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                <div class="mb-3" style="margin-right: 20px;">
+                                    <!-- Check if the book cover exists -->
+                                    <img th:if="${dto.bCover != null}" th:src="@{${dto.bCover}}" alt="Book Image" class="img-thumbnail mb-3" style="width: 200px; height: 300px; object-fit: cover;">
+                                    <!-- If no cover exists, display a default image -->
+                                    <img th:if="${dto.bCover == null}" th:src="@{/images/default.png}" alt="No Book Image" class="img-thumbnail mb-3" style="width: 200px; height: 300px; object-fit: cover;">
+                                </div>
                             </div>
 
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">ISBN</span>
-                                <input type="text" name="bIsbn" class="form-control" th:value="${dto.bIsbn}" readonly>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Publication Year</span>
-                                <input type="number" name="bYear" class="form-control" th:value="${dto.bYear}" readonly>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Publisher</span>
-                                <input type="text" name="bPublisher" class="form-control" th:value="${dto.bPublisher}" readonly>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Category</span>
-                                <input type="text" name="bCategory" class="form-control" th:value="${dto.bCategory}" readonly>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Image</span>
-                                <!--<input type="text" name="bCover" class="form-control" th:value="${dto.bCover}" readonly>-->
-                                <!-- Display the image from the static folder -->
-                                <img th:src="@{/images/image.png}" alt="Book Image" class="img-thumbnail">
-                            </div>
-
-                            <div class="my-4" style="margin-bottom: 2rem;">
-                                <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                        </div>
+                        <div class="my-4" style="margin-bottom: 2rem;">
+                            <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
                                     <span th:if="${session.adminLogin}">
                                         <div class="btn-group" role="group">
                                             <button type="button" id="removeBtn" class="btn btn-outline-danger">Remove</button>
                                             <a th:href="|@{/book/modify(bNo=${dto.bNo})}&${link}|" class="btn btn-outline-dark text-decoration-none">Modify</a>
                                         </div>
                                     </span>
-                                    <a th:href="|@{/book/list}?${link}|" class="btn btn-secondary text-decoration-none">List</a>
-                                </div>
+                                <a th:href="|@{/book/list}?${link}|" class="btn btn-secondary text-decoration-none">List</a>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
 
-        <!--<div class="row mt-3">
-            <div class="col-md-12">
-                <div class="my-4">
-                    <button class="btn btn-outline-info addReviewBtn">ADD Review</button>
+
+            <!--<div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="my-4">
+                        <button class="btn btn-outline-info addReviewBtn">ADD Review</button>
+                    </div>
+                    <ul class="list-group reviewList">
+                    </ul>
                 </div>
-                <ul class="list-group reviewList">
-                </ul>
             </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col">
-                <ul class="pagination reviewPaging">
-                </ul>
-            </div>
-        </div>-->
+            <div class="row mt-3">
+                <div class="col">
+                    <ul class="pagination reviewPaging">
+                    </ul>
+                </div>
+            </div>-->
 
         <!-- Delete Modal -->
         <div class="modal fade" id="removeModal" tabindex="-1">

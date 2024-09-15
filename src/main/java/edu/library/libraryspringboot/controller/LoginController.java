@@ -75,6 +75,11 @@ public class LoginController {
 
             if(userDTO.getUNo() == 1) {
                 session.setAttribute("adminLogin", userDTO);
+
+                // 만약 어드민의 첫 로그인이라면, 비밀번호 변경유도
+                if(userDTO.getUPw().equals("0000")) {
+                    redirectAttributes.addFlashAttribute("result", "Admin first time login");
+                }
             }
             else {
                 session.setAttribute("userLogin", userDTO);

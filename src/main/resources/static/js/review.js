@@ -1,3 +1,4 @@
+/*
 async function get1(bNo) {
     const result = await axios.get(`/review/list/${bNo}`)
     console.log(result);
@@ -5,11 +6,11 @@ async function get1(bNo) {
     return result.data;
 }
 
-/*
+/!*
 async function getList({bNo, page, size, goLast}) {
     const result = await axios.get(`/review/list/${bNo}`, {params: {page, size}})
     return result.data;
-}*/
+}*!/
 
 async function getList({bNo, page, size, goLast}) {
     try {
@@ -48,3 +49,4 @@ async function modifyReview(reviewObj) {
     const response = await axios.put(`/review/${reviewObj.rNo}`, reviewObj)
     return response.data
 }
+*/
