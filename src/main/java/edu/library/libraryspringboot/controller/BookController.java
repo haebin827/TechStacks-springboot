@@ -36,10 +36,12 @@ public class BookController {
     public void listGET(HttpServletRequest req,
                         PageRequestDTO pgReqDTO, Model model) {
 
-        log.info("check: " + pgReqDTO.getCheck());
-        PageResponseDTO<BookDTO> respDTO = bs.list(pgReqDTO);
-        log.info(respDTO);
 
+        if (pgReqDTO.getCat() == null) {
+            pgReqDTO.setCat("0");
+        }
+
+        PageResponseDTO<BookDTO> respDTO = bs.list(pgReqDTO);
         List<CategoryDTO> catDTO = cs.catList();
 
         model.addAttribute("catDTO", catDTO);
@@ -66,12 +68,15 @@ public class BookController {
     }*/
 
     @GetMapping("/register")
-    public void registerGET() {
+    public void registerGET(Model model) {
 
+        List<CategoryDTO> catDTO = cs.catList();
+        model.addAttribute("catDTO", catDTO);
     }
 
     @PostMapping("/register")
     public String registerPOST(@Valid BookDTO bookDTO,
+                               @RequestParam("bCategory") String bCategory,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
 
@@ -85,7 +90,9 @@ public class BookController {
         }
         log.info(bookDTO);
 
+        bookDTO.setBCategory(bCategory);
         int bNo = bs.register(bookDTO);
+
         redirectAttributes.addFlashAttribute("result", "Added");
         redirectAttributes.addFlashAttribute("bTitle", bookDTO.getBTitle());
 

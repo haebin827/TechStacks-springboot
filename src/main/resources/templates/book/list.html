@@ -12,6 +12,7 @@
                     Book list
                 </div>
                 <!-- Category 버튼을 Book list 제목 바로 오른쪽에 배치 -->
+                <form>
                 <div class="dropdown ms-3">
                     <button class="btn btn-outline-success dropdown-toggle btn-sm" type="button" id="dropdownCategory" aria-expanded="false">
                         Category
@@ -23,11 +24,11 @@
                                 <th:block th:each="parentCat : ${catDTO}">
                                     <th:block th:if="${#strings.length(parentCat.cDcode) == 2}">
                                         <!-- 메인 메뉴도 클릭 가능하도록 변경 -->
-                                        <a class="fw-bold text-success mb-2 d-block text-decoration-none" href="#">[[${parentCat.cName}]]</a>
+                                        <a class="menuBtn fw-bold text-success mb-2 d-block text-decoration-none" th:value="${parentCat.cDcode}">[[${parentCat.cName}]]</a>
                                         <!-- 서브메뉴 생성 -->
                                         <th:block th:each="childCat : ${catDTO}">
                                             <th:block th:if="${#strings.length(childCat.cDcode) == 4 && childCat.cDcode.startsWith(parentCat.cDcode)}">
-                                                <a class="dropdown-item ps-3" href="#">[[${childCat.cName}]]</a>
+                                                <a class="menuBtn dropdown-item ps-3" th:value="${childCat.cDcode}">[[${childCat.cName}]]</a>
                                             </th:block>
                                         </th:block>
                                         <br>
@@ -37,32 +38,37 @@
                         </div>
                     </div>
                 </div>
+                </form>
             </div>
 
                 <hr class="mb-4">
 
+            <div class="mb-3">
+                <span th:text="'Total: '"></span>
+                <strong th:text="${respDTO.total}"></strong>
+            </div>
+
+            <form>
                 <!-- 검색창 -->
-                <form>
                     <input type="hidden" name="bNo" value="${dto.bNo}">
                     <div class="col">
                         <input type="hidden" name="size" th:value="${pgReqDTO.size}">
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
-                                <select class="form-select" name="type">
+                                <select class="form-select" id="type" name="type">
                                     <option value="">---</option>
                                     <option value="t" th:selected="${pgReqDTO.type =='t'}">Title</option>
                                     <option value="a" th:selected="${pgReqDTO.type =='a'}">Author</option>
                                     <option value="i" th:selected="${pgReqDTO.type =='i'}">ISBN</option>
                                 </select>
                             </div>
-                            <input type="text" class="form-control" name="keyword" th:value="${pgReqDTO.keyword}">
+                            <input type="text" class="form-control" id="keyword" name="keyword" th:value="${pgReqDTO.keyword}">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
+                                <button class="btn btn-outline-secondary searchBtn" id="searchBtn" type="button">Search</button>
                                 <button class="btn btn-outline-secondary clearBtn" type="button">Clear</button>
                             </div>
                         </div>
                     </div>
-                </form>
             </div>
 
         <div class="col-md-11 mx-auto">
@@ -70,6 +76,7 @@
                 <div class="col">
                     <div class="card mb-4">
                         <div class="card-header">
+
                             <div class="form-check form-switch float-end">
                                 <input class="form-check-input" type="checkbox" name='check'
                                        th:checked="${pgReqDTO.check}" id="rentAvail">
@@ -79,6 +86,7 @@
                             </div>
                         </div>
                     </div>
+                    </form>
                     <div class="card-body">
 
                         <table class="table" style="width: 100%;">
@@ -159,6 +167,31 @@
 
         <script layout:fragment="script" th:inline="javascript">
 
+            document.querySelectorAll(".menuBtn").forEach(button => {
+                button.addEventListener("click", function (e) {
+                    e.preventDefault();  // Prevent default link behavior
+                    e.stopPropagation(); // Stop event propagation
+
+                    const cat = this.getAttribute("value"); // Get the category code (cDcode) from the clicked button
+                    const formObj = document.querySelector("form"); // Reference the form element
+
+                    // Remove any existing 'cat' hidden input to avoid duplicates
+                    const existingCatInput = formObj.querySelector("input[name='cat']");
+                    if (existingCatInput) {
+                        existingCatInput.remove();
+                    }
+
+                    // Append the new hidden input for 'cat'
+                    formObj.innerHTML += `<input type='hidden' name='cat' value='${cat}'>`;
+
+                    // Set the form action and method, and submit the form
+                    formObj.action = "/book/list";
+                    formObj.method = "get";
+                    formObj.submit();
+                });
+            });
+
+
             document.querySelector(".pagination").addEventListener("click", function (e) {
                 e.preventDefault()
                 e.stopPropagation()
@@ -173,7 +206,16 @@
 
                 const formObj = document.querySelector("form")
 
+                const cat = /*[[${pgReqDTO.cat}]]*/ 0; // Default to '-1' if not provided
+                const keywordValue = document.querySelector("#keyword").value;
+                const typeValue = document.querySelector("#type").value;
+                const checkValue = document.querySelector("#rentAvail").value;
+
                 formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+                formObj.innerHTML += `<input type='hidden' name='cat' value='${cat}'>`;
+                formObj.innerHTML += `<input type='hidden' name='keyword' value='${keywordValue}'>`;
+                formObj.innerHTML += `<input type='hidden' name='type' value='${typeValue}'>`;
+                formObj.innerHTML += `<input type='hidden' name='check' value='${checkValue}'>`;
                 formObj.action = "/book/list"
                 formObj.method = "get"
 
@@ -181,13 +223,51 @@
 
             },false)
 
+            document.querySelector("#searchBtn").addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const formObj = document.querySelector("form");
+                const keywordValue = document.querySelector("#keyword").value; // Get the value of the word input
+                const typeValue = document.querySelector("#type").value;
+
+                // Retrieve the group value from Thymeleaf and initialize it
+                const cat = /*[[${pgReqDTO.cat}]]*/ 0; // Default to '-1' if not provided
+
+                // Append the hidden inputs for group and word
+                formObj.innerHTML += `<input type='hidden' name='cat' value='${cat}'>`;
+                formObj.innerHTML += `<input type='hidden' name='keyword' value='${keywordValue}'>`; // Ensure the word is included
+                formObj.innerHTML += `<input type='hidden' name='type' value='${typeValue}'>`;
+
+                formObj.action = "/book/list";
+                formObj.method = "get";
+
+                formObj.submit();
+            }, false);
+
             document.querySelector(".clearBtn").addEventListener("click", function (e){
-                e.preventDefault()
-                e.stopPropagation()
+                e.preventDefault();
+                e.stopPropagation();
 
-                self.location ='/book/list'
+                var link = /*[[${pgReqDTO.getLink()}]]*/ '';
 
-            },false)
+                // 기본 링크에서 `word` 파라미터를 제거하고 페이지를 1로 설정
+                let updatedLink = link.replace(/page=\d+/, "page=1");
+
+                // `word` 파라미터 제거
+                updatedLink = updatedLink.replace(/&?keyword=[^&]*/g, '');
+                updatedLink = updatedLink.replace(/&?type=[^&]*/g, '');
+
+                // 만약 `&`가 link의 시작에 위치한다면 제거
+                if (updatedLink.startsWith('&')) {
+                    updatedLink = updatedLink.substring(1);
+                }
+
+                // self.location을 업데이트된 링크로 설정
+                self.location = `/book/list?${updatedLink}`;
+            }, false);
+
+
 
             /*show modal
             var bTitle = [[${bTitle}]];
@@ -206,18 +286,48 @@
                 var modal = new bootstrap.Modal(document.querySelector(".modal"));
                 modal.show();
             }
+             */
 
             // Submit form when checkbox is changed
-            document.querySelector("#rentAvail").addEventListener("change", function (e) {
+            /*document.querySelector("#rentAvail").addEventListener("change", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
                 const formObj = document.querySelector("form");
 
+                // Extract the current link from pgReqDTO.getLink(), which contains the existing query parameters
+                let link = /!*[[${pgReqDTO.getLink()}]]*!/ '';
+
+                // If the checkbox is checked, add 'check=on', otherwise remove 'check=on'
                 if (this.checked) {
-                    formObj.innerHTML += `<input type='hidden' name='check' value='on'>`;
+                    // Add 'check=on' if it's not already in the URL
+                    if (!link.includes('check=on')) {
+                        link = link.replace(/&?check=on/g, '');
+                    }
                 } else {
+                    // Remove 'check=on' from the URL if it's unchecked
+                    link += `&check=on`;
                 }
-                formObj.submit();
-                //document.querySelector("form").submit();
-            });*/
+
+                // Append the rest of the necessary parameters back if they are not already part of the link
+                const cat = /!*[[${pgReqDTO.cat}]]*!/ 0;
+                const type = document.querySelector("#type").value || '';
+                const keyword = document.querySelector("#keyword").value || '';
+
+                if (!link.includes('cat=')) {
+                    link += `&cat=${cat}`;
+                }
+                if (!link.includes('type=')) {
+                    link += `&type=${type}`;
+                }
+                if (!link.includes('keyword=')) {
+                    link += `&keyword=${keyword}`;
+                }
+
+                // Redirect to the updated URL, ensuring the checkbox status is reflected in the URL
+                window.location.href = `/book/list?${link}`;
+            });
+*/
 
             document.addEventListener('DOMContentLoaded', function () {
                 var bTitle = /*[[${bTitle}]]*/ '';

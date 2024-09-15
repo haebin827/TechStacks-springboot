@@ -3,87 +3,138 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}">
 
-<head>
-    <title>Book Register</title>
-</head>
-
 <div layout:fragment="content">
     <div class="row mt-3">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    Book Register
-                </div>
-                <div class="card-body">
-                    <form th:action="@{/book/register}" th:method="post" novalidate>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Title</span>
-                            <input type="text" name="bTitle" class="form-control" placeholder="Title" required>
-                            <div class="invalid-feedback">Title is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Author</span>
-                            <input type="text" name="bAuthor" class="form-control" placeholder="Author" required>
-                            <div class="invalid-feedback">Author is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">ISBN</span>
-                            <input type="text" name="bIsbn" class="form-control" placeholder="ISBN" required>
-                            <div class="invalid-feedback">ISBN is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Publication Year</span>
-                            <input type="number" name="bYear" class="form-control" placeholder="Year" required>
-                            <div class="invalid-feedback">Publication Year is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Publisher</span>
-                            <input type="text" name="bPublisher" class="form-control" placeholder="Publisher" required>
-                            <div class="invalid-feedback">Publisher is required</div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Category</span>
-                            <input type="text" name="bCategory" class="form-control" placeholder="Category" required>
-                            <div class="invalid-feedback">Category is required</div>
-                        </div>
-
-                        <div class="my-4">
-                            <div class="float-end">
-                                <button type="submit" class="btn btn-success">Submit</button>
-                                <button type="reset" class="btn btn-warning">Reset</button>
-                                <a th:href="|@{/book/list}|" class="text-decoration-none">
-                                    <button type="button" class="btn btn-secondary">List</button>
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        <div class="col-md-11 mx-auto mt-3">
+            <div style="font-size: 1.5rem;">
+                Add a new Book
             </div>
+            <hr class="mb-4">
+            <form th:action="@{/book/register}" th:method="post" novalidate>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Title</span>
+                    <input type="text" name="bTitle" class="form-control" placeholder="Title" required>
+                    <div class="invalid-feedback">Title is required</div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Author</span>
+                    <input type="text" name="bAuthor" class="form-control" placeholder="Author" required>
+                    <div class="invalid-feedback">Author is required</div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">ISBN</span>
+                    <input type="text" id="isbnInput" name="bIsbn" class="form-control" placeholder="ISBN" required>
+                    <div class="invalid-feedback">ISBN is required</div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Publication Year</span>
+                    <input type="number" name="bYear" class="form-control" placeholder="Year" required>
+                    <div class="invalid-feedback">Publication Year is required</div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Publisher</span>
+                    <input type="text" name="bPublisher" class="form-control" placeholder="Publisher" required>
+                    <div class="invalid-feedback">Publisher is required</div>
+                </div>
+
+                <!-- Main Category Select -->
+                <!--<div class="input-group mb-3">
+                    <span class="input-group-text">Main Category</span>
+                    <select id="mainCategory" class="form-select me-2" required>
+                        <option value="">-&#45;&#45;Main category-&#45;&#45;</option>
+                        &lt;!&ndash; Main categories will be dynamically inserted here &ndash;&gt;
+                    </select>
+                    <div class="invalid-feedback">Main category is required</div>
+                </div>
+
+                &lt;!&ndash; Sub Category Select &ndash;&gt;
+                <div class="input-group mb-3">
+                    <span class="input-group-text">-&#45;&#45;Sub category-&#45;&#45;</span>
+                    <select id="subCategory" name="bCategory" class="form-select" required>
+                        <option value="">Select Sub Category</option>
+                        &lt;!&ndash; Sub categories will be dynamically inserted here &ndash;&gt;
+                    </select>
+                    <div class="invalid-feedback">Sub category is required</div>
+                </div>-->
+
+                <div class="mb-3">
+                    <label class="form-label" style="margin-right: 10px;">Category</label>
+                    <div class="d-flex">
+                        <select id="mainCategory" class="form-select me-2" required>
+                            <option value="">---Main category---</option>
+                        </select>
+                        <select id="subCategory" name="bCategory" class="form-select" required>
+                            <option value="">---Sub category---</option>
+                        </select>
+                        <div class="invalid-feedback">Main category and Subcategory are required</div>
+                    </div>
+                </div>
+
+                <!-- Button Group -->
+                <div class="my-4">
+                    <div class="float-end">
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-outline-dark">Submit</button>
+                            <button type="reset" class="btn btn-outline-dark">Reset</button>
+                            <a th:href="|@{/book/list}|" class="btn btn-secondary text-decoration-none">List</a>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
         </div>
     </div>
+</div>
+</div>
 </div>
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
 
-    /*
-    const errors = [[${errors}]];
-    console.log(errors);
+    var catDTO = /*[[${catDTO}]]*/ [];  // catDTO 데이터는 서버에서 주어짐
+    console.log(catDTO);
 
-    let errorMsg = '';
+    const mainCategorySelect = document.getElementById('mainCategory');
+    const subCategorySelect = document.getElementById('subCategory');
+    var isbnInput = document.getElementById('isbnInput');
 
-    if(errors) {
-        for(let i = 0; i<errors.length; i++) {
-            errorMsg += `${errors[i].field} is ${errors[i].code} \n`
-        }
-        alert(errorMsg)
+    // Main Category 초기화
+    function populateMainCategories() {
+        const mainCategories = catDTO.filter(category => category.cdcode.length === 2);
+        mainCategories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.cdcode;
+            option.text = category.cname;
+            mainCategorySelect.appendChild(option);
+        });
     }
-     */
+
+    // Sub Category 초기화
+    function populateSubCategories(mainCategoryCode) {
+        subCategorySelect.innerHTML = '<option value="">---Sub category---</option>';
+        const subCategories = catDTO.filter(category => category.cdcode.startsWith(mainCategoryCode) && category.cdcode.length === 4);
+        subCategories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.cdcode;
+            option.text = category.cname;
+            subCategorySelect.appendChild(option);
+        });
+    }
+
+    // Main Category 변경 이벤트 핸들러
+    mainCategorySelect.addEventListener('change', function() {
+        const selectedMainCategory = this.value;
+        populateSubCategories(selectedMainCategory);
+    });
+
+    // 페이지 로드 시 Main Categories를 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        populateMainCategories();
+    });
 
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function () {
@@ -99,6 +150,10 @@
                     if (form.checkValidity() === false) {
                         event.preventDefault()
                         event.stopPropagation()
+                    } else if (isbnInput.value.length !== 10) {
+                        alert('ISBN must be exactly 10 digits long.');
+                        event.preventDefault();
+                        event.stopPropagation();
                     }
 
                     form.classList.add('was-validated')

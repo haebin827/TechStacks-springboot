@@ -78,7 +78,6 @@
             </div>
 
             <div th:if="${session.adminLogin != null}">
-                <div class="card">
                     <div class="col-md-8 mx-auto mt-3">
                         <div style="font-size: 1.5rem;">
                             Book Info
@@ -145,9 +144,8 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row mt-3">
+        <!--<div class="row mt-3">
             <div class="col-md-12">
                 <div class="my-4">
                     <button class="btn btn-outline-info addReviewBtn">ADD Review</button>
@@ -161,7 +159,7 @@
                 <ul class="pagination reviewPaging">
                 </ul>
             </div>
-        </div>
+        </div>-->
 
         <!-- Delete Modal -->
         <div class="modal fade" id="removeModal" tabindex="-1">
@@ -186,7 +184,7 @@
         </div>
 
             <!-- Register Modal -->
-            <div class="modal fade registerModal" tabindex="-1">
+            <!--<div class="modal fade registerModal" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -209,7 +207,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
     </div>
 </div>
@@ -231,7 +229,7 @@
         console.error(e)
     })*/
 
-    const reviewList = document.querySelector('.reviewList')
+    /*const reviewList = document.querySelector('.reviewList')
     const reviewPaging = document.querySelector('.reviewPaging')
 
     function printList(dtoList, currentPage, pageSize) {
@@ -358,7 +356,7 @@
         page = pageNum
         printReviews(page, size)
 
-    },false)
+    },false)*/
 
 
     if ([[${session.adminLogin == null}]]) {

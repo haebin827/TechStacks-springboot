@@ -1,0 +1,119 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/adminSubMenu.html}">
+
+<div layout:fragment="adminSubMenu">
+    <div class="row mt-3">
+        <div class="col-md-8 mx-auto">
+            <div style="font-size: 1.5rem;">
+                Change PW
+            </div>
+            <hr class="mb-4">
+            <div class="card-body">
+                <!-- Form for password change -->
+                <form>
+                    <div class="mb-3">
+                        <label for="currPw" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currPw" name="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPw" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPw" name="newPassword" required>
+                    </div>
+                    <div class="float-end mb-3">
+                        <button type="submit" class="btn btn-outline-dark">Change Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Info Modal -->
+        <div class="modal fade" id="confirmChangedPwModal" tabindex="-1" aria-labelledby="confirmChangedPwModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmChangedPwModalLabel">Info</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalResult"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    document.querySelector(".btn-outline-dark").addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const currPw = document.querySelector("#currPw").value;
+        const newPw = document.querySelector("#newPw").value;
+        const correctPw = [[${dto.uPw}]];
+
+        // Regular expressions for different character types
+        const hasUpperCase = /[A-Z]/;
+        const hasLowerCase = /[a-z]/;
+        const hasDigit = /\d/;
+        const hasSpecialChar = /[~!@#$%^&*=\+]/;
+
+        if (!currPw || !newPw) {
+            alert("Please enter the password.");
+        } else if (currPw !== correctPw) {
+            alert("Current password does not match.");
+        } else if (currPw == newPw) {
+            alert("The passwords are the same.");
+        } else {
+            // Check if the password is at least 8 characters long
+            if (newPw.length < 8) {
+                alert("Password must be at least 8 characters long.");
+            }
+            // Check if the password includes at least three of the following: uppercase letters, lowercase letters, digits, and special characters
+            else {
+                let criteriaCount = 0;
+
+                if (hasUpperCase.test(newPw)) criteriaCount++;
+                if (hasLowerCase.test(newPw)) criteriaCount++;
+                if (hasDigit.test(newPw)) criteriaCount++;
+                if (hasSpecialChar.test(newPw)) criteriaCount++;
+
+                if (criteriaCount < 3) {
+                    alert("Password must include at least three of the following: uppercase letters, lowercase letters, digits, and special characters.");
+                } else {
+                    // Password meets all criteria, proceed with form submission
+                    const form = document.createElement('form');
+                    form.method = 'post';
+                    form.action = '/adminPage/changePw';
+
+                    // Add hidden input field for new password
+                    const hiddenNewPw = document.createElement('input');
+                    hiddenNewPw.type = 'hidden';
+                    hiddenNewPw.name = 'newPw';
+                    hiddenNewPw.value = newPw;
+                    form.appendChild(hiddenNewPw);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        }
+    });
+
+    // Show modal if result is present
+    const result = [[${result}]];
+    if (result) {
+        document.querySelector("#modalResult").innerHTML = "Your password has been successfully changed!";
+        const modal = new bootstrap.Modal(document.querySelector("#confirmChangedPwModal"));
+        modal.show();
+    }
+
+</script>
+</html>

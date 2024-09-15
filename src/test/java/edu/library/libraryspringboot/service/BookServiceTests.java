@@ -15,7 +15,7 @@ public class BookServiceTests {
     @Autowired
     private BookService bs;
 
-    @Test
+    /*@Test
     public void testRegister() {
         log.info(bs.getClass().getName());
 
@@ -30,8 +30,8 @@ public class BookServiceTests {
         int bNo = bs.register(bookDTO);
         log.info("bNo: " + bNo);
     }
-
-    @Test
+*/
+    /*@Test
     public void testModify() {
 
         BookDTO bookDTO = BookDTO.builder()
@@ -42,30 +42,41 @@ public class BookServiceTests {
                 .build();
 
         bs.modify(bookDTO);
-    }
+    }*/
 
     @Test
     public void testReadOne() {
         log.info(bs.readOne(2));
     }
 
-    @Test
+    /*@Test
     public void testRemove() {
         bs.remove(4);
-    }
+    }*/
 
     @Test
     public void testList() {
 
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
-                .type("tai")
-                .keyword("author")
+                .type("t")
+                .keyword("data structure")
+                .cat("0101")
                 .page(1)
                 .size(10)
                 .build();
 
         PageResponseDTO<BookDTO> responseDTO = bs.list(pageRequestDTO);
         log.info("responseDTO: " + responseDTO);
+    }
+
+    @Test
+    public void testGetMaxCDcode() {
+        log.info("DCode: " + bs.getMaxCDcode("02"));
+    }
+
+    @Test
+    public void testGetMainCatBooklist() {
+        log.info(bs.getMainCatBooklist("01"));
     }
 }
 

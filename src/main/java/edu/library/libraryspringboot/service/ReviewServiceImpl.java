@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.service;
 
 import edu.library.libraryspringboot.domain.Book;
@@ -30,7 +31,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final BookRepository br;
     private final ModelMapper mm;
 
-    /*@Override
+    */
+/*@Override
     public Integer register(ReviewDTO reviewDTO) {
         Review review = mm.map(reviewDTO, Review.class);
         review.setBook(reviewDTO.toBook());
@@ -38,7 +40,8 @@ public class ReviewServiceImpl implements ReviewService {
         Integer rNo = rr.save(review).getRNo();
 
         return rNo;
-    }*/
+    }*//*
+
 
     @Override
     public Integer register(ReviewDTO reviewDTO) {
@@ -86,7 +89,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         Page<Review> result = rr.listOfBook(bNo, pageable);
 
-        /*List<ReviewDTO> dtoList = result.getContent().stream().map(review -> mm.map(review, ReviewDTO.class)).collect(Collectors.toList());*/
+        */
+/*List<ReviewDTO> dtoList = result.getContent().stream().map(review -> mm.map(review, ReviewDTO.class)).collect(Collectors.toList());*//*
+
         List<ReviewDTO> dtoList = result.getContent().stream().map(review -> {
             ReviewDTO reviewDTO = mm.map(review, ReviewDTO.class);
             reviewDTO.setBNo(review.getBook().getBNo()); // Book 객체의 bNo 값을 DTO에 설정
@@ -100,3 +105,4 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
     }
 }
+*/

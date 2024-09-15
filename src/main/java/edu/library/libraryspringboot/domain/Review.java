@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.domain;
 
 import jakarta.persistence.*;
@@ -40,3 +41,4 @@ public class Review {
     }
 
 }
+*/

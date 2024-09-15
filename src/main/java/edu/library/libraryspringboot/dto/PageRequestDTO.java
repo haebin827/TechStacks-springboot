@@ -32,6 +32,8 @@ public class PageRequestDTO {
 
     private Integer group; // menu group
 
+    private String cat; // book category group
+
     private String link;
 
     private Boolean check;
@@ -73,6 +75,14 @@ public class PageRequestDTO {
             if (word != null && !word.isEmpty()) {
                 try {
                     builder.append("&word=" + URLEncoder.encode(word, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (cat != null && !cat.isEmpty()) {
+                try {
+                    builder.append("&cat=" + URLEncoder.encode(cat, "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }

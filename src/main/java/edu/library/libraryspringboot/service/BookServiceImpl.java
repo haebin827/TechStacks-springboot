@@ -1,10 +1,11 @@
 package edu.library.libraryspringboot.service;
 
 import edu.library.libraryspringboot.domain.Book;
-import edu.library.libraryspringboot.dto.BookDTO;
-import edu.library.libraryspringboot.dto.PageRequestDTO;
-import edu.library.libraryspringboot.dto.PageResponseDTO;
+import edu.library.libraryspringboot.domain.Category;
+import edu.library.libraryspringboot.domain.FaqCategory;
+import edu.library.libraryspringboot.dto.*;
 import edu.library.libraryspringboot.repository.BookRepository;
+import edu.library.libraryspringboot.repository.CatRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository br;
+    private final CatRepository cr;
     private final ModelMapper mm;
 
     @Override
@@ -45,6 +47,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public CategoryDTO readOneCat(int cId) {
+        Optional<Category> result = cr.findById(cId);
+        Category category = result.orElseThrow();
+        CategoryDTO categoryDTO = mm.map(category, CategoryDTO.class);
+        return categoryDTO;
+    }
+
+    @Override
     public void modify(BookDTO bookDTO) {
 
         Optional<Book> result = br.findById(bookDTO.getBNo());
@@ -63,10 +73,11 @@ public class BookServiceImpl implements BookService {
 
         String[] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
+        String cat = pageRequestDTO.getCat();
         Pageable pageable = pageRequestDTO.getPageable("bNo");
         Boolean check = pageRequestDTO.getCheck();
 
-        Page<Book> result = br.searchAll(types, keyword, pageable, check);
+        Page<Book> result = br.searchAll(types, keyword, pageable, check, cat);
 
         List<BookDTO> dtoList = result.getContent().stream()
                 .map(book -> mm.map(book, BookDTO.class))
@@ -92,5 +103,82 @@ public class BookServiceImpl implements BookService {
     @Override
     public void setRtnStatus(int bNo, String bCondition) {
         br.updateRtnStatus(bNo, bCondition);
+    }
+
+    @Override
+    public List<CategoryDTO> catList() {
+        List<CategoryDTO> list = cr.findAll().stream()
+                .map(cat -> mm.map(cat, CategoryDTO.class))
+                .collect(Collectors.toList());
+
+        return list;
+    }
+
+    @Override
+    public void removeMainCatList(String cCode1) {
+        cr.deleteMainCatList(cCode1);
+    }
+
+    @Override
+    public void removeSubCatList(String cDcode) {
+        cr.deleteSubCatList(cDcode);
+    }
+
+    @Override
+    public void catRemove(int cId) {
+        cr.deleteById(cId);
+    }
+
+    @Override
+    public String getMaxCCode1() {
+        return cr.findMaxCCode1();
+    }
+
+    @Override
+    public String getMaxCDcode(String selectedMainCat) {
+        return cr.findMaxCDcode(selectedMainCat);
+    }
+
+    @Override
+    public void catRegister(CategoryDTO catDTO) {
+
+        Category cat = mm.map(catDTO, Category.class);
+        cr.save(cat);
+    }
+
+    /*@Override
+    public void removeBooksByMainCat(String cCode1) {
+        br.deleteBooksByMainCat(cCode1);
+    }*/
+
+    /*@Override
+    public void removeBooksBySubCat(String cDcode) {
+        br.deleteBooksBySubCat(cDcode);
+    }*/
+
+    @Override
+    public List<BookDTO> getMainCatBooklist(String cCode1) {
+        List<BookDTO> list = br.findMainCatBooklist(cCode1).stream()
+                .map(book -> mm.map(book, BookDTO.class))
+                .collect(Collectors.toList());
+        return list;
+    }
+
+    @Override
+    public List<BookDTO> getSubCatBooklist(String cDcode) {
+        List<BookDTO> list = br.findSubCatBooklist(cDcode).stream()
+                .map(book -> mm.map(book, BookDTO.class))
+                .collect(Collectors.toList());
+        return list;
+    }
+
+    @Override
+    public void setCatName(String cName, int cId) {
+        cr.updateCatName(cName, cId);
+    }
+
+    @Override
+    public void moveCat(String bCat, String bPrevCat) {
+        br.changeCat(bCat, bPrevCat);
     }
 }

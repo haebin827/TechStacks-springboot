@@ -1,0 +1,439 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/adminSubMenu.html}">
+
+<div layout:fragment="adminSubMenu">
+
+    <div class="row mt-3">
+        <div class="col-md-11 mx-auto">
+            <div class="col">
+                <div style="font-size: 1.5rem;">
+                    Book Categories
+                </div>
+                <hr class="mb-4">
+            </div>
+
+            <!-- Main Category Select -->
+            <div class="mb-3">
+                <label for="mainCategorySelect" class="form-label">Main Category</label>
+                <select id="mainCategorySelect" class="form-select" onchange="updateSubCategories(); toggleMainActionButtons();">
+                    <option value="">---Main category---</option>
+                    <option th:each="category : ${catList}" th:if="${category.cDcode.length() == 2}"
+                            th:value="${category.cDcode}" th:text="${category.cName}"></option>
+                </select>
+                <!-- Main Category Action Buttons -->
+                <div class="mt-3 d-none" id="mainActionButtons">
+                    <form th:action="@{/adminPage/book/remove}" method="post" class="d-inline" id="mainCategoryDeleteForm">
+                        <input type="hidden" name="cId" id="mainCategoryIdToDelete">
+                        <button type="button" class="btn btn-outline-danger" onclick="confirmDelete('main')">Remove</button>
+                    </form>
+                    <button type="button" class="btn btn-outline-primary ms-2" onclick="showRenameModal('main')">Rename</button>
+                </div>
+            </div>
+
+            <!-- Sub Category Select -->
+            <div class="mb-3">
+                <label for="subCategorySelect" class="form-label">Sub Category</label>
+                <select id="subCategorySelect" class="form-select" onchange="toggleSubActionButtons()">
+                    <option value="">---Sub category---</option>
+                </select>
+                <!-- Sub Category Action Buttons -->
+                <div class="mt-3 d-none" id="subActionButtons">
+                    <form th:action="@{/adminPage/book/remove}" method="post" class="d-inline" id="subCategoryDeleteForm">
+                        <input type="hidden" name="cId" id="subCategoryIdToDelete">
+                        <button type="button" class="btn btn-outline-danger" onclick="confirmDelete('sub')">Remove</button>
+                    </form>
+                    <button type="button" class="btn btn-outline-primary ms-2" onclick="showRenameModal('sub')">Rename</button>
+                    <!-- Move button will be shown only for subcategory -->
+                    <button type="button" class="btn btn-outline-secondary ms-2" onclick="showMoveModal()" id="moveButton">Move</button>
+                </div>
+            </div>
+
+            <!-- Add New Category Button -->
+            <div class="mt-3">
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    <i class="bi bi-plus-lg"></i> Add Category
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Category Modal -->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="addCategoryForm" th:action="@{/adminPage/book/register}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Radio buttons for main/sub category -->
+                            <div class="mb-3">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="categoryType" value="main" onclick="showMainCategoryInput()"> Add a new main category
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="categoryType" value="sub" onclick="showSubCategoryInput()"> Add a new sub category
+                                </label>
+                            </div>
+
+                            <!-- Main Category Select for Sub Category -->
+                            <div class="mb-3 d-none" id="mainCategoryForSub">
+                                <label for="mainCategoryForSubSelect" class="form-label">Select Main Category</label>
+                                <select id="mainCategoryForSubSelect" class="form-select" onchange="setMainCategoryValue()">
+                                    <option value="">---Select Main Category---</option>
+                                    <option th:each="category : ${catList}" th:if="${category.cDcode.length() == 2}"
+                                            th:value="${category.cDcode}" th:text="${category.cName}"></option>
+                                </select>
+                                <!-- Hidden input to store selected main category cDcode -->
+                                <input type="hidden" name="selectedMainCat" id="mainCategoryHidden">
+                            </div>
+
+                            <!-- Input for new category name -->
+                            <div class="mb-3 d-none" id="categoryNameInput">
+                                <label for="categoryName" class="form-label">Category Name</label>
+                                <input type="text" class="form-control" id="categoryName" name="newCatName">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" onclick="validateCategory()">Add</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rename Category Modal -->
+        <div class="modal fade" id="renameCategoryModal" tabindex="-1" aria-labelledby="renameCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="renameCategoryForm" th:action="@{/adminPage/book/modify}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="renameCategoryModalLabel">Rename Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Input for renaming category -->
+                            <div class="mb-3">
+                                <label for="newCategoryName" class="form-label">New Category Name</label>
+                                <input type="text" class="form-control" id="newCategoryName" name="newCategoryName">
+                                <!-- Hidden input to store category id -->
+                                <input type="hidden" name="categoryId" id="renameCategoryId">
+                                <!-- Hidden input to store category cId -->
+                                <input type="hidden" name="cId" id="renameCategoryCId">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" onclick="validateRenameCategory()">Rename</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Move Category Modal -->
+        <div class="modal fade" id="moveCategoryModal" tabindex="-1" aria-labelledby="moveCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="moveCategoryForm" th:action="@{/adminPage/book/move}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="moveCategoryModalLabel">Move Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Current Category -->
+                            <div class="mb-3">
+                                <label for="currentCategoryName" class="form-label">Current Category</label>
+                                <input type="text" class="form-control" id="currentCategoryName" readonly>
+                            </div>
+
+                            <div class="mb-3 text-center">
+                                ➡️
+                            </div>
+
+                            <!-- Main Category and Subcategory for Move, aligned horizontally -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="moveMainCategorySelect" class="form-label">Select Main Category</label>
+                                        <select id="moveMainCategorySelect" class="form-select" onchange="updateMoveSubCategories()">
+                                            <option value="">---Main Category---</option>
+                                            <option th:each="category : ${catList}" th:if="${category.cDcode.length() == 2}"
+                                                    th:value="${category.cDcode}" th:text="${category.cName}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="moveSubCategorySelect" class="form-label">Select Subcategory</label>
+                                        <select id="moveSubCategorySelect" class="form-select">
+                                            <option value="">---Subcategory---</option>
+                                        </select>
+                                        <!-- Hidden input for selected subcategory's cId -->
+                                        <input type="hidden" name="newCatDCode" id="newCatDCode">
+                                        <input type="hidden" name="cDcode" id="moveDCode">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" onclick="validateMoveCategory()">Move</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+    var catList = /*[[${catList}]]*/ [];  // 서버에서 전달된 catDTO 데이터
+
+    function updateSubCategories() {
+        const mainCategoryId = document.getElementById('mainCategorySelect').value;
+        const subCategorySelect = document.getElementById('subCategorySelect');
+
+        // 서브 카테고리 옵션 초기화
+        subCategorySelect.innerHTML = '<option value="">---Sub category---</option>';
+
+        if (mainCategoryId) {
+            const subCategories = catList.filter(category => {
+                return category.cdcode.startsWith(mainCategoryId) && category.cdcode.length === 4;
+            });
+
+            if (subCategories.length > 0) {
+                subCategories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.cdcode;
+                    option.textContent = category.cname;
+                    subCategorySelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.textContent = 'No subcategories available';
+                option.disabled = true;
+                subCategorySelect.appendChild(option);
+            }
+        }
+    }
+
+    function showMainCategoryInput() {
+        document.getElementById('categoryNameInput').classList.remove('d-none');
+        document.getElementById('mainCategoryForSub').classList.add('d-none');  // Hide sub category select if shown
+
+        // Reset the main category select for sub-category if previously selected
+        document.getElementById('mainCategoryForSubSelect').value = "";
+        document.getElementById('mainCategoryHidden').value = "";
+    }
+
+    function showSubCategoryInput() {
+        document.getElementById('categoryNameInput').classList.remove('d-none');
+        document.getElementById('mainCategoryForSub').classList.remove('d-none');
+    }
+
+    function setMainCategoryValue() {
+        var selectedMainCategory = document.getElementById('mainCategoryForSubSelect').value;
+        document.getElementById('mainCategoryHidden').value = selectedMainCategory;
+    }
+
+    function validateCategory() {
+        var categoryName = document.getElementById('categoryName').value.trim();
+        var categoryType = document.querySelector('input[name="categoryType"]:checked').value;
+
+        if (categoryName === "") {
+            alert("Please enter the category name.");
+            return false;
+        }
+
+        // If sub category is selected, check if main category is chosen
+        if (categoryType === 'sub') {
+            var mainCategoryForSub = document.getElementById('mainCategoryForSubSelect').value;
+            if (mainCategoryForSub === "") {
+                alert("Please select a category.");
+                return false;
+            }
+        }
+
+        var categoryExists = catList.some(category => category.cname.toLowerCase() === categoryName.toLowerCase());
+        if (categoryExists) {
+            alert("This category already exists.");
+            return false;
+        }
+
+        document.getElementById('addCategoryForm').submit();
+    }
+
+    function toggleMainActionButtons() {
+        const mainCategoryValue = document.getElementById('mainCategorySelect').value;
+        const mainActionButtons = document.getElementById('mainActionButtons');
+        const subActionButtons = document.getElementById('subActionButtons');
+
+        if (mainCategoryValue) {
+            // Find selected category from catList and set its cId to the hidden input
+            const selectedCategory = catList.find(cat => cat.cdcode === mainCategoryValue);
+            if (selectedCategory) {
+                document.getElementById('mainCategoryIdToDelete').value = selectedCategory.cid;
+            }
+
+            mainActionButtons.classList.remove('d-none');
+            subActionButtons.classList.add('d-none');
+        } else {
+            mainActionButtons.classList.add('d-none');
+        }
+    }
+
+    function toggleSubActionButtons() {
+        const subCategoryValue = document.getElementById('subCategorySelect').value;
+        const subActionButtons = document.getElementById('subActionButtons');
+        const mainActionButtons = document.getElementById('mainActionButtons');
+
+        if (subCategoryValue) {
+            // Find selected sub category from catList and set its cId to the hidden input
+            const selectedCategory = catList.find(cat => cat.cdcode === subCategoryValue);
+            if (selectedCategory) {
+                document.getElementById('subCategoryIdToDelete').value = selectedCategory.cid;
+            }
+
+            subActionButtons.classList.remove('d-none');
+            mainActionButtons.classList.add('d-none');
+            // Show move button only for subcategory
+            document.getElementById('moveButton').classList.remove('d-none');
+        } else {
+            subActionButtons.classList.add('d-none');
+            document.getElementById('moveButton').classList.add('d-none');
+        }
+    }
+
+    function confirmDelete(type) {
+        const confirmation = confirm("Are you sure you want to delete it? This will delete ALL BOOKS associated with this category.");
+        if (confirmation) {
+            if (type === 'main') {
+                document.getElementById('mainCategoryDeleteForm').submit();
+            } else if (type === 'sub') {
+                document.getElementById('subCategoryDeleteForm').submit();
+            }
+        }
+    }
+
+    function showRenameModal(type) {
+        var selectedCategoryId;
+        var selectedCategoryName;
+
+        if (type === 'main') {
+            selectedCategoryId = document.getElementById('mainCategorySelect').value;
+        } else {
+            selectedCategoryId = document.getElementById('subCategorySelect').value;
+        }
+
+        if (selectedCategoryId) {
+            const selectedCategory = catList.find(cat => cat.cdcode === selectedCategoryId);
+
+            if (selectedCategory) {
+                // Set the selected category name in the input field
+                document.getElementById('newCategoryName').value = selectedCategory.cname;
+                document.getElementById('renameCategoryId').value = selectedCategory.cid;
+                document.getElementById('renameCategoryCId').value = selectedCategory.cid;
+
+                // Show the modal
+                var renameModal = new bootstrap.Modal(document.getElementById('renameCategoryModal'));
+                renameModal.show();
+            }
+        }
+    }
+
+    function showMoveModal() {
+        const selectedSubCategory = document.getElementById('subCategorySelect').value;
+        if (selectedSubCategory) {
+            const selectedCategory = catList.find(cat => cat.cdcode === selectedSubCategory);
+            if (selectedCategory) {
+                document.getElementById('currentCategoryName').value = selectedCategory.cname;
+                document.getElementById('moveDCode').value = selectedCategory.cdcode;
+
+                var moveModal = new bootstrap.Modal(document.getElementById('moveCategoryModal'));
+                moveModal.show();
+            }
+        }
+    }
+
+    function updateMoveSubCategories() {
+        const mainCategoryId = document.getElementById('moveMainCategorySelect').value;
+        const subCategorySelect = document.getElementById('moveSubCategorySelect');
+
+        subCategorySelect.innerHTML = '<option value="">---Subcategory---</option>';
+
+        if (mainCategoryId) {
+            const subCategories = catList.filter(category => category.cdcode.startsWith(mainCategoryId) && category.cdcode.length === 4);
+
+            if (subCategories.length > 0) {
+                subCategories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.cdcode;
+                    option.textContent = category.cname;
+                    subCategorySelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.textContent = 'No subcategories available';
+                option.disabled = true;
+                subCategorySelect.appendChild(option);
+            }
+        }
+    }
+
+    function validateRenameCategory() {
+        var newCategoryName = document.getElementById('newCategoryName').value.trim();
+        var categoryId = document.getElementById('renameCategoryId').value;
+
+        if (newCategoryName === "") {
+            alert("Please enter the new category name.");
+            return false;
+        }
+
+        // Check if the new category name already exists
+        var categoryExists = catList.some(category => category.cname.toLowerCase() === newCategoryName.toLowerCase());
+        if (categoryExists) {
+            alert("This category name already exists.");
+            return false;
+        }
+
+        document.getElementById('renameCategoryForm').submit();
+    }
+
+    function validateMoveCategory() {
+        const mainCategory = document.getElementById('moveMainCategorySelect').value;
+        const subCategory = document.getElementById('moveSubCategorySelect').value;
+
+        if (!mainCategory || !subCategory) {
+            alert("Please select both main and subcategory.");
+            return;
+        }
+
+        // Find selected subcategory from catList and get its cId
+        const selectedSubCategory = catList.find(cat => cat.cdcode === subCategory);
+        if (selectedSubCategory) {
+            document.getElementById('newCatDCode').value = selectedSubCategory.cdcode;
+        }
+
+        // Display confirmation dialog
+        if (confirm("Are you sure you want to move all?")) {
+            // If user clicks "OK", submit the form
+            document.getElementById('moveCategoryForm').submit();
+        } else {
+            // If user clicks "Cancel", return to the modal
+            return;
+        }
+    }
+
+</script>
+
+</html>

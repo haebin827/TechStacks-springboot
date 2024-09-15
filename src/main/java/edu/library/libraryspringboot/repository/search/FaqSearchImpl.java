@@ -42,6 +42,7 @@ public class FaqSearchImpl extends QuerydslRepositorySupport implements FaqSearc
         this.getQuerydsl().applyPagination(pageable, query);
         List<Faq> list = query.fetch();
         long count = query.fetchCount();
+
         return new PageImpl<>(list, pageable, count);
     }
 }

@@ -14,9 +14,6 @@
             <div class="card-body">
                 <form th:action="@{/faq/register}" th:method="post" novalidate>
 
-                    <!-- Conditionally render hidden input for adminMode if it exists -->
-                    <input type="hidden" name="adminMode" th:value="${adminMode}">
-
                     <!-- Category Selection -->
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
@@ -51,7 +48,6 @@
                         </div>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
@@ -69,8 +65,8 @@
         const adminMode = /*[[${adminMode != null}]]*/ false;
         console.log('ADMIN MODE:', adminMode);
         if (adminMode) {
-            // Redirect to adminPage/faq/list if adminMode exists
-            window.location.href = '/adminPage/faq/list';
+            // Redirect to adminPage/faq/categories if adminMode exists
+            window.location.href = '/adminPage/faq/categories';
         } else {
             // Otherwise, go back in history
             window.history.back();

@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.service;
 
 import edu.library.libraryspringboot.dto.PageRequestDTO;
@@ -16,3 +17,4 @@ public interface ReviewService {
 
     PageResponseDTO<ReviewDTO> getListOfReviews(Integer bNo, PageRequestDTO pgReqDTO);
 }
+*/

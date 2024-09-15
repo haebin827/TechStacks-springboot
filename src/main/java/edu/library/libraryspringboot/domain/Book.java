@@ -15,10 +15,10 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bNo;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 1000)
     private String bTitle;
 
-    @Column(length = 255)
+    @Column(length = 1000)
     private String bAuthor;
 
     @Column(nullable = false, length = 10)
@@ -49,7 +49,7 @@ public class Book {
     private void prePersist() {
         bIsRental = false;
         bIsActive = true;
-        bCondition = "excellent";
+        bCondition = "EXCELLENT";
         bCover = null;
     }
 

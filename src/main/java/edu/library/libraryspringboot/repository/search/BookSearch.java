@@ -9,5 +9,5 @@ public interface BookSearch {
 
     Page<Book> search1(Pageable pageable);
 
-    Page<Book> searchAll(String[] types, String keyword, Pageable pageable, Boolean check);
+    Page<Book> searchAll(String[] types, String keyword, Pageable pageable, Boolean check, String cat);
 }

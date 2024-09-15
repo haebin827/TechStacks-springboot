@@ -29,6 +29,7 @@ public class AdminPageController {
     private final ExtReqService es;
     private final FaqService fs;
     private final BlklistService bls;
+    private final DelBookService ds;
 
     @GetMapping("/home")
     public void homeGET(HttpServletRequest req, RedirectAttributes redirectAttributes, Model model) {
@@ -247,8 +248,7 @@ public class AdminPageController {
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
 
-
-    @GetMapping("/faq/list")
+    @GetMapping("/faq/categories")
     public void faqListGET(PageRequestDTO pgReqDTO, Model model) {
 
         List<FaqCategoryDTO> catList = fs.catList();
@@ -263,7 +263,7 @@ public class AdminPageController {
         fs.removeFaqList(faqCatDTO.getFNo());
         fs.catRemove(faqCatDTO.getFNo());
 
-        return "redirect:/adminPage/faq/list";
+        return "redirect:/adminPage/faq/categories";
     }
 
     @PostMapping("/faq/register")
@@ -275,20 +275,152 @@ public class AdminPageController {
 
         fs.catRegister(faqCatDTO);
 
-        return "redirect:/adminPage/faq/list";
+        return "redirect:/adminPage/faq/categories";
     }
 
     @PostMapping("/faq/modify")
     public String faqModifyPOST(FaqCategoryDTO faqCatDTO, @RequestParam("newCatName") String newCatName) {
         fs.setCatName(newCatName, faqCatDTO.getFNo());
 
-        return "redirect:/adminPage/faq/list";
+        return "redirect:/adminPage/faq/categories";
     }
 
     @PostMapping("/faq/move")
     public String faqMovePOST(FaqCategoryDTO faqCatDTO, @RequestParam("newCatNo") int newCatNo) {
 
         fs.moveCat(newCatNo, faqCatDTO.getFNo());
-        return "redirect:/adminPage/faq/list";
+        return "redirect:/adminPage/faq/categories";
+    }
+
+    @GetMapping("/book/categories")
+    public void bookListGET(PageRequestDTO pgReqDTO, Model model) {
+
+        List<CategoryDTO> catList = bs.catList();
+        model.addAttribute("catList", catList);
+
+    }
+
+    @GetMapping("/changePw")
+    public void changePwGET(Model model) {
+        UserDTO userDTO = us.readOne(1);
+        model.addAttribute("dto", userDTO);
+    }
+
+    @PostMapping("/changePw")
+    public String changePwPOST(RedirectAttributes redirectAttributes,
+                               Model model,
+                               @RequestParam("newPw") String newPw) {
+
+        us.setPw(1, newPw);
+
+        redirectAttributes.addFlashAttribute("result", "password changed");
+        return "redirect:/adminPage/changePw";
+    }
+
+    @PostMapping("/book/remove")
+    public String bookRemovePOST(@RequestParam("cId") int cId, CategoryDTO catDTO) {
+
+        CategoryDTO selectedCat = bs.readOneCat(cId);
+        log.info("selectedCat: " + selectedCat);
+
+        //main category를 삭제하는 경우
+        if(selectedCat.getCDcode().length() == 2) {
+            //main category + 연관된 모든 sub category 삭제
+            bs.removeMainCatList(selectedCat.getCCode1());
+
+            List<BookDTO> list = bs.getMainCatBooklist(selectedCat.getCCode1());
+            log.info("list: " + list);
+
+            for(BookDTO book : list) {
+
+                //삭제된 책에 레코드 삽입
+                DeletedBookDTO delBookDTO = DeletedBookDTO.builder()
+                        .bTitle(book.getBTitle())
+                        .dReason("CATEGORY DELETION")
+                        .build();
+                ds.register(delBookDTO);
+
+                //책 active값 변경
+                bs.modifyActiveStatus(book.getBNo());
+            }
+        }
+        else {
+            //sub category 삭제
+            bs.removeSubCatList(selectedCat.getCDcode());
+
+            List<BookDTO> list = bs.getSubCatBooklist(selectedCat.getCDcode());
+            log.info("list: " + list);
+
+            for(BookDTO book : list) {
+                //삭제된 책에 레코드 삽입
+                DeletedBookDTO delBookDTO = DeletedBookDTO.builder()
+                        .bTitle(book.getBTitle())
+                        .dReason("CATEGORY DELETION")
+                        .build();
+                ds.register(delBookDTO);
+
+                //책 active값 변경
+                bs.modifyActiveStatus(book.getBNo());
+            }
+
+        }
+        return "redirect:/adminPage/book/categories";
+    }
+
+    @PostMapping("/book/register")
+    public String bookRegisterPOST(@RequestParam("selectedMainCat") String selectedMainCat,
+                                    @RequestParam("newCatName") String newCatName) {
+
+        //만약 main category를 넣는다면
+        if(selectedMainCat.isEmpty()) {
+            log.info("New Cat: " + newCatName);
+            String newCDcode = "0" + (Integer.parseInt(bs.getMaxCCode1()) + 1);
+            log.info("new dcode: " + newCDcode);
+
+            CategoryDTO catDTO = CategoryDTO.builder()
+                    .cCode1(newCDcode)
+                    .cDcode(newCDcode)
+                    .cName(newCatName)
+                    .build();
+            bs.catRegister(catDTO);
+        }
+        //만약 sub category를 넣는다면
+        else {
+            log.info("selectedMainCat: " + selectedMainCat);
+
+            String newCDcode = "";
+            if(bs.getMaxCDcode(selectedMainCat) == null) {
+                newCDcode = selectedMainCat + "01";
+            } else {
+                newCDcode = "0" + (Integer.parseInt(bs.getMaxCDcode(selectedMainCat)) + 1);
+            }
+            log.info("new dcode: " + newCDcode);
+
+            CategoryDTO catDTO = CategoryDTO.builder()
+                    .cCode1(selectedMainCat)
+                    .cCode2(newCDcode.substring(newCDcode.length() - 2))
+                    .cDcode(newCDcode)
+                    .cName(newCatName)
+                    .build();
+            bs.catRegister(catDTO);
+        }
+
+        return "redirect:/adminPage/book/categories";
+    }
+
+    @PostMapping("/book/modify")
+    public String bookModifyPOST(CategoryDTO catDTO, @RequestParam("newCategoryName") String newCategoryName) {
+
+        bs.setCatName(newCategoryName, catDTO.getCId());
+        return "redirect:/adminPage/book/categories";
+    }
+
+    @PostMapping("/book/move")
+    public String bookMovePOST(CategoryDTO catDTO, @RequestParam("newCatDCode") String newCatDCode) {
+
+        log.info("catDTO: " + catDTO.toString());
+        log.info("newCatId: " + newCatDCode);
+        bs.moveCat(newCatDCode, catDTO.getCDcode());
+        return "redirect:/adminPage/book/categories";
     }
 }

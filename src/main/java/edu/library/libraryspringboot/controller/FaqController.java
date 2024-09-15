@@ -67,22 +67,13 @@ public class FaqController {
     }*/
 
     @GetMapping("/register")
-    public String registerGET(
-            @RequestParam(value = "adminMode", required = false) String adminMode,
-            Model model) {
+    public void registerGET(Model model) {
 
         log.info("Faq Register GET...............");
 
         // Add the FAQ categories to the model
         List<FaqCategoryDTO> catList = fs.catList();
         model.addAttribute("catList", catList);
-
-        // Check if adminMode exists, and if so, add it to the model
-        if ("true".equals(adminMode)) {
-            log.info("AdminMode: " + adminMode);
-            model.addAttribute("adminMode", true);
-        }
-        return "faq/register"; // Make sure to return the correct view name
     }
 
 
@@ -90,7 +81,6 @@ public class FaqController {
     public String registerPOST(
             @Valid FaqDTO faqDTO,
             @RequestParam("fCategoryNo") int fCategory,
-            @RequestParam(value = "adminMode", required = false) String adminMode,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
 
@@ -105,12 +95,6 @@ public class FaqController {
 
         faqDTO.setFCategory(fCategory);
         fs.register(faqDTO);
-
-        // If adminMode is present
-        if (adminMode != null && adminMode.equals("true")) {
-            redirectAttributes.addFlashAttribute("result", "Registered");
-            return "redirect:/adminPage/faq/list";
-        }
 
         redirectAttributes.addFlashAttribute("result", "Registered");
         return "redirect:/faq/list";

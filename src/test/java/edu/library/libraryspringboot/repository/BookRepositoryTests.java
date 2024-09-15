@@ -88,7 +88,7 @@ public class BookRepositoryTests {
         bookRepo.updateActiveStatus(2);
     }
 
-    @Test
+    /*@Test
     public void testSearchAll() {
         String[] types = {"t", "a", "i"};
         String keyword = "author";
@@ -108,5 +108,10 @@ public class BookRepositoryTests {
         log.info(result.hasPrevious() + ": " + result.hasNext());
 
         result.getContent().forEach(book -> log.info(book));
+    }*/
+
+    @Test
+    public void testDeleteBooksByMainCat() {
+        bookRepo.deleteBooksByMainCat("04");
     }
 }

@@ -16,19 +16,36 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/adminPage/home}">Home</a>
                     </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="requestDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Loan Requests
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="requestDropdown">
+                            <li><a class="dropdown-item" th:href="@{/adminPage/renReq}">Rental Request</a></li>
+                            <li><a class="dropdown-item" th:href="@{/adminPage/extReq}">Extension Request</a></li>
+                            <li><a class="dropdown-item" th:href="@{/adminPage/rtnReq}">Return Request</a></li>
+                            <li><a class="dropdown-item" th:href="@{/adminPage/history}">History</a></li>
+                        </ul>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/adminPage/user/list}">Member list</a>
                     </li>
 
                     <!-- Edit Categories with Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categories
+                        <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Edit Categories
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" th:href="@{/book/catModify}">Book</a></li>
-                            <li><a class="dropdown-item" th:href="@{/adminPage/faq/list}">FAQ</a></li>
+                        <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                            <li><a class="dropdown-item" th:href="@{/adminPage/book/categories}">Book</a></li>
+                            <li><a class="dropdown-item" th:href="@{/adminPage/faq/categories}">FAQ</a></li>
                         </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/adminPage/changePw}">Change PW</a>
                     </li>
                 </ul>
             </div>

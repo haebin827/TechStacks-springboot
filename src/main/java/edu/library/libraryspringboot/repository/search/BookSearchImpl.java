@@ -36,15 +36,15 @@ public class BookSearchImpl extends QuerydslRepositorySupport implements BookSea
     }
 
     @Override
-    public Page<Book> searchAll(String[] types, String keyword, Pageable pageable, Boolean check) {
+    public Page<Book> searchAll(String[] types, String keyword, Pageable pageable, Boolean check, String cat) {
 
         QBook book = QBook.book;
         JPQLQuery<Book> query = from(book);
 
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        // 검색 조건 추가
         if ((types != null && types.length > 0) && StringUtils.hasText(keyword)) {
-
-            BooleanBuilder booleanBuilder = new BooleanBuilder();
-
             for(String type: types) {
                 switch(type) {
                     case "t":
@@ -63,6 +63,12 @@ public class BookSearchImpl extends QuerydslRepositorySupport implements BookSea
 
         // 기본 조건 추가 (bNo > 0)
         query.where(book.bNo.gt(0));
+
+        // 카테고리 조건 추가
+        if (!cat.equals("0")) {
+            // If category is selected, show all books where the category starts with the selected parent category
+            query.where(book.bCategory.startsWith(cat));
+        }
 
         // 현재 active 된 책만 보여주기
         query.where(book.bIsActive.eq(true));
