@@ -26,7 +26,7 @@ public class VHistoryRepositoryTests {
         // 1st page, 10 items per page, order by rReqDate descending
         Pageable pageable = PageRequest.of(0, 10, Sort.by("rRentalDate").descending());
 
-        Page<VHistory> result = hr.findByUId("1234", pageable);
+        Page<VHistory> result = hr.findByuId("Haebin", pageable);
 
         log.info("total count: " + result.getTotalElements());
         log.info("total pages: " + result.getTotalPages());
@@ -58,4 +58,5 @@ public class VHistoryRepositoryTests {
 
         result.getContent().forEach(book -> log.info(book));
     }*/
+
 }

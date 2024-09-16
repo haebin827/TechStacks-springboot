@@ -18,6 +18,8 @@ public class DeletedUserDTO {
 
     @NotEmpty
     private String uId;                 // varchar(15) NN
+
+    @NotEmpty
     private String dReason;             // varchar(255) NN
 
     private LocalDateTime dDelDate;     // TIMESTAMP default CURRENT_TIMESTAMP

@@ -2,6 +2,7 @@ package edu.library.libraryspringboot.repository;
 
 import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.Notification;
+import edu.library.libraryspringboot.dto.BookDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.stream.IntStream;
 public class BookRepositoryTests {
 
     @Autowired
-    private BookRepository bookRepo;
+    private BookRepository br;
 
     @Test
     public void testInsert() {
@@ -33,15 +34,21 @@ public class BookRepositoryTests {
                     .bPublisher("publisher " + i)
                     .build();
 
-            Book result = bookRepo.save(book);
+            Book result = br.save(book);
             log.info("result: " + result);
         });
     }
 
+    /*@Test
+    public void testFindByBCategoryStartingWith() {
+        List<Book> books = br.findBybCategoryStartingWith("01");
+        log.info("books: " + books);
+
+    }*/
 
     @Test
     public void testSelect() {
-        Optional<Book> result = bookRepo.findById(2);
+        Optional<Book> result = br.findById(2);
         Book book = result.orElseThrow();
         log.info("............................");
         log.info(book);
@@ -49,22 +56,22 @@ public class BookRepositoryTests {
 
     /*@Test
     public void testUpdate() {
-        Optional<Book> result = bookRepo.findById(2);
+        Optional<Book> result = br.findById(2);
         Book book = result.orElseThrow();
         book.change("DEMO TITLE", "DEMO AUTHOR", "000000", 2024, "DEMO PUBLISHER");
-        bookRepo.save(book);
+        br.save(book);
     }*/
 
     @Test
     public void testDelete() {
-        bookRepo.deleteById(1);
+        br.deleteById(1);
     }
 
     @Test
     public void testPaging() {
         // 1st page, 10 items per page, order by r_id descending
         Pageable pageable = PageRequest.of(0, 10, Sort.by("bNo").descending());
-        Page<Book> result = bookRepo.findAll(pageable);
+        Page<Book> result = br.findAll(pageable);
 
         log.info("total count: " + result.getTotalElements());
         log.info("total pages: " + result.getTotalPages());
@@ -80,12 +87,12 @@ public class BookRepositoryTests {
 
         //2 page order by bNo desc
         Pageable pageable = PageRequest.of(0, 10, Sort.by("bNo").descending());
-        bookRepo.search1(pageable);
+        br.search1(pageable);
     }
 
     @Test
     public void testUpdateActiveStatus() {
-        bookRepo.updateActiveStatus(2);
+        br.updateActiveStatus(2);
     }
 
     /*@Test
@@ -93,7 +100,7 @@ public class BookRepositoryTests {
         String[] types = {"t", "a", "i"};
         String keyword = "author";
         Pageable pageable = PageRequest.of(0, 10, Sort.by("bNo").descending());
-        Page<Book> result = bookRepo.searchAll(types, keyword, pageable, true);
+        Page<Book> result = br.searchAll(types, keyword, pageable, true);
 
         //total pages
         log.info(result.getTotalPages());
@@ -112,6 +119,6 @@ public class BookRepositoryTests {
 
     /*@Test
     public void testDeleteBooksByMainCat() {
-        bookRepo.deleteBooksByMainCat("04");
+        br.deleteBooksByMainCat("04");
     }*/
 }

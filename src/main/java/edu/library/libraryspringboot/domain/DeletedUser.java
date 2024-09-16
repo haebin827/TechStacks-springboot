@@ -20,11 +20,11 @@ public class DeletedUser {
     @Column(nullable = false, length = 15)
     private String uId;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column
     private LocalDateTime dDelDate;
 
-    // If user deleted: BY USER
-    // If admin deleted: BY ADMIN
+    // If deleted by the user: BY USER
+    // If deleted by the admin: BY ADMIN
     @Column(nullable = false, length = 255)
     private String dReason;
 

@@ -29,30 +29,30 @@ public class VRentalRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; // 식별자 필드 추가
 
-    @Column(length = 255)
-    private String b_title;
+    @Column(name = "b_title")
+    private String bTitle;
 
-    @Column(length = 255)
-    private String b_author;
+    @Column(name = "b_author")
+    private String bAuthor;
 
-    @Column
-    private Integer b_no;
+    @Column(name = "b_no")
+    private Integer bNo;
 
-    @Column(length = 15)
-    private String u_id;
+    @Column(name = "u_id")
+    private String uId;
 
-    @Column
-    private LocalDateTime r_req_date;
+    @Column(name = "r_req_date")
+    private LocalDateTime rReqDate;
 
-    @Column
-    private Boolean b_is_rental;
+    @Column(name = "b_is_rental")
+    private Boolean bIsRental;
 
-    @Column
-    private Integer rental_count;
+    @Column(name = "rental_count")
+    private Integer rentalCount;
 
-    @Column
-    private Integer u_no;
+    @Column(name = "u_no")
+    private Integer uNo;
 
-    @Column
-    private Boolean u_is_blacklist;
+    @Column(name = "u_is_blacklist")
+    private Boolean uIsBlacklist;
 }

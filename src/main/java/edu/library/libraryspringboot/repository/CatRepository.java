@@ -14,15 +14,11 @@ public interface CatRepository extends JpaRepository<Category, Integer> {
     @Query("update Category set cName = :cName where cId = :cId")
     void updateCatName(@Param("cName") String cName, @Param("cId") int cId);
 
-    @Modifying
     @Transactional
-    @Query("delete Category where cCode1 = :cCode1")
-    void deleteMainCatList(String cCode1);
+    void deleteBycCode1(String cCode1);
 
-    @Modifying
     @Transactional
-    @Query("delete Category where cDcode = :cDcode")
-    void deleteSubCatList(String cDcode);
+    void deleteBycDcode(String cDcode);
 
     // 가장 큰 cCode1 값을 구하는 쿼리
     @Query("select max(c.cCode1) from Category c")

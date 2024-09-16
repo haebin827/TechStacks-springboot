@@ -32,23 +32,26 @@ public class MyPageController {
     @GetMapping("/home")
     public void homeGET(HttpServletRequest req, Model model) {
 
+        log.info("myPage GET home.......................");
+
         HttpSession session = req.getSession();
 
         UserDTO userDTO = us.readOne((int)session.getAttribute("uNo"));
         int rentCnt = rs.getRentCount((String)session.getAttribute("uId"));
-        int rentHstryCnt = rs.getRentHstryCount((String)session.getAttribute("uId"));
-        int reqCnt = rrs.getReqCount((String)session.getAttribute("uId"));
+        int rentHisCnt = rs.getRentHstryCount((String)session.getAttribute("uId"));
+        long reqCnt = rrs.getReqCount((String)session.getAttribute("uId"));
 
         model.addAttribute("userDTO", userDTO);
         model.addAttribute("rentCnt", rentCnt);
-        model.addAttribute("rentHstryCnt", rentHstryCnt);
+        model.addAttribute("rentHisCnt", rentHisCnt);
         model.addAttribute("reqCnt", reqCnt);
-
     }
 
     @GetMapping("/booklist")
     public void booklistGET(HttpServletRequest req,
                             Model model) {
+
+        log.info("myPage GET booklist.......................");
 
         HttpSession session = req.getSession();
 
@@ -61,6 +64,8 @@ public class MyPageController {
     public void viewGET(HttpServletRequest req,
                             Model model) {
 
+        log.info("myPage GET view.......................");
+
         HttpSession session = req.getSession();
         UserDTO userDTO = us.readOne((int)session.getAttribute("uNo"));
         model.addAttribute("dto", userDTO);
@@ -70,19 +75,24 @@ public class MyPageController {
     public void editGET(HttpServletRequest req,
                         Model model) {
 
+        log.info("myPage GET edit.......................");
+
         HttpSession session = req.getSession();
         UserDTO userDTO = us.readOne((int)session.getAttribute("uNo"));
         model.addAttribute("dto", userDTO);
     }
 
     @PostMapping("/account/edit")
-    public String editPost(HttpServletRequest req,
+    public String editPOST(HttpServletRequest req,
                            RedirectAttributes redirectAttributes,
                            @RequestParam("uName") String uName,
                            @RequestParam("uPhone") String uPhone) {
 
+        log.info("myPage POST edit.......................");
+
         HttpSession session = req.getSession();
         UserDTO userDTO = us.readOne((int)session.getAttribute("uNo"));
+
         //phone validation 체크
         if(us.verifyPhone(uPhone) > 0 && !userDTO.getUPhone().equals(uPhone)) {
             redirectAttributes.addFlashAttribute("result", "duplicate");
@@ -96,9 +106,11 @@ public class MyPageController {
     }
 
     @PostMapping("/changePw")
-    public String changePw(HttpServletRequest req,
+    public String changePwPOST(HttpServletRequest req,
                            RedirectAttributes redirectAttributes,
                            @RequestParam("newPw") String newPw) {
+
+        log.info("myPage POST change.......................");
 
         HttpSession session = req.getSession();
         us.setPw((int)session.getAttribute("uNo"), newPw);
@@ -110,6 +122,8 @@ public class MyPageController {
     //유저 계정삭제
     @PostMapping("/remove")
     public String removeGET(HttpServletRequest req, RedirectAttributes redirectAttributes) {
+
+        log.info("myPage POST remove.......................");
 
         HttpSession session = req.getSession();
 
@@ -144,8 +158,9 @@ public class MyPageController {
 
     @PostMapping("/return")
     public String returnPOST(HttpServletRequest req,
-                             RedirectAttributes redirectAttributes,
                              @RequestParam("bNo") int bNo) {
+
+        log.info("myPage POST return.......................");
 
         HttpSession session = req.getSession();
 
@@ -163,9 +178,10 @@ public class MyPageController {
     }
 
     @PostMapping("/cancelReturn")
-    public String cancelReturn(HttpServletRequest req,
-                               RedirectAttributes redirectAttributes,
+    public String cancelReturnPOST(HttpServletRequest req,
                                @RequestParam("bNo") int bNo) {
+
+        log.info("myPage POST cancelReturn.......................");
 
         HttpSession session = req.getSession();
 
@@ -180,8 +196,9 @@ public class MyPageController {
 
     @PostMapping("/extend")
     public String extendPOST(HttpServletRequest req,
-                             RedirectAttributes redirectAttributes,
                              @RequestParam("bNo") int bNo) {
+
+        log.info("myPage POST extend.......................");
 
         HttpSession session = req.getSession();
 
@@ -200,8 +217,9 @@ public class MyPageController {
 
     @PostMapping("/cancelExtend")
     public String cancelExtend(HttpServletRequest req,
-                               RedirectAttributes redirectAttributes,
                                @RequestParam("bNo") int bNo) {
+
+        log.info("myPage POST cancelExtend.......................");
 
         HttpSession session = req.getSession();
 
@@ -226,6 +244,8 @@ public class MyPageController {
     @GetMapping("/reqlist")
     public void reqlistGET(HttpServletRequest req, PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("myPage GET reqlist.......................");
+
         HttpSession session = req.getSession();
 
         PageResponseDTO<VRentalRequestDTO> respDTO = rrs.list(pgReqDTO, (String)session.getAttribute("uId"));
@@ -235,9 +255,10 @@ public class MyPageController {
     }
 
     @PostMapping("/cancelRental")
-    public String cancelRentalPOST(PageRequestDTO pgReqDTO,
-                                   HttpServletRequest req,
-                               @RequestParam("bNo") int bNo) {
+    public String cancelRentalPOST(HttpServletRequest req,
+                                    @RequestParam("bNo") int bNo) {
+
+        log.info("myPage POST cancelRental.......................");
 
         HttpSession session = req.getSession();
 
@@ -261,10 +282,13 @@ public class MyPageController {
                            PageRequestDTO pgReqDTO,
                            Model model) {
 
+        log.info("myPage GET history.......................");
+
         HttpSession session = req.getSession();
 
         PageResponseDTO<VHistoryDTO> respDTO = rs.historyList(pgReqDTO, (String)session.getAttribute("uId"));
         log.info(respDTO);
+
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
@@ -273,6 +297,8 @@ public class MyPageController {
     public void wishlistGET(HttpServletRequest req,
                             PageRequestDTO pgReqDTO,
                             Model model) {
+
+        log.info("myPage GET wishlist.......................");
 
         HttpSession session = req.getSession();
         PageResponseDTO<VWishlistDTO> respDTO = ws.listAll(pgReqDTO, (String)session.getAttribute("uId"));
@@ -284,6 +310,8 @@ public class MyPageController {
     @PostMapping("/cancelWishlist")
     public String cancelWishlistPOST(HttpServletRequest req,
                             @RequestParam("bNo") int bNo) {
+
+        log.info("myPage POST cancelWishlist.......................");
 
         HttpSession session = req.getSession();
         ws.remove((String)session.getAttribute("uId"), bNo);

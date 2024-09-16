@@ -43,6 +43,43 @@
 
                 <hr class="mb-4">
 
+            <div>
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <!-- All 항목 -->
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/book/list}" th:text="'All'">All</a>
+                            </li>
+
+                            <!-- Main Category 항목 -->
+                            <th:block th:if="${pgReqDTO.cat != '0'}">
+                                <th:block th:each="cat : ${catDTO}">
+                                    <th:block th:if="${cat.cDcode == pgReqDTO.cat.substring(0, 2)}">
+                                        <!-- Main category breadcrumb -->
+                                        <li class="breadcrumb-item">
+                                            <a th:href="@{/book/list(cat=${cat.cDcode})}" th:text="${cat.cName}"></a>
+                                        </li>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+
+                            <!-- Sub Category 항목 -->
+                            <th:block th:if="${pgReqDTO.cat != '0' and #strings.length(pgReqDTO.cat) == 4}">
+                                <th:block th:each="cat : ${catDTO}">
+                                    <th:block th:if="${cat.cDcode == pgReqDTO.cat}">
+                                        <!-- Sub category breadcrumb -->
+                                        <li class="breadcrumb-item active" aria-current="page" th:text="${cat.cName}"></li>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                        </ol>
+                    </nav>
+
+                </div>
+
+            </div>
+
             <div class="mb-3">
                 <span th:text="'Total: '"></span>
                 <strong th:text="${respDTO.total}"></strong>
@@ -371,7 +408,19 @@
                 display: block;
                 margin-top: 0; /* adjust as needed */
             }
+             .breadcrumb-item a {
+                 text-decoration: none; /* Remove underline */
+                 color: #006400; /* Dark green color */
+             }
 
+            .breadcrumb-item.active {
+                color: #006400; /* Dark green color for active breadcrumb */
+                font-weight: bold; /* Bold the active breadcrumb */
+            }
+
+            .breadcrumb-item a:hover {
+                color: #004d00; /* Slightly darker green when hovered */
+            }
         </style>
     </div>
 </div>

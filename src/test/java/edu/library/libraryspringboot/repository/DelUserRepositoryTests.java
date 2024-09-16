@@ -7,19 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Log4j2
-public class CatRepositoryTests {
+public class DelUserRepositoryTests {
 
     @Autowired
-    private CatRepository cr;
+    private DelUserRepository dr;
 
     @Test
-    public void testFindMaxCDcode() {
-        log.info(cr.findMaxCCode1());
-
-    }
-
-    @Test
-    public void testDeleteBycCode1() {
-        cr.deleteBycDcode("0501");
+    public void testFindByuId() {
+        log.info(dr.findByuId("test"));
     }
 }

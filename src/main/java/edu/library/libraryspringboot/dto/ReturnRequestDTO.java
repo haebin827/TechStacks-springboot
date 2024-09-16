@@ -20,9 +20,12 @@ public class ReturnRequestDTO {
 
     @NotEmpty
     private String uId;
+
+    @NotEmpty
     private Integer bNo;
 
     private Boolean rRtnReq;
+
     private LocalDateTime rReqDate;
     //private LocalDateTime rWhenToRtn;
 }

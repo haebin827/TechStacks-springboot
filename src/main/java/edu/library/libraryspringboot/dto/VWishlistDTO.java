@@ -13,8 +13,12 @@ import lombok.NoArgsConstructor;
 public class VWishlistDTO {
 
     private Integer id;
+
     private String uId;
+
     private Integer bNo;
+
     private String bTitle;
+
     private String bAuthor;
 }

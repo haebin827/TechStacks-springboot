@@ -11,50 +11,51 @@
             </div>
             <hr class="mb-4">
 
-                <div class="card-body">
+            <div class="card-body">
+                <form th:action="@{/notif/modify}" th:method="post" id="notifForm" novalidate>
+                    <input type="hidden" name="nNo" th:value="${dto.nNo}">
 
-                    <form th:action="@{/notif/modify}" th:method="post" novalidate>
-                        <input type="hidden" name="nNo" th:value="${dto.nNo}">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Title</span>
+                        <input type="text" class="form-control" name="nTitle" th:value="${dto.nTitle}" required>
+                        <div class="invalid-feedback">Title is required.</div>
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Title</span>
-                            <input type="text" class="form-control" name="nTitle" th:value="${dto.nTitle}" required>
-                            <div class="invalid-feedback">Title is required.</div>
-                        </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Content</span>
+                        <textarea class="form-control" name="nContent" rows="8" th:text="${dto.nContent}" required></textarea>
+                        <div class="invalid-feedback">Content is required.</div>
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Content</span>
-                            <textarea class="form-control" name="nContent" rows="8" th:text="${dto.nContent}" required></textarea>
-                            <div class="invalid-feedback">Content is required.</div>
-                        </div>
+                    <div class="form-check mb-5">
+                        <label class="form-check-label">
+                            Highlight &nbsp;
+                        </label>
+                        <input class="form-check-input" type="checkbox" id="nIsImp" name="nIsImpCheckbox" th:checked="${dto != null && dto.nIsImp}">
+                    </div>
 
-                        <div class="form-check mb-5">
-                            <label class="form-check-label">
-                                Highlight &nbsp;
-                            </label>
-                            <input class="form-check-input" type="checkbox" name="nIsImp" th:checked="${dto != null && dto.nIsImp}">
-                        </div>
+                    <!-- Hidden input to always send "true" or "false" -->
+                    <input type="hidden" id="nIsImpHidden" name="nIsImp" value="false">
 
-                        <div class="mb-3">
-                            <label for="nRegDate" class="form-label">Upload Date</label>
-                            <input type="text" id="nRegDate" class="form-control" th:value="${#temporals.format(dto.nRegDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
-                        </div>
+                    <div class="mb-3">
+                        <label for="nRegDate" class="form-label">Upload Date</label>
+                        <input type="text" id="nRegDate" class="form-control" th:value="${#temporals.format(dto.nRegDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                    </div>
 
-                        <div class="mb-3" th:if="${dto.nModDate != null}">
-                            <label for="nModDate" class="form-label">Last Modified Date</label>
-                            <input type="text" id="nModDate" class="form-control" th:value="${#temporals.format(dto.nModDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
-                        </div>
+                    <div class="mb-3" th:if="${dto.nModDate != null}">
+                        <label for="nModDate" class="form-label">Last Modified Date</label>
+                        <input type="text" id="nModDate" class="form-control" th:value="${#temporals.format(dto.nModDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                    </div>
 
-                        <div class="my-4">
-                            <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
-                                <div class="btn-group" role="group">
-                                    <button type="submit" class="btn btn-outline-dark">Apply</button>
-                                    <a th:href="|@{/notif/list}?${link}|" class="btn btn-secondary text-decoration-none">Cancel</a>
-                                </div>
+                    <div class="my-4">
+                        <div class="float-end" th:with="link = ${pgReqDTO.getLink()}">
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-outline-dark">Apply</button>
+                                <a th:href="|@{/notif/list}?${link}|" class="btn btn-secondary text-decoration-none">Cancel</a>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -63,19 +64,18 @@
 
 <script layout:fragment="script" th:inline="javascript">
 
-    /*
-    const errors = [[${errors}]];
-    console.log(errors);
+    // JavaScript to ensure correct "true" or "false" value is submitted for nIsImp
+    document.getElementById('notifForm').addEventListener('submit', function(event) {
+        var isImpChecked = document.getElementById('nIsImp').checked;
+        var hiddenInput = document.getElementById('nIsImpHidden');
 
-    let errorMsg = '';
-
-    if(errors) {
-        for(let i = 0; i<errors.length; i++) {
-            errorMsg += `${errors[i].field} is ${errors[i].code} \n`
+        // Set the hidden input's value based on whether the checkbox is checked or not
+        if (isImpChecked) {
+            hiddenInput.value = "true";
+        } else {
+            hiddenInput.value = "false";
         }
-        alert(errorMsg)
-    }
-     */
+    });
 
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function () {

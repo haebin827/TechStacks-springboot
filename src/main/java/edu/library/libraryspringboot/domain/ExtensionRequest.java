@@ -24,11 +24,10 @@ public class ExtensionRequest {
     @Column(nullable = false)
     private Integer bNo;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(nullable = false)
     private Boolean rExtReq;
 
-    @CreatedDate
-    @Column(updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column
     private LocalDateTime rReqDate;
 
     @PrePersist

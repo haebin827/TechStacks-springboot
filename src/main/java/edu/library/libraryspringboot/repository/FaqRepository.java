@@ -10,13 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface FaqRepository extends JpaRepository<Faq, Integer>, FaqSearch {
 
-    @Query(value="select now()", nativeQuery = true)
-    String getTime();
-
-    @Modifying
     @Transactional
-    @Query("delete Faq where fCategory = :fCategory")
-    void deleteFaqList(int fCategory);
+    void deleteByfCategory(int fCategory);
 
     @Modifying
     @Transactional

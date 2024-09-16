@@ -22,6 +22,10 @@ public class FaqRepositoryTests {
     @Autowired
     private FaqRepository fr;
 
+    @Test
+    public void testDeleteByfCategory() {
+        fr.deleteByfCategory(7);
+    }
     /*@Test
     public void testInsert() {
         IntStream.rangeClosed(1, 100).forEach(i -> {

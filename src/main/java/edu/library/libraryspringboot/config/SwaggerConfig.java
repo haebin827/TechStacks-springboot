@@ -22,11 +22,10 @@ public class SwaggerConfig {
     @Bean
     public Info apiInfo() {
         return new Info()
-                .title("Boot 01 Project API")
-                .description("This is the API documentation for the Boot 01 project.")
+                .title("CS Library API")
+                .description("This is the API documentation for the CS Library project.")
                 .version("1.0.0")
-                .contact(new Contact().name("Your Name").email("your.email@example.com"))
-                .license(new License().name("Apache 2.0").url("http://springdoc.org"));
+                .contact(new Contact().name("Haebin Noh").email("haebin.noh@gmail.com"));
     }
 }
 

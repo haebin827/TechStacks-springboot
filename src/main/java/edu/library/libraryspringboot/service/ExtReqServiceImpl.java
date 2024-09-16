@@ -43,7 +43,7 @@ public class ExtReqServiceImpl implements ExtReqService {
 
     @Override
     public int getAllReqCount() {
-        return er.findAllReqCount();
+        return er.countByrExtReqTrue();
     }
 
     /*@Override

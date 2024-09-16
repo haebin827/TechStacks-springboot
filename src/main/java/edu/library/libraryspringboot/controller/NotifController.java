@@ -28,15 +28,18 @@ public class NotifController {
     @GetMapping("/list")
     public void listGET(PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("notif GET list.......................");
+
         PageResponseDTO<NotificationDTO> respDTO = ns.list(pgReqDTO);
-        log.info("list GET...............");
 
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
 
     @GetMapping("/register")
-    public void registerGET(Model model) {
+    public void registerGET() {
+
+        log.info("notif POST register........................");
 
     }
 
@@ -45,7 +48,8 @@ public class NotifController {
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
 
-        log.info("notif register POST...............");
+        log.info("notif POST register...............");
+
         if(bindingResult.hasErrors()) {
             log.info("has errors...............");
             log.info(notifDTO);
@@ -61,9 +65,13 @@ public class NotifController {
     }
 
     @GetMapping({"/read", "/modify"})
-    public void readGET(int nNo, PageRequestDTO pgReqDTO, Model model, HttpServletRequest req) {
+    public void readGET(int nNo,
+                        PageRequestDTO pgReqDTO,
+                        Model model,
+                        HttpServletRequest req) {
 
-        log.info("notif read GET...............");
+        log.info("notif GET read........................");
+
         NotificationDTO notifDTO = ns.readOne(nNo);
         log.info("notifDTO: " + notifDTO);
 
@@ -79,12 +87,13 @@ public class NotifController {
     }
 
     @PostMapping("/modify")
-    public String modify(PageRequestDTO pageReqDTO,
+    public String modifyPOST(PageRequestDTO pageReqDTO,
                          @Valid NotificationDTO notifDTO,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
 
-        log.info("Notif Modify register................");
+        log.info("notif POST modify........................");
+
         log.info("Modified notifDTO: " + notifDTO);
 
         if(bindingResult.hasErrors()) {
@@ -93,7 +102,6 @@ public class NotifController {
             redirectAttributes.addFlashAttribute("nNo", notifDTO.getNNo());
             return "redirect:/notif/modify?"+pageReqDTO.getLink();
         }
-
         ns.modify(notifDTO);
         redirectAttributes.addFlashAttribute("result", "Modified");
 
@@ -101,8 +109,10 @@ public class NotifController {
     }
 
     @PostMapping("/remove")
-    public String remove(int nNo, RedirectAttributes redirectAttributes) {
-        log.info("Notif POST Remove .............. : ");
+    public String removePOST(int nNo, RedirectAttributes redirectAttributes) {
+
+        log.info("notif POST remove........................");
+
         NotificationDTO notifDTO = ns.readOne(nNo);
         ns.remove(nNo);
 

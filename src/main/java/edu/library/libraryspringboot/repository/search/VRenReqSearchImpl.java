@@ -25,8 +25,8 @@ public class VRenReqSearchImpl extends QuerydslRepositorySupport implements VRen
         QVRentalRequest vRentalRequest = QVRentalRequest.vRentalRequest;
         JPQLQuery<VRentalRequest> query = queryFactory.selectFrom(vRentalRequest);
 
-        query.where(vRentalRequest.u_id.eq(uId));
-        query.orderBy(vRentalRequest.r_req_date.desc());
+        query.where(vRentalRequest.uId.eq(uId));
+        query.orderBy(vRentalRequest.rReqDate.desc());
 
         // 페이징 적용
         this.getQuerydsl().applyPagination(pageable, query);

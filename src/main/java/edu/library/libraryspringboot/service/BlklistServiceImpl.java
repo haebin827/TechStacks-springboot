@@ -29,23 +29,23 @@ public class BlklistServiceImpl implements BlklistService {
     public int register(BlacklistDTO blkDTO) {
 
         Blacklist blk = mm.map(blkDTO, Blacklist.class);
-        int blNo = br.save(blk).getBlNo();
+        int blId = br.save(blk).getBlId();
 
-        return blNo;
+        return blId;
     }
 
     @Override
-    public BlacklistDTO readOne(int blNo) {
+    public BlacklistDTO readOne(int blId) {
 
-        Optional<Blacklist> result = br.findById(blNo);
+        Optional<Blacklist> result = br.findById(blId);
         Blacklist blk = result.orElseThrow();
         BlacklistDTO blkDTO = mm.map(blk, BlacklistDTO.class);
         return blkDTO;
     }
 
     @Override
-    public void remove(int blNo) {
-        br.deleteById(blNo);
+    public void remove(int blId) {
+        br.deleteById(blId);
     }
 
     @Override

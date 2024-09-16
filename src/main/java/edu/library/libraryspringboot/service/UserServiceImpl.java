@@ -103,14 +103,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getByUUID(String uUuid) {
-        User user = ur.selectUUID(uUuid);
+        User user = ur.findByuUuid(uUuid);
         UserDTO userDTO = mm.map(user, UserDTO.class);
         return userDTO;
     }
 
     @Override
-    public int verifyPhone(String uPhone) {
-        return ur.checkPhone(uPhone);
+    public long verifyPhone(String uPhone) {
+        return ur.countByuPhone(uPhone);
     }
 
     @Override

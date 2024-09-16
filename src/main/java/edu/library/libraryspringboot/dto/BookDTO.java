@@ -3,6 +3,8 @@ package edu.library.libraryspringboot.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -35,4 +37,6 @@ public class BookDTO {
     private String bCondition;
 
     private String bCover;
+
+    private LocalDateTime bRegDate;
 }

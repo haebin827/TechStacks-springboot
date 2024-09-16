@@ -1,7 +1,6 @@
 package edu.library.libraryspringboot.repository;
 
 import edu.library.libraryspringboot.domain.ReturnRequest;
-import edu.library.libraryspringboot.domain.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

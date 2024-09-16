@@ -1,7 +1,5 @@
 package edu.library.libraryspringboot.controller;
 
-import edu.library.libraryspringboot.domain.Faq;
-import edu.library.libraryspringboot.domain.FaqCategory;
 import edu.library.libraryspringboot.dto.*;
 import edu.library.libraryspringboot.service.FaqService;
 import jakarta.validation.Valid;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -30,7 +27,7 @@ public class FaqController {
     @GetMapping("/list")
     public void listGET(PageRequestDTO pgReqDTO, Model model) {
 
-        log.info("Faq List GET................");
+        log.info("faq GET list................");
 
         if (pgReqDTO.getGroup() == null) {
             pgReqDTO.setGroup(-1);
@@ -69,22 +66,19 @@ public class FaqController {
     @GetMapping("/register")
     public void registerGET(Model model) {
 
-        log.info("Faq Register GET...............");
+        log.info("faq GET register...............");
 
-        // Add the FAQ categories to the model
         List<FaqCategoryDTO> catList = fs.catList();
         model.addAttribute("catList", catList);
     }
 
-
     @PostMapping("/register")
-    public String registerPOST(
-            @Valid FaqDTO faqDTO,
-            @RequestParam("fCategoryNo") int fCategory,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+    public String registerPOST(@Valid FaqDTO faqDTO,
+                                @RequestParam("fCategoryNo") int fCategory,
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes) {
 
-        log.info("FAQ register POST...............");
+        log.info("faq POST register...............");
 
         if (bindingResult.hasErrors()) {
             log.info("has errors...............");
@@ -103,7 +97,8 @@ public class FaqController {
     @GetMapping({"/read", "/modify"})
     public void readGET(int fId, PageRequestDTO pgReqDTO, Model model) {
 
-        log.info("FAQ read GET...............");
+        log.info("faq GET read...............");
+
         FaqDTO faqDTO = fs.readOne(fId);
         log.info("faqDTO: " + faqDTO);
 
@@ -123,13 +118,14 @@ public class FaqController {
     }
 
     @PostMapping("/modify")
-    public String modify(PageRequestDTO pgReqDTO,
+    public String modifyPOST(PageRequestDTO pgReqDTO,
                          @Valid FaqDTO faqDTO,
                          @RequestParam("fCategory") Integer fCategory,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
 
-        log.info("FAQ Modify register................");
+        log.info("faq POST modify................");
+
         log.info("Modified FaqDTO: " + faqDTO);
 
         if(bindingResult.hasErrors()) {
@@ -148,15 +144,14 @@ public class FaqController {
     }
 
     @PostMapping("/remove")
-    public String remove(int fId, RedirectAttributes redirectAttributes) {
-        log.info("FAQ POST Remove .............. : ");
+    public String removePOST(int fId, RedirectAttributes redirectAttributes) {
+
+        log.info("faq POST remove..............");
+
         FaqDTO faqDTO = fs.readOne(fId);
         fs.remove(fId);
 
-        log.info("removed FaqDTO: " + faqDTO);
-
         redirectAttributes.addFlashAttribute("result", "Removed");
-
         return "redirect:/faq/list";
     }
 }

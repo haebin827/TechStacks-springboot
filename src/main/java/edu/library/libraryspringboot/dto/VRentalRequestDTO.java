@@ -15,21 +15,21 @@ public class VRentalRequestDTO {
 
     private Integer id;
 
-    private String b_title;
+    private String bTitle;
 
-    private String b_author;
+    private String bAuthor;
 
-    private Integer b_no;
+    private Integer bNo;
 
-    private String u_id;
+    private String uId;
 
-    private LocalDateTime r_req_date;
+    private LocalDateTime rReqDate;
 
-    private Boolean b_is_rental;
+    private Boolean bIsRental;
 
-    private Integer rental_count;
+    private Integer rentalCount;
 
-    private Integer u_no;
+    private Integer uNo;
 
-    private Boolean u_is_blacklist;
+    private Boolean uIsBlacklist;
 }

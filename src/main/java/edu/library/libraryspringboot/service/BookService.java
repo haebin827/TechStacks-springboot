@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface BookService {
 
-    int register(BookDTO bookDTO);
+    void register(BookDTO bookDTO);
 
     BookDTO readOne(int bNo);
 

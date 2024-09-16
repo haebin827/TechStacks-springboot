@@ -7,6 +7,34 @@
     <h3 th:if="${session.userLogin != null}">Hi, <span th:text="${session.uName}"></span></h3>
     <h3 th:if="${session.adminLogin != null}">[Admin Mode]</h3>
 
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="false">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/images/cover.png" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="/images/default.png" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="/images/image.png" class="d-block w-100" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
     <!-- 모달 창 시작 -->
     <div class="modal fade" tabindex="-1" id="warningModal">
         <div class="modal-dialog modal-lg">

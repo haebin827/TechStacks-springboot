@@ -118,8 +118,13 @@ public class UserRepositoryTests {
     }
 
     @Test
+    public void testFindByuUuid() {
+        log.info(userRepo.findByuUuid("f8f15570-46a1-4844-93b8-b3420c23d68f"));
+    }
+
+    @Test
     public void testCheckPhone() {
-        int count = userRepo.checkPhone("87654");
+        long count = userRepo.countByuPhone("6605280721");
         log.info("Phone count: " + count);
     }
 

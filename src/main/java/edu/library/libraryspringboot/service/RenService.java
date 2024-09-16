@@ -35,5 +35,5 @@ public interface RenService {
 
     int getHisCnt(String uId);
 
-    int getAllCount();
+    long getAllCount();
 }

@@ -24,7 +24,7 @@ public class Faq {
     @Column(nullable = false)
     private Integer fCategory;
 
-    public void change(String fQuestion, String fAnswer, int fCategory) {
+    public void change(String fQuestion, String fAnswer, Integer fCategory) {
         this.fQuestion = fQuestion;
         this.fAnswer = fAnswer;
         this.fCategory = fCategory;

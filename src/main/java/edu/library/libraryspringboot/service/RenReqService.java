@@ -10,7 +10,7 @@ public interface RenReqService {
 
     int getReqCount(String uId);
 
-    int getAllReqCount();
+    long getAllReqCount();
 
     void removeIncompleteList(String uId);
 

@@ -16,4 +16,9 @@ public class ExtReqRepositoryTests {
     public void testListAll() {
         log.info("list: " + er.currAllReqList());
     }
+
+    @Test
+    public void testDeleteByuIdAndbNoAndrExtReqTrue() {
+        log.info(er.countByrExtReqTrue());
+    }
 }

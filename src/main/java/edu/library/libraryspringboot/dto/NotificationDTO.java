@@ -15,10 +15,13 @@ public class NotificationDTO {
 
     @NotEmpty
     private String nTitle;     // varchar(100) NN
+
+    @NotEmpty
     private String nContent;   // varchar(1000) NN
 
     @NotNull
-    private boolean nIsImp;   // tinyint(1) NN default '0'
+    private Boolean nIsImp;   // tinyint(1) NN default '0'
+
     private Integer nViews;
 
     private LocalDateTime nRegDate; // timestamp NN default CURRENT_TIMESTAMP

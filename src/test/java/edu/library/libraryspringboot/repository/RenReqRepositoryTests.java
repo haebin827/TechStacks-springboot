@@ -15,6 +15,11 @@ public class RenReqRepositoryTests {
     private RenReqRepository rr;
 
     @Test
+    public void testCountBybNoAnduIdAndrRenReqTrue() {
+        log.info(rr.countByrRenReqTrue());
+    }
+
+    @Test
     public void testInsert() {
         RentalRequest renReq = RentalRequest.builder()
                 .bNo(123)

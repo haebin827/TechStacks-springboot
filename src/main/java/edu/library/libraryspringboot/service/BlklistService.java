@@ -13,9 +13,9 @@ public interface BlklistService {
 
     int register(BlacklistDTO blkDTO);
 
-    BlacklistDTO readOne(int blNo);
+    BlacklistDTO readOne(int blId);
 
-    void remove(int blNo);
+    void remove(int blId);
 
     String getUId(int uNo);
 

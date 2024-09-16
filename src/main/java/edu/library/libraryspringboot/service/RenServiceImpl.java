@@ -38,7 +38,7 @@ public class RenServiceImpl implements RenService {
 
     @Override
     public int getRentHstryCount(String uId) {
-        int count = rr.findRentHstryCount(uId);
+        int count = rr.findRentHisCount(uId);
         return count;
     }
 
@@ -177,7 +177,7 @@ public class RenServiceImpl implements RenService {
 
     @Override
     public int getHisCnt(String uId) {
-        return v_hr.selectHisCnt(uId);
+        return v_hr.countByuId(uId);
     }
 
     @Override
@@ -207,7 +207,7 @@ public class RenServiceImpl implements RenService {
     }
 
     @Override
-    public int getAllCount() {
-        return rr.findAllCount();
+    public long getAllCount() {
+        return rr.count();
     }
 }

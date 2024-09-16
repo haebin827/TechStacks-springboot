@@ -1,7 +1,6 @@
 package edu.library.libraryspringboot.repository;
 
 import edu.library.libraryspringboot.domain.Rental;
-import edu.library.libraryspringboot.dto.RentalDTO;
 import edu.library.libraryspringboot.repository.search.RenSearch;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,14 +12,11 @@ import java.util.List;
 
 public interface RenRepository extends JpaRepository<Rental, Long>, RenSearch {
 
-    @Query(value = "select now()", nativeQuery = true)
-    String getTime();
-
     @Query("select count(*) from Rental where uId = :uId and rIsReturned = false")
-    int findRentCount(@Param("uId") String uId);
+    int findRentCount(String uId);
 
     @Query("select count(*) from Rental where uId = :uId and rIsReturned = true")
-    int findRentHstryCount(@Param("uId") String uId);
+    int findRentHisCount(String uId);
 
     @Modifying
     @Transactional
@@ -50,15 +46,14 @@ public interface RenRepository extends JpaRepository<Rental, Long>, RenSearch {
             "left join ReturnRequest rr on r.bNo = rr.bNo and r.uId = rr.uId and rr.rRtnReq = true " +
             "left join ExtensionRequest er on r.bNo = er.bNo and r.uId = er.uId and er.rExtReq = true " +
             "where r.uId = :uId and r.rIsReturned = false")
-    List<Object[]> rentalList(@Param("uId") String uId);
+    List<Object[]> rentalList(String uId);
 
     @Query("select b.bNo, b.bTitle, b.bAuthor, r.rRentalDate, r.rWhenToReturn, r.rReturnDate, r.rIsExtended " +
             "from Rental r join Book b on r.bNo = b.bNo " +
             "where r.uId = :uId and r.rIsReturned = true")
-    List<Object[]> historyList(@Param("uId") String uId);
+    List<Object[]> historyList(String uId);
 
-//rental의 isExtReq 값을 0 으로, isExtended를 1로, when to return을 15일 뒤로
-
+    //rental의 isExtReq 값을 0 으로, isExtended를 1로, when to return을 15일 뒤로
     @Modifying
     @Transactional
     @Query(value = "update Rental set r_is_ext_req = false, r_is_extended = true, r_when_to_return = r_when_to_return + INTERVAL 15 DAY where u_id= :uId and b_no = :bNo and r_is_returned = false", nativeQuery = true)
@@ -76,7 +71,4 @@ public interface RenRepository extends JpaRepository<Rental, Long>, RenSearch {
             "WHERE r.u_id = :uId AND r.b_no = :bNo AND r.r_is_returned = false AND rr.r_rtn_req = true",
             nativeQuery = true)
     void updateRtnStatus(@Param("uId") String uId, @Param("bNo") Integer bNo);
-
-    @Query("select count(*) from Rental")
-    int findAllCount();
 }

@@ -1,7 +1,6 @@
 package edu.library.libraryspringboot.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +16,8 @@ public class FaqDTO {
 
     @NotEmpty
     private String fQuestion;   // varchar(255) NN
+
+    @NotEmpty
     private String fAnswer;     // varchar(1000) NN
 
     private Integer fCategory;

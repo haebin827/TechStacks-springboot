@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 
 public interface UserRepository extends JpaRepository<User, Integer>, UserSearch {
 
-    @Query(value="select now()", nativeQuery = true)
-    String getTime();
-
     @Query("select u from User u where u.uId = :uId and u.uPw = :uPw")
     User authenticate(@Param("uId") String uId, @Param("uPw") String uPw);
 
@@ -25,15 +22,12 @@ public interface UserRepository extends JpaRepository<User, Integer>, UserSearch
     @Query("update User set uUuid = :uUuid where uNo = :uNo")
     void updateUuid(@Param("uNo") int uNo, @Param("uUuid") String uUuid);
 
-    @Query("select u from User u where u.uUuid = :uUuid")
-    User selectUUID(String uUuid);
+    User findByuUuid(String uUuid);
 
-    @Query("select count(*) from User where uPhone = :uPhone")
-    int checkPhone(String uPhone);
+    long countByuPhone(String uPhone);
 
     @Query(value = "SELECT (SELECT COUNT(*) FROM User u WHERE u.u_id = :uId) + (SELECT COUNT(*) FROM deleted_user d WHERE d.u_id = :uId)", nativeQuery = true)
     int checkId(String uId);
-
 
     /*@Query("select u.uRegDate from User u left join RentalRequest r on u.uId = r.uId where u.uId = :uId and r.rId IS NULL")
     LocalDateTime deleteUserAfterSixMonths(String uId);*/

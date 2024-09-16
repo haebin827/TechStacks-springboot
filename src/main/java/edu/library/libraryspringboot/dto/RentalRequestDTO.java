@@ -1,6 +1,7 @@
 package edu.library.libraryspringboot.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +19,11 @@ public class RentalRequestDTO {
 
     @NotEmpty
     private String uId;
+
+    @NotNull
     private Integer bNo;
 
     private Boolean rRenReq;
+
     private LocalDateTime rReqDate;
 }

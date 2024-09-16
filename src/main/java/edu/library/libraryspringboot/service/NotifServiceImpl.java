@@ -52,7 +52,7 @@ public class NotifServiceImpl implements NotifService {
 
         Optional<Notification> result = np.findById(notifDTO.getNNo());
         Notification notif = result.orElseThrow();
-        notif.change(notifDTO.getNTitle(), notifDTO.getNContent(), notifDTO.isNIsImp());
+        notif.change(notifDTO.getNTitle(), notifDTO.getNContent(), notifDTO.getNIsImp());
         np.save(notif);
     }
 

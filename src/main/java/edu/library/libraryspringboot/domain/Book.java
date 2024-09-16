@@ -3,6 +3,8 @@ package edu.library.libraryspringboot.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Builder
@@ -30,27 +32,31 @@ public class Book {
     @Column(length = 255)
     private String bPublisher;
 
-    @Column(length = 255)
+    @Column(length = 4)
     private String bCategory;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    @Column(nullable = false)
     private Boolean bIsRental;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(nullable = false)
     private Boolean bIsActive;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'EXCELLENT'")
+    @Column(nullable = false, length = 20)
     private String bCondition;
 
     @Column
     private String bCover;
 
+    @Column
+    private LocalDateTime bRegDate;
+
     @PrePersist
-    private void prePersist() {
+    private void onCreate() {
         bIsRental = false;
         bIsActive = true;
         bCondition = "Excellent";
         bCover = null;
+        bRegDate = LocalDateTime.now();
     }
 
     public void change(String bTitle, String bAuthor, String bIsbn, Integer bYear, String bPublisher, String bCategory, String bCondition) {
@@ -62,5 +68,4 @@ public class Book {
         this.bCategory = bCategory;
         this.bCondition = bCondition;
     }
-
 }

@@ -15,15 +15,25 @@ import java.time.LocalDateTime;
 public class VAdminReturnRequestDTO {
 
     private int id;
+
     private String bTitle;
+
     private String bAuthor;
+
     private Integer bNo;
+
     private String uId;
+
     private LocalDateTime rReqDate;
+
     private Integer uNo;
+
     private Boolean uIsBlacklist;
+
     private LocalDateTime rWhenToReturn;
+
     private String bCondition;
+
     private String uLevel;
 
 }

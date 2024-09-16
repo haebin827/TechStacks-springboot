@@ -18,6 +18,8 @@ public class DeletedBookDTO {
 
     @NotEmpty
     private String bTitle;
+
+    @NotEmpty
     private String dReason;
 
     private LocalDateTime dDelDate;

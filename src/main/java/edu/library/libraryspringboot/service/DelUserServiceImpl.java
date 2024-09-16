@@ -67,7 +67,7 @@ public class DelUserServiceImpl implements DelUserService {
 
     @Override
     public DeletedUserDTO readOneByUId(String uId) {
-        DeletedUser delUser = dr.selectOneByUId(uId);
+        DeletedUser delUser = dr.findByuId(uId);
         DeletedUserDTO delUserDTO = mm.map(delUser, DeletedUserDTO.class);
         return delUserDTO;
     }

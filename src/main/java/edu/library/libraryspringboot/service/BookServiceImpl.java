@@ -29,12 +29,10 @@ public class BookServiceImpl implements BookService {
     private final ModelMapper mm;
 
     @Override
-    public int register(BookDTO bookDTO) {
+    public void register(BookDTO bookDTO) {
 
         Book book = mm.map(bookDTO, Book.class);
-        int bNo = br.save(book).getBNo();
-
-        return bNo;
+        br.save(book).getBNo();
     }
 
     @Override
@@ -116,12 +114,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void removeMainCatList(String cCode1) {
-        cr.deleteMainCatList(cCode1);
+        cr.deleteBycCode1(cCode1);
     }
 
     @Override
     public void removeSubCatList(String cDcode) {
-        cr.deleteSubCatList(cDcode);
+        cr.deleteBycDcode(cDcode);
     }
 
     @Override
@@ -158,7 +156,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDTO> getMainCatBooklist(String cCode1) {
-        List<BookDTO> list = br.findMainCatBooklist(cCode1).stream()
+        List<BookDTO> list = br.findBybCategoryStartingWith(cCode1).stream()
                 .map(book -> mm.map(book, BookDTO.class))
                 .collect(Collectors.toList());
         return list;
@@ -166,7 +164,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDTO> getSubCatBooklist(String cDcode) {
-        List<BookDTO> list = br.findSubCatBooklist(cDcode).stream()
+        List<BookDTO> list = br.findBybCategory(cDcode).stream()
                 .map(book -> mm.map(book, BookDTO.class))
                 .collect(Collectors.toList());
         return list;

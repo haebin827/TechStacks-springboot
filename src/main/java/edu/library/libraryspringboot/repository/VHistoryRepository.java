@@ -11,9 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface VHistoryRepository extends JpaRepository<VHistory, Integer>, VHistorySearch {
 
-    @Query("SELECT h FROM VHistory h WHERE h.uId = :uId")
-    Page<VHistory> findByUId(@Param("uId") String uId, Pageable pageable);
+    Page<VHistory> findByuId(String uId, Pageable pageable);
 
-    @Query("SELECT count(*) FROM VHistory h WHERE h.uId = :uId")
-    int selectHisCnt(String uId);
+    int countByuId(String uId);
 }

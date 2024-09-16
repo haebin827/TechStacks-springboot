@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.dto.upload;
 
 import lombok.Data;
@@ -9,3 +10,4 @@ import java.util.List;
 public class UploadFileDTO {
     private List<MultipartFile> files;
 }
+*/

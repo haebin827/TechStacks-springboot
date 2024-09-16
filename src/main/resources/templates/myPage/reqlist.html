@@ -30,13 +30,13 @@
                     <tbody th:with="link = ${pgReqDTO.getLink()}">
                     <tr th:each="dto, count : ${respDTO.dtoList}">
                         <th scope="row">[[${(respDTO.page - 1) * pgReqDTO.size + count.index + 1}]]</th>
-                        <td>[[${dto.b_title}]]</td>
-                        <td>[[${dto.b_author}]]</td>
-                        <td>[[${#temporals.format(dto.r_req_date, 'yyyy-MM-dd')}]]</td>
+                        <td>[[${dto.bTitle}]]</td>
+                        <td>[[${dto.bAuthor}]]</td>
+                        <td>[[${#temporals.format(dto.rReqDate, 'yyyy-MM-dd')}]]</td>
                         <td>
                             <!-- Cancel Rental Request Button -->
                             <form th:action="|/myPage/cancelRental|" method="post">
-                                <input type="hidden" name="bNo" th:value="${dto.b_no}" />
+                                <input type="hidden" name="bNo" th:value="${dto.bNo}" />
                                 <button type="submit" class="btn btn-danger">
                                     <span th:text="Cancel"></span>
                                 </button>

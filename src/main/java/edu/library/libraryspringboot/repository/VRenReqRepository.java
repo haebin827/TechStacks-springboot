@@ -10,9 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface VRenReqRepository extends JpaRepository<VRentalRequest, Integer>, VRenReqSearch {
 
-    @Query("select count(*) from VRentalRequest where u_id = :uId")
-    int requestCheck(String uId);
+    int countByuId(String uId);
 
-    @Query("SELECT r FROM VRentalRequest r WHERE r.u_id = :uId")
-    Page<VRentalRequest> findByUId(@Param("uId") String uId, Pageable pageable);
+    Page<VRentalRequest> findByuId(String uId, Pageable pageable);
 }

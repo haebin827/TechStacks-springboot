@@ -33,9 +33,9 @@ public class BookController {
     private final RenReqService rrs;
 
     @GetMapping("/list")
-    public void listGET(HttpServletRequest req,
-                        PageRequestDTO pgReqDTO, Model model) {
+    public void listGET(PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("book GET list..............");
 
         if (pgReqDTO.getCat() == null) {
             pgReqDTO.setCat("0");
@@ -61,14 +61,10 @@ public class BookController {
         }*/
     }
 
-    /*@PostMapping("/read")
-    public String listPOST(@Valid BookDTO bookDTO,
-                           PageRequestDTO pgReqDTO, Model model) {
-        return "redirect:/book/read?bNo=" + bookDTO.getBNo() + "&" + pgReqDTO.getLink();
-    }*/
-
     @GetMapping("/register")
     public void registerGET(Model model) {
+
+        log.info("book GET register..............");
 
         List<CategoryDTO> catDTO = cs.catList();
         model.addAttribute("catDTO", catDTO);
@@ -80,7 +76,7 @@ public class BookController {
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
 
-        log.info("Book POST register..............");
+        log.info("book POST register..............");
 
         if(bindingResult.hasErrors()) {
             log.info("Has errors..................");
@@ -91,7 +87,7 @@ public class BookController {
         log.info(bookDTO);
 
         bookDTO.setBCategory(bCategory);
-        int bNo = bs.register(bookDTO);
+        bs.register(bookDTO);
 
         redirectAttributes.addFlashAttribute("result", "Added");
         redirectAttributes.addFlashAttribute("bTitle", bookDTO.getBTitle());
@@ -101,6 +97,9 @@ public class BookController {
 
     @GetMapping({"/read", "/modify"})
     public void readGET(int bNo, PageRequestDTO pgReqDTO, Model model, HttpServletRequest req) {
+
+        log.info("book GET read, modify..............");
+
         BookDTO bookDTO = bs.readOne(bNo);
         log.info("bookDTO: " + bookDTO);
         log.info("GetLink: " + pgReqDTO.getLink());
@@ -125,12 +124,13 @@ public class BookController {
     }
 
     @PostMapping("/modify")
-    public String modify(PageRequestDTO pgReqDTO,
+    public String modifyPOST(PageRequestDTO pgReqDTO,
                          @Valid BookDTO bookDTO,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
 
-        log.info("Book Modify register................ : " + bookDTO);
+        log.info("book POST modify................ : " + bookDTO);
+
         log.info("Modified bookDTO: " + bookDTO);
 
         if(bindingResult.hasErrors()) {
@@ -148,20 +148,20 @@ public class BookController {
     }
 
     @PostMapping("/remove")
-    public String remove(int bNo,
+    public String removePOST(int bNo,
                          @RequestParam("deletionReason") String deletionReason,
                          RedirectAttributes redirectAttributes,
                          PageRequestDTO pgReqDTO) {
-        log.info("Book POST Remove .............. : ");
-        BookDTO bookDTO = bs.readOne(bNo);
 
+        log.info("book POST remove ..............");
+
+        BookDTO bookDTO = bs.readOne(bNo);
         bs.modifyActiveStatus(bNo);
 
         DeletedBookDTO delBookDTO = DeletedBookDTO.builder()
                         .bTitle(bookDTO.getBTitle())
                         .dReason(deletionReason)
                         .build();
-
         ds.register(delBookDTO);
 
         redirectAttributes.addFlashAttribute("result", "Removed");
@@ -177,6 +177,8 @@ public class BookController {
                            @RequestParam("bTitle") String bTitle,
                          HttpServletRequest req,
                          PageRequestDTO pgReqDTO) {
+
+        log.info("book POST rent..............");
 
         log.info("BOOK BUNDLE:" + bookDTO);
         HttpSession session = req.getSession();
@@ -207,9 +209,11 @@ public class BookController {
 
     @PostMapping("/wishlist")
     public String wishlistPOST(PageRequestDTO pgReqDTO,
-                           BookDTO bookDTO,
-                           HttpServletRequest req,
+                               BookDTO bookDTO,
+                               HttpServletRequest req,
                                Model model) {
+
+        log.info("book POST wishlist..............");
 
         log.info("BOOK DTO WISH: " + bookDTO.toString());
         HttpSession session = req.getSession();
@@ -227,10 +231,11 @@ public class BookController {
     }
 
     @PostMapping("/cancelWishlist")
-    public String cancelWishlistPOST(RedirectAttributes redirectAttributes,
-                               BookDTO bookDTO,
-                               HttpServletRequest req,
-                               PageRequestDTO pgReqDTO, Model model) {
+    public String cancelWishlistPOST(BookDTO bookDTO,
+                                    HttpServletRequest req,
+                                    PageRequestDTO pgReqDTO, Model model) {
+
+        log.info("book POST cancelWishlist..............");
 
         HttpSession session = req.getSession();
         ws.remove((String) session.getAttribute("uId"), bookDTO.getBNo());

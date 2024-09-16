@@ -16,7 +16,7 @@
                 </div>
                 <hr class="mb-4">
                 <div class="card-body">
-                    <form th:action="@{/notif/register}" th:method="post" novalidate>
+                    <form th:action="@{/notif/register}" th:method="post" id="notifForm" novalidate>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Title</span>
                             <input type="text" class="form-control" name="nTitle" placeholder="Title" required>
@@ -33,8 +33,11 @@
                             <label class="form-check-label">
                                 Highlight &nbsp;
                             </label>
-                            <input class="form-check-input" type="checkbox" name="nIsImp" th:checked="${dto != null && dto.nIsImp}">
+                            <input class="form-check-input" type="checkbox" id="nIsImp" name="nIsImpCheckbox" th:checked="${dto != null && dto.nIsImp}">
                         </div>
+
+                        <!-- Hidden input to always send "true" or "false" -->
+                        <input type="hidden" id="nIsImpHidden" name="nIsImp" value="false">
 
                         <div class="my-4">
                             <div class="float-end">
@@ -55,41 +58,19 @@
 
 <script layout:fragment="script" th:inline="javascript">
 
-    /*
-    const errors = [[${errors}]];
-    console.log(errors);
+    // JavaScript to ensure correct "true" or "false" value is submitted for nIsImp
+    document.getElementById('notifForm').addEventListener('submit', function(event) {
+        var isImpChecked = document.getElementById('nIsImp').checked;
+        var hiddenInput = document.getElementById('nIsImpHidden');
 
-    let errorMsg = '';
-
-    if(errors) {
-        for(let i = 0; i<errors.length; i++) {
-            errorMsg += `${errors[i].field} is ${errors[i].code} \n`
+        // Set the hidden input's value based on whether the checkbox is checked or not
+        if (isImpChecked) {
+            hiddenInput.value = "true";
+        } else {
+            hiddenInput.value = "false";
         }
-        alert(errorMsg)
-    }
-     */
-
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-    (function () {
-        'use strict'
-
-        window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByTagName('form')
-
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-        }, false)
-    })()
+    });
 
 </script>
+
 </html>

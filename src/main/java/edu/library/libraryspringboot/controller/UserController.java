@@ -29,8 +29,11 @@ public class UserController {
     @GetMapping("/user/list")
     public void listGET(PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("adminPage GET /user/list........................");
+
         PageResponseDTO<UserDTO> respDTO = us.list(pgReqDTO);
         log.info(respDTO);
+
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
@@ -41,7 +44,7 @@ public class UserController {
                              PageRequestDTO pgReqDTO,
                              RedirectAttributes redirectAttributes) {
 
-        log.info("POST user remove...................");
+        log.info("adminPage POST /user/remove........................");
 
         UserDTO userDTO = us.readOne(uNo);
         log.info("uNo: " + uNo);
@@ -75,10 +78,11 @@ public class UserController {
     @GetMapping({"/user/read", "/user/modify"})
     public void readGET(int uNo, PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("adminPage GET /user/read, /user/modify........................");
+
         UserDTO userDTO = us.readOne(uNo);
         log.info("userDTO: " + userDTO);
         log.info("GetLink: " + pgReqDTO.getLink());
-
 
         // Fetch Blacklist Reason
         List<BlacklistDTO> dtoList = bs.getAllByUId(userDTO.getUId());
@@ -93,7 +97,7 @@ public class UserController {
                               @RequestParam("blklistReason") String blklistReason,
                              PageRequestDTO pgReqDTO) {
 
-        log.info("User blklist Post........................: ");
+        log.info("adminPage POST /user/blklist........................");
 
         UserDTO userDTO = us.readOne(uNo);
         userDTO.setUIsBlacklist(true);

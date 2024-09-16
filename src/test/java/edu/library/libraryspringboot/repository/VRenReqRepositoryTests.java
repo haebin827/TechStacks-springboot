@@ -21,7 +21,7 @@ public class VRenReqRepositoryTests {
 
     @Test
     public void testRequestCheck() {
-        int count = rr.requestCheck("1234");
+        int count = rr.countByuId("Haebin");
         log.info("rrv count: " + count);
     }
 
@@ -47,7 +47,7 @@ public class VRenReqRepositoryTests {
         // 1st page, 10 items per page, order by rReqDate descending
         Pageable pageable = PageRequest.of(0, 10, Sort.by("r_req_date").descending());
 
-        Page<VRentalRequest> result = rr.findByUId("1234", pageable);
+        Page<VRentalRequest> result = rr.findByuId("1234", pageable);
 
         log.info("total count: " + result.getTotalElements());
         log.info("total pages: " + result.getTotalPages());

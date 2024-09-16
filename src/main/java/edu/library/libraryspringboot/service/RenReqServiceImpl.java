@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class RenReqServiceImpl implements RenReqService {
 
     private final RenReqRepository rr;
-    private final VRenReqRepository vw_rr;
+    private final VRenReqRepository v_rr;
     private final VAdminRenReqRepository v_arr;
     private final ModelMapper mm;
 
@@ -50,8 +50,8 @@ public class RenReqServiceImpl implements RenReqService {
     }
 
     @Override
-    public int getAllReqCount() {
-        return rr.findAllReqCount();
+    public long getAllReqCount() {
+        return rr.countByrRenReqTrue();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class RenReqServiceImpl implements RenReqService {
         String keyword = pageRequestDTO.getKeyword();
         Pageable pageable = pageRequestDTO.getPageable();
 
-        Page<VRentalRequest> result = vw_rr.searchAll(types, keyword, pageable, uId);
+        Page<VRentalRequest> result = v_rr.searchAll(types, keyword, pageable, uId);
 
         List<VRentalRequestDTO> dtoList = result.getContent().stream()
                 .map(renReqView -> mm.map(renReqView, VRentalRequestDTO.class))

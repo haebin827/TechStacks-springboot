@@ -32,7 +32,7 @@ public class LoginController {
     @GetMapping("/login")
     public void loginGET(Model model, HttpServletRequest req) {
 
-        log.info("login GET.......................");
+        log.info("user GET login.......................");
 
         // Find remember-me cookie
         Cookie rememberCookie = findCookie(req.getCookies(), "remember-me");
@@ -48,7 +48,6 @@ public class LoginController {
             try {
                 // Retrieve user information by UUID and add it to the model
                 UserDTO userDTO = us.getByUUID(uUuid);
-
                 if (userDTO != null) {
                     model.addAttribute("uId", userDTO.getUId());
                 }
@@ -59,9 +58,11 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String loginPOST(HttpServletRequest req, HttpServletResponse resp, RedirectAttributes redirectAttributes) {
+    public String loginPOST(HttpServletRequest req,
+                            HttpServletResponse resp,
+                            RedirectAttributes redirectAttributes) {
 
-        log.info("login POST.......................");
+        log.info("user POST login.......................");
 
         String uId = req.getParameter("uId");
         String uPw = req.getParameter("uPw");
@@ -122,7 +123,6 @@ public class LoginController {
                             .uId(uId)
                             .dReason("AUTOMATICALLY DELETED")
                             .build();
-
                     ds.register(delUserDTO);
 
                     us.remove(userDTO.getUNo());
@@ -139,7 +139,6 @@ public class LoginController {
                     redirectAttributes.addFlashAttribute("level", userDTO.getULevel());
                     us.setLevelUp(userDTO.getUId());
                 }
-
             }
 
             session.setAttribute("uName", userDTO.getUName());
@@ -159,16 +158,15 @@ public class LoginController {
     }
 
 
-@PostMapping("/logout")
-    public String logoutPOST(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    @PostMapping("/logout")
+    public String logoutPOST(HttpServletRequest req) {
 
-        log.info("POST member logout......................");
+        log.info("user POST logout.......................");
 
         HttpSession session = req.getSession();
 
         session.removeAttribute("adminLogin");
         session.removeAttribute("userLogin");
-
         session.invalidate();
         log.info("removed------------------------");
 
@@ -176,23 +174,19 @@ public class LoginController {
     }
 
     @GetMapping("/register")
-    protected void registerGET(Model model) {
+    public void registerGET(Model model) {
 
-        log.info("GET member register ......................");
+        log.info("user GET register.......................");
     }
 
     @PostMapping("/register")
     public String registerPOST(@Valid UserDTO userDTO,
                                BindingResult bindingResult,
-                               HttpServletRequest req,
-                               HttpServletResponse resp,
                                RedirectAttributes redirectAttributes,
-                               @RequestParam("uPw") String uPw,
-                               @RequestParam("confirm") String confirmPw,
                                @RequestParam("firstName") String firstName,
-                               @RequestParam("lastName") String lastName) throws IOException {
+                               @RequestParam("lastName") String lastName) {
 
-        log.info("POST member register...................");
+        log.info("user POST register.......................");
 
         if (bindingResult.hasErrors()) {
             log.info("Has errors......................");
@@ -229,8 +223,9 @@ public class LoginController {
     }
 
     @GetMapping("/registerConfirmed")
-    protected void registerConfirmedGET(Model model) {
+    public void registerConfirmedGET() {
 
+        log.info("user GET register confirmed.......................");
     }
 
     private Cookie findCookie(Cookie[] cookies, String cookieName) {

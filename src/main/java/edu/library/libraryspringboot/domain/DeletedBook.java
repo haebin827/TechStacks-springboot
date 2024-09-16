@@ -20,7 +20,7 @@ public class DeletedBook {
     @Column(nullable = false, length = 255)
     private String bTitle;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column
     private LocalDateTime dDelDate;
 
     @Column(nullable = false, length = 255)

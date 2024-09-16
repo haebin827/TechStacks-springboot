@@ -1,10 +1,7 @@
 package edu.library.libraryspringboot.controller;
 
-import edu.library.libraryspringboot.domain.Rental;
-import edu.library.libraryspringboot.domain.VAdminHistory;
 import edu.library.libraryspringboot.dto.*;
 import edu.library.libraryspringboot.service.*;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -21,36 +18,49 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminPageController {
 
-    private final RenService rs;
-    private final RenReqService rrs;
     private final UserService us;
     private final BookService bs;
-    private final RtnReqService rts;
-    private final ExtReqService es;
+    private final RenService rs;
     private final FaqService fs;
     private final BlklistService bls;
     private final DelBookService ds;
+    private final RenReqService rrs;
+    private final RtnReqService rts;
+    private final ExtReqService es;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home
+    |--------------------------------------------------------------------------
+    |
+    | Admin Dashboard
+    |
+    |
+    */
 
     @GetMapping("/home")
-    public void homeGET(HttpServletRequest req, RedirectAttributes redirectAttributes, Model model) {
+    public void homeGET(Model model) {
+
+        log.info("adminPage GET home..............");
 
         model.addAttribute("renReqCnt", rrs.getAllReqCount());
         model.addAttribute("rtnReqCnt", rts.getAllReqCount());
         model.addAttribute("extReqCnt", es.getAllReqCount());
         model.addAttribute("hisCnt", rs.getAllCount());
-
-        //대기중인 request 목록
-        //대기중인 extension 목록
-        //대여중인 리스트
-        //history
-        
-        //멤버 리스트
-        //비밀번호 변경
-        
-        //리스트에서 유저 이름 클릭하면 멤버 상세창으로
-        
-        //나중에 추가할 기능: 1대1문의
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Loan Requests (Rental, Return, Extension)
+    |--------------------------------------------------------------------------
+    |
+    | Review/Search/Process user-submitted book requests
+    |
+    |   renReq: Rental Request
+    |   extReq: Extension Request
+    |   rtnReq: Return Request
+    |
+    */
 
     /*@GetMapping("/renReq")
     public void renReqGET(Model model) {
@@ -58,21 +68,26 @@ public class AdminPageController {
         List<Object[]> dtoList = rrs.ListAll();
         model.addAttribute("dto", dtoList);
     }*/
+
     @GetMapping("/renReq")
     public void renReqGET(PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("adminPage GET renReq..............");
+
         PageResponseDTO<VAdminRentalRequestDTO> respDTO = rrs.listAll(pgReqDTO);
         log.info(respDTO);
+
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
 
     @PostMapping("/renReq")
     public String renReqPOST(@RequestParam("uId") String uId,
-                             @RequestParam("bNo") int bNo,
-                             @RequestParam("uNo") int uNo) {
+                             @RequestParam("bNo") int bNo) {
 
-        //rental 레코드 추가
+        log.info("adminPage POST renReq..............");
+
+        // rental 레코드 추가
         RentalDTO renDTO = RentalDTO.builder()
                 .uId(uId)
                 .bNo(bNo)
@@ -84,12 +99,6 @@ public class AdminPageController {
 
         //book의 isRental값을 1로
         bs.setRenStatus(bNo);
-
-        //user에 500포인트 추가
-        UserDTO userDT0 = us.readOne(uNo);
-
-
-        //(아직 개발안함)user 레벨변경
 
         return "redirect:/adminPage/renReq";
     }
@@ -104,8 +113,11 @@ public class AdminPageController {
     @GetMapping("/extReq")
     public void extReqGET(PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("adminPage GET extReq..............");
+
         PageResponseDTO<VAdminExtensionRequestDTO> respDTO = es.listAll(pgReqDTO);
         log.info(respDTO);
+
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
@@ -114,6 +126,7 @@ public class AdminPageController {
     public String extReqPOST(@RequestParam("uId") String uId,
                              @RequestParam("bNo") int bNo) {
 
+        log.info("adminPage POST extReq..............");
 
         //extReq 의 extReq 값을 0으로
         es.setExtReq(uId, bNo);
@@ -134,8 +147,11 @@ public class AdminPageController {
     @GetMapping("/rtnReq")
     public void rtnReqGET(PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("adminPage GET rtnReq..............");
+
         PageResponseDTO<VAdminReturnRequestDTO> respDTO = rts.listAll(pgReqDTO);
         log.info(respDTO);
+
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
@@ -177,6 +193,8 @@ public class AdminPageController {
 
     @PostMapping("/rtnReq")
     public String rtnReqPOST(VAdminReturnRequestDTO rtnReqDTO) {
+
+        log.info("adminPage POST rtnReq..............");
 
         // Convert strings to LocalDate
         LocalDate returnDate = LocalDate.from(rtnReqDTO.getRReqDate());
@@ -235,39 +253,57 @@ public class AdminPageController {
                 break;
             }
         }
+
         return "redirect:/adminPage/rtnReq";
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | History list
+    |--------------------------------------------------------------------------
+    |
+    | Review/Search current users' book rental status and history
+    |
+    |
+    */
 
     @GetMapping("/history")
     public void historyGET(PageRequestDTO pgReqDTO, Model model) {
 
+        log.info("adminPage GET history..............");
+
         PageResponseDTO<VAdminHistoryDTO> respDTO = rs.adminHisList(pgReqDTO);
         log.info(respDTO);
         log.info(pgReqDTO);
+
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | FAQ Category Management
+    |--------------------------------------------------------------------------
+    |
+    | CRUD functionality for FAQ categories.
+    | Functionality to move all posts from one category to another.
+    |
+    |
+    */
+
     @GetMapping("/faq/categories")
-    public void faqListGET(PageRequestDTO pgReqDTO, Model model) {
+    public void faqCatListGET(Model model) {
+
+        log.info("adminPage GET /faq/categories..............");
 
         List<FaqCategoryDTO> catList = fs.catList();
-
         model.addAttribute("catList", catList);
-
-    }
-
-    @PostMapping("/faq/remove")
-    public String faqRemovePOST(FaqCategoryDTO faqCatDTO) {
-
-        fs.removeFaqList(faqCatDTO.getFNo());
-        fs.catRemove(faqCatDTO.getFNo());
-
-        return "redirect:/adminPage/faq/categories";
     }
 
     @PostMapping("/faq/register")
-    public String faqRegisterPOST(@RequestParam("newCatName") String newCatName) {
+    public String faqCatRegisterPOST(@RequestParam("newCatName") String newCatName) {
+
+        log.info("adminPage POST /faq/register...............");
 
         FaqCategoryDTO faqCatDTO = FaqCategoryDTO.builder()
                 .fName(newCatName)
@@ -279,97 +315,61 @@ public class AdminPageController {
     }
 
     @PostMapping("/faq/modify")
-    public String faqModifyPOST(FaqCategoryDTO faqCatDTO, @RequestParam("newCatName") String newCatName) {
+    public String faqCatModifyPOST(FaqCategoryDTO faqCatDTO,
+                                   @RequestParam("newCatName") String newCatName) {
+
+        log.info("adminPage POST /faq/modify..............");
+
         fs.setCatName(newCatName, faqCatDTO.getFNo());
+        return "redirect:/adminPage/faq/categories";
+    }
+
+    @PostMapping("/faq/remove")
+    public String faqCatRemovePOST(FaqCategoryDTO faqCatDTO) {
+
+        log.info("adminPage POST /faq/remove...............");
+
+        fs.removeFaqList(faqCatDTO.getFNo());
+        fs.catRemove(faqCatDTO.getFNo());
 
         return "redirect:/adminPage/faq/categories";
     }
 
     @PostMapping("/faq/move")
-    public String faqMovePOST(FaqCategoryDTO faqCatDTO, @RequestParam("newCatNo") int newCatNo) {
+    public String faqCatMovePOST(FaqCategoryDTO faqCatDTO,
+                                 @RequestParam("newCatNo") int newCatNo) {
+
+        log.info("adminPage POST faqCatMove.............");
 
         fs.moveCat(newCatNo, faqCatDTO.getFNo());
         return "redirect:/adminPage/faq/categories";
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Book Category Management
+    |--------------------------------------------------------------------------
+    |
+    | CRUD functionality for Book categories.
+    | Functionality to move all books from one category to another.
+    |
+    |
+    */
+
     @GetMapping("/book/categories")
-    public void bookListGET(PageRequestDTO pgReqDTO, Model model) {
+    public void bookCatListGET(Model model) {
+
+        log.info("adminPage GET BookCatList..............");
 
         List<CategoryDTO> catList = bs.catList();
         model.addAttribute("catList", catList);
-
-    }
-
-    @GetMapping("/changePw")
-    public void changePwGET(Model model) {
-        UserDTO userDTO = us.readOne(1);
-        model.addAttribute("dto", userDTO);
-    }
-
-    @PostMapping("/changePw")
-    public String changePwPOST(RedirectAttributes redirectAttributes,
-                               Model model,
-                               @RequestParam("newPw") String newPw) {
-
-        us.setPw(1, newPw);
-
-        redirectAttributes.addFlashAttribute("result", "password changed");
-        return "redirect:/adminPage/changePw";
-    }
-
-    @PostMapping("/book/remove")
-    public String bookRemovePOST(@RequestParam("cId") int cId, CategoryDTO catDTO) {
-
-        CategoryDTO selectedCat = bs.readOneCat(cId);
-        log.info("selectedCat: " + selectedCat);
-
-        //main category를 삭제하는 경우
-        if(selectedCat.getCDcode().length() == 2) {
-            //main category + 연관된 모든 sub category 삭제
-            bs.removeMainCatList(selectedCat.getCCode1());
-
-            List<BookDTO> list = bs.getMainCatBooklist(selectedCat.getCCode1());
-            log.info("list: " + list);
-
-            for(BookDTO book : list) {
-
-                //삭제된 책에 레코드 삽입
-                DeletedBookDTO delBookDTO = DeletedBookDTO.builder()
-                        .bTitle(book.getBTitle())
-                        .dReason("CATEGORY DELETION")
-                        .build();
-                ds.register(delBookDTO);
-
-                //책 active값 변경
-                bs.modifyActiveStatus(book.getBNo());
-            }
-        }
-        else {
-            //sub category 삭제
-            bs.removeSubCatList(selectedCat.getCDcode());
-
-            List<BookDTO> list = bs.getSubCatBooklist(selectedCat.getCDcode());
-            log.info("list: " + list);
-
-            for(BookDTO book : list) {
-                //삭제된 책에 레코드 삽입
-                DeletedBookDTO delBookDTO = DeletedBookDTO.builder()
-                        .bTitle(book.getBTitle())
-                        .dReason("CATEGORY DELETION")
-                        .build();
-                ds.register(delBookDTO);
-
-                //책 active값 변경
-                bs.modifyActiveStatus(book.getBNo());
-            }
-
-        }
-        return "redirect:/adminPage/book/categories";
     }
 
     @PostMapping("/book/register")
-    public String bookRegisterPOST(@RequestParam("selectedMainCat") String selectedMainCat,
-                                    @RequestParam("newCatName") String newCatName) {
+    public String bookCatRegisterPOST(@RequestParam("selectedMainCat") String selectedMainCat,
+                                      @RequestParam("newCatName") String newCatName) {
+
+        log.info("adminPage POST bookCatRegister...............");
 
         //만약 main category를 넣는다면
         if(selectedMainCat.isEmpty()) {
@@ -404,23 +404,111 @@ public class AdminPageController {
                     .build();
             bs.catRegister(catDTO);
         }
-
         return "redirect:/adminPage/book/categories";
     }
 
     @PostMapping("/book/modify")
-    public String bookModifyPOST(CategoryDTO catDTO, @RequestParam("newCategoryName") String newCategoryName) {
+    public String bookCatModifyPOST(CategoryDTO catDTO,
+                                    @RequestParam("newCategoryName") String newCategoryName) {
+
+        log.info("adminPage POST bookCatModify.................");
 
         bs.setCatName(newCategoryName, catDTO.getCId());
         return "redirect:/adminPage/book/categories";
     }
 
+    @PostMapping("/book/remove")
+    public String bookCatRemovePOST(@RequestParam("cId") int cId) {
+
+        log.info("adminPage POST bookCatRemove...............");
+
+        CategoryDTO selectedCat = bs.readOneCat(cId);
+        log.info("selectedCat: " + selectedCat);
+
+        //main category를 삭제하는 경우
+        if(selectedCat.getCDcode().length() == 2) {
+            //main category + 연관된 모든 sub category 삭제
+            bs.removeMainCatList(selectedCat.getCCode1());
+
+            List<BookDTO> list = bs.getMainCatBooklist(selectedCat.getCCode1());
+            log.info("list: " + list);
+
+            for(BookDTO book : list) {
+                //삭제된 책에 레코드 삽입
+                DeletedBookDTO delBookDTO = DeletedBookDTO.builder()
+                        .bTitle(book.getBTitle())
+                        .dReason("CATEGORY DELETION")
+                        .build();
+                ds.register(delBookDTO);
+
+                //책 active값 변경
+                bs.modifyActiveStatus(book.getBNo());
+            }
+        }
+        else {
+            //sub category 삭제
+            bs.removeSubCatList(selectedCat.getCDcode());
+
+            List<BookDTO> list = bs.getSubCatBooklist(selectedCat.getCDcode());
+            log.info("list: " + list);
+
+            for(BookDTO book : list) {
+                //삭제된 책에 레코드 삽입
+                DeletedBookDTO delBookDTO = DeletedBookDTO.builder()
+                        .bTitle(book.getBTitle())
+                        .dReason("CATEGORY DELETION")
+                        .build();
+                ds.register(delBookDTO);
+
+                //책 active값 변경
+                bs.modifyActiveStatus(book.getBNo());
+            }
+        }
+        return "redirect:/adminPage/book/categories";
+    }
+
     @PostMapping("/book/move")
-    public String bookMovePOST(CategoryDTO catDTO, @RequestParam("newCatDCode") String newCatDCode) {
+    public String bookCatMovePOST(CategoryDTO catDTO,
+                                  @RequestParam("newCatDCode") String newCatDCode) {
+
+        log.info("adminPage POST bookCatMove...............");
 
         log.info("catDTO: " + catDTO.toString());
         log.info("newCatId: " + newCatDCode);
         bs.moveCat(newCatDCode, catDTO.getCDcode());
+
         return "redirect:/adminPage/book/categories";
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Change
+    |--------------------------------------------------------------------------
+    |
+    | Password Change Functionality for Admin
+    |
+    |
+    */
+
+
+    @GetMapping("/changePw")
+    public void changePwGET(Model model) {
+
+        log.info("adminPage GET changePw..............");
+
+        UserDTO userDTO = us.readOne(1);
+        model.addAttribute("dto", userDTO);
+    }
+
+    @PostMapping("/changePw")
+    public String changePwPOST(RedirectAttributes redirectAttributes,
+                               @RequestParam("newPw") String newPw) {
+
+        log.info("adminPage POST changePw..............");
+
+        us.setPw(1, newPw);
+        redirectAttributes.addFlashAttribute("result", "password changed");
+
+        return "redirect:/adminPage/changePw";
     }
 }

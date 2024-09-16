@@ -15,11 +15,18 @@ import java.time.LocalDateTime;
 public class VAdminExtensionRequestDTO {
 
     private Integer id;
+
     private String bTitle;
+
     private String bAuthor;
+
     private Integer bNo;
+
     private String uId;
+
     private LocalDateTime rReqDate;
+
     private Integer uNo;
+
     private Boolean uIsBlacklist;
 }

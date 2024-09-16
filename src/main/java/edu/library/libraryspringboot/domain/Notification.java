@@ -26,7 +26,7 @@ public class Notification {
     private String nContent;
 
     @Column(columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean nIsImp;
+    private Boolean nIsImp;
 
     @Column(columnDefinition = "INT DEFAULT 0")
     private Integer nViews;
@@ -46,7 +46,7 @@ public class Notification {
         nViews = 0;
     }
 
-    public void change(String nTitle, String nContent, boolean nIsImp) {
+    public void change(String nTitle, String nContent, Boolean nIsImp) {
         this.nTitle = nTitle;
         this.nContent = nContent;
         this.nIsImp = nIsImp;

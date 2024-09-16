@@ -23,7 +23,7 @@ public interface UserService {
 
     UserDTO getByUUID(String uUuid);
 
-    int verifyPhone(String uPhone);
+    long verifyPhone(String uPhone);
 
     int verifyId(String uId);
 

@@ -1,7 +1,6 @@
 package edu.library.libraryspringboot.repository;
 
 import edu.library.libraryspringboot.domain.Book;
-import edu.library.libraryspringboot.domain.Category;
 import edu.library.libraryspringboot.repository.search.BookSearch;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,9 +11,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Integer>, BookSearch {
-
-    @Query(value="select now()", nativeQuery = true)
-    String getTime();
 
     @Modifying
     @Transactional
@@ -41,11 +37,9 @@ public interface BookRepository extends JpaRepository<Book, Integer>, BookSearch
     @Query("delete from Book b where b.bCategory = :cDcode")
     void deleteBooksBySubCat(String cDcode);*/
 
-    @Query("select b from Book b where b.bCategory like :cCode1%")
-    List<Book> findMainCatBooklist(String cCode1);
+    List<Book> findBybCategoryStartingWith(String cCode1);
 
-    @Query("select b from Book b where b.bCategory = :cDcode")
-    List<Book> findSubCatBooklist(String cDcode);
+    List<Book> findBybCategory(String cDcode);
 
     @Modifying
     @Transactional

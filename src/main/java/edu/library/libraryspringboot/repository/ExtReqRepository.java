@@ -16,8 +16,7 @@ public interface ExtReqRepository extends JpaRepository<ExtensionRequest, Intege
     @Query("delete ExtensionRequest where uId = :uId and bNo = :bNo and rExtReq = true")
     void delete(@Param("uId") String uId, @Param("bNo") int bNo);
 
-    @Query("select count(*) from ExtensionRequest where rExtReq = true")
-    int findAllReqCount();
+    int countByrExtReqTrue();
 
     @Query("select b.bTitle, b.bAuthor, b.bNo, e.uId, e.rReqDate, u.uNo, u.uIsBlacklist " +
             "from ExtensionRequest e " +

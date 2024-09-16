@@ -17,8 +17,7 @@ public interface RenReqRepository extends JpaRepository<RentalRequest, Integer> 
     @Query("select count(*) from RentalRequest where uId = :uId and rRenReq = true")
     int findReqCount(@Param("uId") String uId);
 
-    @Query("select count(*) from RentalRequest where rRenReq = true")
-    int findAllReqCount();
+    long countByrRenReqTrue();
 
     @Modifying
     @Transactional

@@ -18,8 +18,11 @@ public class ExtensionRequestDTO {
 
     @NotEmpty
     private String uId;
+
+    @NotEmpty
     private Integer bNo;
 
     private Boolean rExtReq;
+
     private LocalDateTime rReqDate;
 }

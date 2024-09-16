@@ -110,7 +110,7 @@ public class FaqServiceImpl implements FaqService {
 
     @Override
     public void removeFaqList(int fCategory) {
-        fr.deleteFaqList(fCategory);
+        fr.deleteByfCategory(fCategory);
     }
 
     @Override
