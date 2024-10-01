@@ -1,4 +1,4 @@
-# CS Library
+# TechStacks
 
 A specialized book search and borrowing system tailored for computer science literature.
 
@@ -13,10 +13,10 @@ A specialized book search and borrowing system tailored for computer science lit
 ## Project Overview
 
 ### Project Name
-**CS Library**
+**TechStacks**
 
 ### Purpose of Development
-The CS Library project is designed to create a specialized system for searching and borrowing computer science books. The aim is to provide students with easy access to relevant literature by utilizing the Google Books API and ChatGPT for data collection. The system supports essential library functions such as loan requests, renewals, and returns, along with admin functionalities for easy management.
+The TechStacks project is designed to create a specialized system for searching and borrowing computer science books. The aim is to provide students with easy access to relevant literature by utilizing the Google Books API and ChatGPT for data collection. The system supports essential library functions such as loan requests, renewals, and returns, along with admin functionalities for easy management.
 
 ---
 
