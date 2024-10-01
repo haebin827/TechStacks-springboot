@@ -28,7 +28,8 @@ public class AdminPageController {
     private final RtnReqService rts;
     private final ExtReqService es;
 
-    /*
+
+/*
     |--------------------------------------------------------------------------
     | Home
     |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ public class AdminPageController {
     |
     |
     */
+
 
     @GetMapping("/home")
     public void homeGET(Model model) {
@@ -49,7 +51,8 @@ public class AdminPageController {
         model.addAttribute("hisCnt", rs.getAllCount());
     }
 
-    /*
+
+/*
     |--------------------------------------------------------------------------
     | Loan Requests (Rental, Return, Extension)
     |--------------------------------------------------------------------------
@@ -62,12 +65,15 @@ public class AdminPageController {
     |
     */
 
-    /*@GetMapping("/renReq")
+
+
+/*@GetMapping("/renReq")
     public void renReqGET(Model model) {
 
         List<Object[]> dtoList = rrs.ListAll();
         model.addAttribute("dto", dtoList);
     }*/
+
 
     @GetMapping("/renReq")
     public void renReqGET(PageRequestDTO pgReqDTO, Model model) {
@@ -103,12 +109,14 @@ public class AdminPageController {
         return "redirect:/adminPage/renReq";
     }
 
-    /*@GetMapping("/extReq")
+
+/*@GetMapping("/extReq")
     public void extReqGET(Model model) {
 
         List<Object[]> dtoList = es.ListAll();
         model.addAttribute("dto", dtoList);
     }*/
+
 
     @GetMapping("/extReq")
     public void extReqGET(PageRequestDTO pgReqDTO, Model model) {
@@ -137,12 +145,14 @@ public class AdminPageController {
         return "redirect:/adminPage/extReq";
     }
 
-    /*@GetMapping("/rtnReq")
+
+/*@GetMapping("/rtnReq")
     public void rtnReqGET(Model model) {
 
         List<Object[]> dtoList = rts.ListAll();
         model.addAttribute("dto", dtoList);
     }*/
+
 
     @GetMapping("/rtnReq")
     public void rtnReqGET(PageRequestDTO pgReqDTO, Model model) {
@@ -156,7 +166,8 @@ public class AdminPageController {
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
 
-    /*@PostMapping("/rtnReq")
+
+/*@PostMapping("/rtnReq")
     public String rtnReqPOST(@RequestParam("uId") String uId,
                              @RequestParam("bNo") int bNo,
                              @RequestParam("bCondition") String status,
@@ -190,6 +201,7 @@ public class AdminPageController {
 
         return "redirect:/adminPage/rtnReq";
     }*/
+
 
     @PostMapping("/rtnReq")
     public String rtnReqPOST(VAdminReturnRequestDTO rtnReqDTO) {
@@ -257,7 +269,8 @@ public class AdminPageController {
         return "redirect:/adminPage/rtnReq";
     }
 
-    /*
+
+/*
     |--------------------------------------------------------------------------
     | History list
     |--------------------------------------------------------------------------
@@ -266,6 +279,7 @@ public class AdminPageController {
     |
     |
     */
+
 
     @GetMapping("/history")
     public void historyGET(PageRequestDTO pgReqDTO, Model model) {
@@ -280,7 +294,8 @@ public class AdminPageController {
         model.addAttribute("pgReqDTO", pgReqDTO);
     }
 
-    /*
+
+/*
     |--------------------------------------------------------------------------
     | FAQ Category Management
     |--------------------------------------------------------------------------
@@ -290,6 +305,7 @@ public class AdminPageController {
     |
     |
     */
+
 
     @GetMapping("/faq/categories")
     public void faqCatListGET(Model model) {
@@ -345,7 +361,8 @@ public class AdminPageController {
         return "redirect:/adminPage/faq/categories";
     }
 
-    /*
+
+/*
     |--------------------------------------------------------------------------
     | Book Category Management
     |--------------------------------------------------------------------------
@@ -355,6 +372,7 @@ public class AdminPageController {
     |
     |
     */
+
 
     @GetMapping("/book/categories")
     public void bookCatListGET(Model model) {
@@ -480,7 +498,8 @@ public class AdminPageController {
         return "redirect:/adminPage/book/categories";
     }
 
-    /*
+
+/*
     |--------------------------------------------------------------------------
     | Password Change
     |--------------------------------------------------------------------------
@@ -489,6 +508,7 @@ public class AdminPageController {
     |
     |
     */
+
 
 
     @GetMapping("/changePw")

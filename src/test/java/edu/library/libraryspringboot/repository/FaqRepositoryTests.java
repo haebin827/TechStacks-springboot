@@ -1,6 +1,5 @@
 package edu.library.libraryspringboot.repository;
 
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.Faq;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 @SpringBootTest
 @Log4j2

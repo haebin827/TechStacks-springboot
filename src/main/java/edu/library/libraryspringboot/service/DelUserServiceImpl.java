@@ -1,10 +1,7 @@
 package edu.library.libraryspringboot.service;
 
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.DeletedUser;
-import edu.library.libraryspringboot.domain.User;
 import edu.library.libraryspringboot.dto.*;
-import edu.library.libraryspringboot.repository.BookRepository;
 import edu.library.libraryspringboot.repository.DelUserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

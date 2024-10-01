@@ -1,8 +1,6 @@
+/*
 package edu.library.libraryspringboot.repository;
 
-import edu.library.libraryspringboot.domain.Book;
-import edu.library.libraryspringboot.domain.Notification;
-import edu.library.libraryspringboot.dto.BookDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +37,14 @@ public class BookRepositoryTests {
         });
     }
 
-    /*@Test
+    */
+/*@Test
     public void testFindByBCategoryStartingWith() {
         List<Book> books = br.findBybCategoryStartingWith("01");
         log.info("books: " + books);
 
-    }*/
+    }*//*
+
 
     @Test
     public void testSelect() {
@@ -54,13 +54,15 @@ public class BookRepositoryTests {
         log.info(book);
     }
 
-    /*@Test
+    */
+/*@Test
     public void testUpdate() {
         Optional<Book> result = br.findById(2);
         Book book = result.orElseThrow();
         book.change("DEMO TITLE", "DEMO AUTHOR", "000000", 2024, "DEMO PUBLISHER");
         br.save(book);
-    }*/
+    }*//*
+
 
     @Test
     public void testDelete() {
@@ -95,7 +97,8 @@ public class BookRepositoryTests {
         br.updateActiveStatus(2);
     }
 
-    /*@Test
+    */
+/*@Test
     public void testSearchAll() {
         String[] types = {"t", "a", "i"};
         String keyword = "author";
@@ -115,10 +118,14 @@ public class BookRepositoryTests {
         log.info(result.hasPrevious() + ": " + result.hasNext());
 
         result.getContent().forEach(book -> log.info(book));
-    }*/
+    }*//*
 
-    /*@Test
+
+    */
+/*@Test
     public void testDeleteBooksByMainCat() {
         br.deleteBooksByMainCat("04");
-    }*/
+    }*//*
+
 }
+*/

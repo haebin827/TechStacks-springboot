@@ -1,6 +1,5 @@
 package edu.library.libraryspringboot.repository;
 
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.repository.search.BookSearch;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import edu.library.libraryspringboot.domain.Book;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Integer>, BookSearch {
@@ -45,4 +45,8 @@ public interface BookRepository extends JpaRepository<Book, Integer>, BookSearch
     @Transactional
     @Query("update Book set bCategory = :bCat where bCategory = :bPrevCat")
     void changeCat(@Param("bCat") String bCat, @Param("bPrevCat") String bPrevCat);
+
+    @Query("select b from Book b order by b.bRegDate desc limit 20")
+    List<Book> findTop20RecentBooks();
+
 }

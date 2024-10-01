@@ -2,7 +2,6 @@ package edu.library.libraryspringboot.service;
 
 import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.Category;
-import edu.library.libraryspringboot.domain.FaqCategory;
 import edu.library.libraryspringboot.dto.*;
 import edu.library.libraryspringboot.repository.BookRepository;
 import edu.library.libraryspringboot.repository.CatRepository;
@@ -178,5 +177,13 @@ public class BookServiceImpl implements BookService {
     @Override
     public void moveCat(String bCat, String bPrevCat) {
         br.changeCat(bCat, bPrevCat);
+    }
+
+    @Override
+    public List<BookDTO> getTop20RecentBooks() {
+        List<BookDTO> list = br.findTop20RecentBooks().stream()
+                .map(book -> mm.map(book, BookDTO.class))
+                .collect(Collectors.toList());
+        return list;
     }
 }

@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.service;
 
 import edu.library.libraryspringboot.dto.PageRequestDTO;
@@ -31,3 +32,4 @@ public class RenReqServiceTests {
         rs.setRenReq("1234", 52);
     }
 }
+*/

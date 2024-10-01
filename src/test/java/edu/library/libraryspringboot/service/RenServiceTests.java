@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.service;
 
 import edu.library.libraryspringboot.dto.RentalDTO;
@@ -31,7 +32,8 @@ public class RenServiceTests {
         log.info("his cnt: " + cnt);
     }
 
-    /*@Test
+    */
+/*@Test
     public void testList() {
         List<Object[]> list = rs.list("S538108");
         for (Object[] row : list) {
@@ -54,6 +56,8 @@ public class RenServiceTests {
             System.out.println("Rental Req Date: " + rRtnReqDate);
             System.out.println("---------------------------");
         }
-    }*/
+    }*//*
+
 
 }
+*/

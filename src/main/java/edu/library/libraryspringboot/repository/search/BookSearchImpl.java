@@ -2,7 +2,6 @@ package edu.library.libraryspringboot.repository.search;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.QBook;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.util.StringUtils;
 
+import edu.library.libraryspringboot.domain.Book;
 import java.util.List;
 
 @Log4j2
@@ -20,7 +20,7 @@ public class BookSearchImpl extends QuerydslRepositorySupport implements BookSea
         super(Book.class);
     }
 
-    @Override
+    /*@Override
     public Page<Book> search1(Pageable pageable) {
 
         QBook book = QBook.book; //Q도메인 객체
@@ -33,7 +33,7 @@ public class BookSearchImpl extends QuerydslRepositorySupport implements BookSea
         List<Book> list = query.fetch();
         long count = query.fetchCount();
         return null;
-    }
+    }*/
 
     @Override
     public Page<Book> searchAll(String[] types, String keyword, Pageable pageable, Boolean check, String cat) {

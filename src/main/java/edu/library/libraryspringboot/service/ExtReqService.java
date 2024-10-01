@@ -12,7 +12,8 @@ public interface ExtReqService {
 
     int getAllReqCount();
 
-    /*List<Object[]> ListAll();*/
+List<Object[]> ListAll();
+
     PageResponseDTO<VAdminExtensionRequestDTO> listAll(PageRequestDTO pageRequestDTO);
 
     void setExtReq(String uId, int bNo);

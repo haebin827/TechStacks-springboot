@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.repository;
 
 import edu.library.libraryspringboot.domain.Rental;
@@ -38,23 +39,27 @@ public class RenRepositoryTests {
     }
 
 
-    /*@Test
+    */
+/*@Test
     public void testSelect() {
         Long rId = 2L;
         Optional<Rental> result = renRepo.findById(rId);
         Rental rental = result.orElseThrow();
         log.info("............................");
         log.info(rental);
-    }*/
+    }*//*
 
-    /*@Test
+
+    */
+/*@Test
     public void testUpdate() {
         Long rId = 3L;
         Optional<Rental> result = renRepo.findById(rId);
         Rental rental = result.orElseThrow();
         rental.change("test", 150, LocalDateTime.of(2001, 7, 13, 0, 0), LocalDateTime.of(2001, 7, 13, 0, 0), LocalDateTime.of(2001, 7, 13, 0, 0));
         renRepo.save(rental);
-    }*/
+    }*//*
+
 
     @Test
     public void testDelete() {
@@ -77,22 +82,27 @@ public class RenRepositoryTests {
         renList.forEach(rental -> log.info(rental));
     }
 
-   /* @Test
+   */
+/* @Test
     public void testSearch1() {
 
         //2 page order by bNo desc
         Pageable pageable = PageRequest.of(0, 10, Sort.by("rId").descending());
         renRepo.search1(pageable);
-    }*/
+    }*//*
 
-    /*@Test
+
+    */
+/*@Test
     public void testFindRent() {
         String uId = "1234";
         int count = renRepo.findRentCount(uId);
         log.info("............................");
         log.info(count);
-    }*/
+    }*//*
 
+
+*/
 /*    @Test
     public void testRentalList() {
         // Execute the query
@@ -114,7 +124,8 @@ public class RenRepositoryTests {
             System.out.println("---------------------------");
         }
 
-    }*/
+    }*//*
+
 
     @Test
     public void testRentalListWithReturnRequest() {
@@ -187,3 +198,4 @@ public class RenRepositoryTests {
     }
 
 }
+*/

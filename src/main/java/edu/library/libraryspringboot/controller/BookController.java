@@ -47,8 +47,8 @@ public class BookController {
         model.addAttribute("catDTO", catDTO);
         model.addAttribute("respDTO", respDTO);
         model.addAttribute("pgReqDTO", pgReqDTO);
-
-        /*HttpSession session = req.getSession();
+/*
+    HttpSession session = req.getSession();
 
         if(session.isNew()) {
             log.info("JSESSIONID: User with active session");
@@ -59,6 +59,7 @@ public class BookController {
             log.info("JSESSIONID: User without login info");
             return "redirect:/user/login";
         }*/
+
     }
 
     @GetMapping("/register")

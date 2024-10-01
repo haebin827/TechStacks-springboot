@@ -1,17 +1,7 @@
 package edu.library.libraryspringboot.repository.search;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.JPQLQuery;
-import edu.library.libraryspringboot.domain.Book;
-import edu.library.libraryspringboot.domain.QBook;
-import edu.library.libraryspringboot.domain.QRental;
 import edu.library.libraryspringboot.domain.Rental;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-
-import java.util.List;
 
 public class RenSearchImpl extends QuerydslRepositorySupport implements RenSearch {
 

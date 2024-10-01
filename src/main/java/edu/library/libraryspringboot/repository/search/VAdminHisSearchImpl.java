@@ -2,8 +2,6 @@ package edu.library.libraryspringboot.repository.search;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
-import edu.library.libraryspringboot.domain.Book;
-import edu.library.libraryspringboot.domain.QBook;
 import edu.library.libraryspringboot.domain.QVAdminHistory;
 import edu.library.libraryspringboot.domain.VAdminHistory;
 import org.springframework.data.domain.Page;

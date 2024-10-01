@@ -1,8 +1,6 @@
 package edu.library.libraryspringboot.service;
 
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.Notification;
-import edu.library.libraryspringboot.dto.BookDTO;
 import edu.library.libraryspringboot.dto.NotificationDTO;
 import edu.library.libraryspringboot.dto.PageRequestDTO;
 import edu.library.libraryspringboot.dto.PageResponseDTO;

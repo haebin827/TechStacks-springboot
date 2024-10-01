@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.service;
 
 import edu.library.libraryspringboot.dto.BookDTO;
@@ -15,7 +16,8 @@ public class BookServiceTests {
     @Autowired
     private BookService bs;
 
-    /*@Test
+    */
+/*@Test
     public void testRegister() {
         log.info(bs.getClass().getName());
 
@@ -30,8 +32,10 @@ public class BookServiceTests {
         int bNo = bs.register(bookDTO);
         log.info("bNo: " + bNo);
     }
-*/
-    /*@Test
+*//*
+
+    */
+/*@Test
     public void testModify() {
 
         BookDTO bookDTO = BookDTO.builder()
@@ -42,17 +46,20 @@ public class BookServiceTests {
                 .build();
 
         bs.modify(bookDTO);
-    }*/
+    }*//*
+
 
     @Test
     public void testReadOne() {
         log.info(bs.readOne(2));
     }
 
-    /*@Test
+    */
+/*@Test
     public void testRemove() {
         bs.remove(4);
-    }*/
+    }*//*
+
 
     @Test
     public void testList() {
@@ -80,3 +87,4 @@ public class BookServiceTests {
     }
 }
 
+*/

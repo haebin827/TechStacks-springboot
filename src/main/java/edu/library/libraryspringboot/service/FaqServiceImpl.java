@@ -1,13 +1,10 @@
 package edu.library.libraryspringboot.service;
 
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.Faq;
 import edu.library.libraryspringboot.domain.FaqCategory;
 import edu.library.libraryspringboot.dto.*;
-import edu.library.libraryspringboot.repository.BookRepository;
 import edu.library.libraryspringboot.repository.FaqCatRepository;
 import edu.library.libraryspringboot.repository.FaqRepository;
-import edu.library.libraryspringboot.repository.search.FaqSearch;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

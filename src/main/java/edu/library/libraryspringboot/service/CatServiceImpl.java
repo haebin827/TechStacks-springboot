@@ -1,11 +1,7 @@
 package edu.library.libraryspringboot.service;
 
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.Category;
-import edu.library.libraryspringboot.dto.BookDTO;
 import edu.library.libraryspringboot.dto.CategoryDTO;
-import edu.library.libraryspringboot.dto.FaqCategoryDTO;
-import edu.library.libraryspringboot.repository.BookRepository;
 import edu.library.libraryspringboot.repository.CatRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

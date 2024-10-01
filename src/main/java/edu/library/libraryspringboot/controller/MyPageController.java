@@ -232,7 +232,7 @@ public class MyPageController {
         return "redirect:/myPage/booklist";
     }
 
-    /*@GetMapping("/reqlist")
+/*@GetMapping("/reqlist")
     public void reqlistGET(HttpServletRequest req, PageRequestDTO pgReqDTO, Model model) {
 
         HttpSession session = req.getSession();
@@ -240,6 +240,7 @@ public class MyPageController {
         List<Object[]> dtoList = rrs.list((String)session.getAttribute("uId"));
         model.addAttribute("dto", dtoList);
     }*/
+
 
     @GetMapping("/reqlist")
     public void reqlistGET(HttpServletRequest req, PageRequestDTO pgReqDTO, Model model) {
@@ -268,7 +269,7 @@ public class MyPageController {
         return "redirect:/myPage/reqlist";
     }
 
-    /*@GetMapping("/history")
+/*@GetMapping("/history")
     public void historyGET(HttpServletRequest req, PageRequestDTO pgReqDTO, Model model) {
 
         HttpSession session = req.getSession();
@@ -276,6 +277,7 @@ public class MyPageController {
         List<Object[]> dtoList = rs.historyList((String)session.getAttribute("uId"));
         model.addAttribute("dto", dtoList);
     }*/
+
 
     @GetMapping("/history")
     public void historyGET(HttpServletRequest req,

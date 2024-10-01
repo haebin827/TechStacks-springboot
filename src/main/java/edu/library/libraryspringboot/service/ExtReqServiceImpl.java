@@ -46,7 +46,7 @@ public class ExtReqServiceImpl implements ExtReqService {
         return er.countByrExtReqTrue();
     }
 
-    /*@Override
+@Override
     public List<Object[]> ListAll() {
 
         //b.bTitle, b.bAuthor, b.bNo, e.uId, e.rReqDate, u.uNo, u.uIsBlacklist
@@ -69,7 +69,8 @@ public class ExtReqServiceImpl implements ExtReqService {
             row[4] = rReqDate;
         }
         return list;
-    }*/
+    }
+
 
     @Override
     public PageResponseDTO<VAdminExtensionRequestDTO> listAll(PageRequestDTO pageRequestDTO) {

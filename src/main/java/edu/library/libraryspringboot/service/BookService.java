@@ -43,10 +43,6 @@ public interface BookService {
 
     void catRegister(CategoryDTO catDTO);
 
-    /*void removeBooksByMainCat(String cCode1);*/
-
-    /*void removeBooksBySubCat(String cDcode);*/
-
     List<BookDTO> getMainCatBooklist(String cCode1);
 
     List<BookDTO> getSubCatBooklist(String cDcode);
@@ -55,4 +51,5 @@ public interface BookService {
 
     void moveCat(String bCat, String bPrevCat);
 
+    List<BookDTO> getTop20RecentBooks();
 }

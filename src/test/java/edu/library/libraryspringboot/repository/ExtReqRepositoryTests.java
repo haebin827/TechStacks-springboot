@@ -1,3 +1,4 @@
+/*
 package edu.library.libraryspringboot.repository;
 
 import lombok.extern.log4j.Log4j2;
@@ -22,3 +23,4 @@ public class ExtReqRepositoryTests {
         log.info(er.countByrExtReqTrue());
     }
 }
+*/

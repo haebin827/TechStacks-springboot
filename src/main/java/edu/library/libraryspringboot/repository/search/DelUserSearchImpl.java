@@ -2,9 +2,7 @@ package edu.library.libraryspringboot.repository.search;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
-import edu.library.libraryspringboot.domain.Book;
 import edu.library.libraryspringboot.domain.DeletedUser;
-import edu.library.libraryspringboot.domain.QBook;
 import edu.library.libraryspringboot.domain.QDeletedUser;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
