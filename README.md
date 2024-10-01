@@ -56,7 +56,7 @@ The CS Library project is designed to create a specialized system for searching 
 - **Objective**: Build core functionality using Java.
 - **Key Tasks**: Implement core library operations, manage data with MySQL, and provide a command-line interface (CLI).
 
-### Months 2-3: Web-Based System with Spring Boot
+### Months 2 ~: Web-Based System with Spring Boot
 - **Objective**: Migrate to a web-based platform.
 - **Key Tasks**: Integrate the Spring Framework, develop RESTful APIs, implement a web UI with Thymeleaf, and enhance user management.
 
