@@ -9,6 +9,7 @@ A specialized book search and borrowing system tailored for computer science lit
 - [Scope and Function](#scope-and-function)
 - [Development Environment](#development-environment)
 - [Development Log](#development-log)
+- [Future Features](#future-features)
 
 ## Project Overview
 
@@ -58,8 +59,12 @@ The TechStacks project is designed to create a specialized system for searching 
 
 ### Months 2 ~: Web-Based System with Spring Boot
 - **Objective**: Migrate to a web-based platform.
-- **Key Tasks**: Integrate the Spring Framework, develop RESTful APIs, implement a web UI with Thymeleaf, and enhance user management.
-
+- **Key Tasks**
+1. **Spring Framework Integration**: Incorporate Spring Boot to build the core application structure.
+2. **Develop RESTful APIs**: Implement RESTful services to enable client-server interactions and facilitate data exchange.
+3. **Web UI with Thymeleaf**: Use Thymeleaf to design dynamic web pages, enhancing the overall user experience.
+4. **Enhance User Management**: Provide secure user authentication, role-based access control, and user profile management.
+5. **Persistence with Hibernate**: Implement persistence using Hibernate as the JPA provider to handle ORM (Object-Relational Mapping) efficiently, providing database operations such as CRUD functionalities, lazy loading, and transaction management for scalable and robust data storage.
 ---
 
 ## Scope and Function
@@ -111,17 +116,31 @@ The TechStacks project is designed to create a specialized system for searching 
 
 ---
 
-## Project Details
+## Future Features
 
-### Database Schema & Naming Guidelines
-1. **Variable Naming**: Use `camelCase` for descriptive variables.
-2. **File Naming**: Use `PascalCase` for filenames and `camelCase` for UI templates.
-3. **Entity Naming**: Use `PascalCase` for entities and `snake_case` for tables and fields.
+### Planned Features for the Main Page
+1. **Popular Books Section**: Display the most borrowed or highest-rated books.
+2. **New Arrivals Section**: Show newly added books to the library.
+3. **Reader of the Month**: Highlight users who have borrowed the most books this month.
+4. **Important Announcements**: Provide an area to display critical notices or updates.
 
----
+### Community and User Engagement
+1. **Top Borrowers Community Board**: Display a leaderboard of users who have borrowed the most books.
+2. **Community Space for Discussions**: Provide a platform for users to discuss books, share opinions, and engage with other readers.
 
-## Development Notes
-- **Data Source**: Approximately 11,000 computer science book records managed in MySQL.
-- **Frontend & Backend Interaction**: Frontend integrated with RESTful APIs for seamless data interaction.
-- **Security & User Roles**: Role-based access control for admin and general users.
-- **Testing & Scalability**: Unit and integration testing for APIs, with a focus on scalability and performance optimization.
+### Additional Functionality
+1. **Crawler Development**: Develop a crawler to fetch accurate book cover images and integrate them into the database.
+2. **Book Review and Rating**: Allow users to rate and review books they have read, with visibility to others.
+3. **Password Recovery**: Implement a secure feature for users to retrieve or reset their passwords.
+4. **OAuth Social Login**: Allow easy login using Google, Facebook, Twitter, and other social accounts.
+5. **Google Calendar API Integration**: Automatically add loan and return dates to the user’s personal calendar for better management.
+6. **Multilingual Support**: Utilize Google Translate API to provide services in multiple languages.
+
+### User-Focused Enhancements
+1. **Review and Rating Submission**: Enable users to write and submit reviews and ratings for books.
+2. **Lost/Damaged Book Reporting**: Create a feature for users to report lost or damaged books.
+3. **Loan Extensions with Points**: Allow users to extend their book loans using a points system.
+
+### Admin-Focused Enhancements
+1. **View Deleted Books**: Provide an interface for admins to view and manage deleted books.
+2. **Handle Lost/Damaged Books**: Add functionality for admins to handle and process lost or damaged book reports.
